@@ -1,7 +1,10 @@
+import { Header, Footer } from '../components';
+
 export default function Home() {
     return (
         <div>
-            <em className='text-[#f00]'>Welcome Nihal..!</em>
+            <Header />
+            <Footer />
         </div>
     );
 }
