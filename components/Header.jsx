@@ -8,7 +8,7 @@ import { logoImg, avatarImg } from '../public/images';
 
 const styles = {
     wrapper: `w-[100%] h-[70px] lg:h-[100px] bg-primaryColor`,
-    container: `max-w-[750px] lg:max-w-[1400px] px-[15px] lg:px-[30px] mx-auto h-[100%] grid grid-cols-[1fr] lg:grid-cols-[15%,auto,22%] items-center gap-[20px]`,
+    container: `max-w-[750px] lg:max-w-[1500px] px-[15px] lg:px-[30px] mx-auto h-[100%] grid grid-cols-[1fr] lg:grid-cols-[15%,auto,22%] items-center gap-[20px]`,
     headerLeft: `flex justify-between items-center h-[100%] xl:border-r border-[#33353c]`,
     imgWrapper: `flex items-center gap-[10px] xl:gap-[20px] hover:translate-y-[-2px] transition-transform h-[100%]`,
     logoImg: `w-[45px] lg:w-[50px] xl:w-[55px]`,
