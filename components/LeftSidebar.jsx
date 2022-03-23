@@ -1,9 +1,9 @@
-import Link from 'next/link';
 import React from 'react';
+import Link from 'next/link';
 import { navLinks } from '../utils/constants';
 
 const styles = {
-    container: `my-[30px]`,
+    container: `my-[30px] sticky top-[30px]`,
     navList: ``,
     navListItem: `mb-[1.3em]`,
     navListItemLink: `group flex items-center gap-[13px]`,
@@ -11,7 +11,7 @@ const styles = {
     navListText: `text-lg font-semibold text-[#26333b] transition-colors group-hover:text-secondaryColor`,
 };
 
-function LeftSidebar() {
+export default function LeftSidebar() {
     return (
         <div className={styles.container}>
             <ul>
@@ -35,5 +35,3 @@ function LeftSidebar() {
         </div>
     );
 }
-
-export default LeftSidebar;

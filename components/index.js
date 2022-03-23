@@ -5,6 +5,7 @@ import LeftSidebar from './LeftSidebar';
 import RightSidebar from './RightSidebar';
 import SidebarLayout from './SidebarLayout';
 import Breadcrumbs from './Breadcrumbs';
+import Card from './Card';
 
 export {
     Footer,
@@ -14,4 +15,5 @@ export {
     RightSidebar,
     SidebarLayout,
     Breadcrumbs,
+    Card,
 };

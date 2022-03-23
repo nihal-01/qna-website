@@ -34,7 +34,7 @@ const styles = {
     accountIcons: `flex items-center`,
     accountDropdownIcon: `text-white bg-grayColor rounded-sm`,
     accountBellIcon: `text-grayColor border-l border-grayColor pl-[0.8em] text-[22px]`,
-    accountDropdown: `absolute w-[250px] bg-[#0f0] right-[0] top-[100%] overflow-hidden max-h-[0px] transition-all`,
+    accountDropdown: `absolute w-[250px] bg-[#0f0] right-[0] top-[100%] overflow-hidden max-h-[0px] transition-all z-10`,
     accountDropdownActive: `max-h-[500px]`,
 };
 

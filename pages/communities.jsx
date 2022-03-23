@@ -58,11 +58,11 @@ const styles = {
     contentWrapper: `p-[15px] grid gap-[1.5em] lg:p-[30px] lg:grid-cols-2`,
 };
 
-export default function Tags() {
+export default function Communities() {
     return (
         <div className={styles.container}>
             <div className={styles.header}>
-                <Breadcrumbs crumbs={[{ name: 'tags' }]} />
+                <Breadcrumbs crumbs={[{ name: 'communities' }]} />
                 <div className={styles.headerRight}>
                     <select name='' id='' className={styles.selectOption}>
                         <option value=''>Popular</option>
@@ -72,7 +72,7 @@ export default function Tags() {
                     <form className={styles.searchInputWrapper}>
                         <input
                             type='text'
-                            placeholder='Search Tags...'
+                            placeholder='Search Communities...'
                             className={styles.searchInput}
                         />
                         <button type='submit' className={styles.searchIcons}>
@@ -95,6 +95,6 @@ export default function Tags() {
     );
 }
 
-Tags.getLayout = function getLayout(page) {
+Communities.getLayout = function getLayout(page) {
     return <SidebarLayout>{page}</SidebarLayout>;
 };

@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import React from 'react';
+import Link from 'next/link';
 
 const styles = {
     container: `bg-white h-[100%]`,
@@ -7,7 +7,7 @@ const styles = {
     askBtn: `w-[100%] h-[45px] bg-secondaryColor rounded-sm text-white font-semibold transition-colors hover:bg-grayColor`,
 };
 
-function RightSidebar() {
+export default function RightSidebar() {
     return (
         <div className={styles.container}>
             <div className={styles.askBtnWrapper}>
@@ -22,5 +22,3 @@ function RightSidebar() {
         </div>
     );
 }
-
-export default RightSidebar;
