@@ -5,11 +5,11 @@ import { BsHouseFill } from 'react-icons/bs';
 const styles = {
     wrapper: `flex items-center gap-[6px]`,
     homeWrapper: `group flex items-center gap-[6px] cursor-pointer`,
-    homeIcon: `text-base text-titleColor transition-colors group-hover:text-secondaryColor`,
-    homeText: `font-[600] text-[15px] text-titleColor transition-colors group-hover:text-secondaryColor`,
-    linkCrumb: `font-[600] text-[15px] text-titleColor mr-[6px] transition-colors hover:text-secondaryColor capitalize`,
+    homeIcon: `text-base text-primaryColor transition-colors group-hover:text-secondaryColor`,
+    homeText: `font-[600] text-[15px] text-primaryColor transition-colors group-hover:text-secondaryColor`,
+    linkCrumb: `font-[600] text-[15px] text-primaryColor mr-[6px] transition-colors hover:text-secondaryColor capitalize`,
     crumb: `font-[600] text-[15px] text-grayColor mr-[6px] capitalize`,
-    slash: `text-titleColor text-[15px] font-semibold`,
+    slash: `text-primaryColor text-[15px] font-semibold`,
 };
 
 export default function Breadcrumbs({ crumbs }) {

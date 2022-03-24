@@ -1,49 +1,37 @@
 import React from 'react';
-import { AiFillTag } from 'react-icons/ai';
 import { BsSearch } from 'react-icons/bs';
 
-import { Breadcrumbs, SidebarLayout, TagCard } from '../components';
+import { Breadcrumbs, SidebarLayout } from '../components';
+import { UserCard } from '../components';
 
-const tags = [
+const users = [
     {
-        _id: '1',
-        name: 'Car',
+        _id: 1,
+        avatar: 'https://gansons.com/wp-content/uploads/2019/01/person6.jpg',
+        username: 'john',
         followers: 100,
+        following: true,
     },
     {
-        _id: '2',
-        name: 'Jeep',
-        followers: 1345,
+        _id: 2,
+        avatar: 'https://www.theportlandclinic.com/wp-content/uploads/2019/07/Person-Curtis_4x5-e1564616444404.jpg',
+        username: 'martin',
+        followers: 100,
+        following: false,
     },
     {
-        _id: '3',
-        name: 'Bus',
-        followers: 487,
+        _id: 3,
+        avatar: 'https://dergreif-online.de/www/wp-content/uploads/2016/07/Timothy_hoch.jpg',
+        username: 'kane',
+        followers: 100,
+        following: true,
     },
     {
-        _id: '4',
-        name: 'Truck',
-        followers: 765,
-    },
-    {
-        _id: '5',
-        name: 'Bike',
-        followers: 2087,
-    },
-    {
-        _id: '6',
-        name: 'Train',
-        followers: 60,
-    },
-    {
-        _id: '7',
-        name: 'Plane',
-        followers: 3404,
-    },
-    {
-        _id: '8',
-        name: 'Ship',
-        followers: 2600,
+        _id: 4,
+        avatar: '',
+        username: 'warner',
+        followers: 120,
+        following: false,
     },
 ];
 
@@ -55,14 +43,14 @@ const styles = {
     searchInputWrapper: `border border-[#e1e3e3] h-[45px] rounded-sm flex items-center mt-[10px] lg:mt-0 lg:w-[220px]`,
     searchInput: `h-[100%] w-[100%] px-[10px] outline-none`,
     searchIcons: `px-[10px] text-grayColor`,
-    contentWrapper: `px-[15px] py-[30px] grid gap-[1.5em] lg:p-[30px] lg:grid-cols-2`,
+    contentWrapper: `grid gap-[1.5em] px-[15px] py-[30px] lg:p-[30px] lg:grid-cols-2 2xl:grid-cols-3`,
 };
 
-export default function Communities() {
+export default function Users() {
     return (
         <div className={styles.container}>
             <div className={styles.header}>
-                <Breadcrumbs crumbs={[{ name: 'communities' }]} />
+                <Breadcrumbs crumbs={[{ name: 'users' }]} />
                 <div className={styles.headerRight}>
                     <select name='' id='' className={styles.selectOption}>
                         <option value=''>Popular</option>
@@ -72,7 +60,7 @@ export default function Communities() {
                     <form className={styles.searchInputWrapper}>
                         <input
                             type='text'
-                            placeholder='Search Communities...'
+                            placeholder='Search Users...'
                             className={styles.searchInput}
                         />
                         <button type='submit' className={styles.searchIcons}>
@@ -82,19 +70,14 @@ export default function Communities() {
                 </div>
             </div>
             <div className={styles.contentWrapper}>
-                {tags.map((tag) => {
-                    return (
-                        <TagCard
-                            key={tag._id}
-                            data={{ ...tag, icon: <AiFillTag /> }}
-                        />
-                    );
+                {users.map((user) => {
+                    return <UserCard key={user._id} user={user} />;
                 })}
             </div>
         </div>
     );
 }
 
-Communities.getLayout = function getLayout(page) {
+Users.getLayout = function getLayout(page) {
     return <SidebarLayout>{page}</SidebarLayout>;
 };

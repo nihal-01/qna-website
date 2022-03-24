@@ -2,7 +2,7 @@ import React from 'react';
 import { AiFillTag } from 'react-icons/ai';
 import { BsSearch } from 'react-icons/bs';
 
-import { Breadcrumbs, Card, SidebarLayout } from '../components';
+import { Breadcrumbs, SidebarLayout, TagCard } from '../components';
 
 const tags = [
     {
@@ -55,7 +55,7 @@ const styles = {
     searchInputWrapper: `border border-[#e1e3e3] h-[45px] rounded-sm flex items-center mt-[10px] lg:mt-0 lg:w-[220px]`,
     searchInput: `h-[100%] w-[100%] px-[10px] outline-none`,
     searchIcons: `px-[10px] text-grayColor`,
-    contentWrapper: `p-[15px] grid gap-[1.5em] lg:p-[30px] lg:grid-cols-2`,
+    contentWrapper: `px-[15px] py-[30px] grid gap-[1.5em] lg:p-[30px] lg:grid-cols-2`,
 };
 
 export default function Tags() {
@@ -84,7 +84,7 @@ export default function Tags() {
             <div className={styles.contentWrapper}>
                 {tags.map((tag) => {
                     return (
-                        <Card
+                        <TagCard
                             key={tag._id}
                             data={{ ...tag, icon: <AiFillTag /> }}
                         />
