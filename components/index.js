@@ -7,6 +7,7 @@ import SidebarLayout from './SidebarLayout';
 import Breadcrumbs from './Breadcrumbs';
 import TagCard from './TagCard';
 import UserCard from './UserCard';
+import Accordion from './Accordion';
 
 export {
     Footer,
@@ -18,4 +19,5 @@ export {
     Breadcrumbs,
     TagCard,
     UserCard,
+    Accordion,
 };

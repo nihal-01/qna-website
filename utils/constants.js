@@ -67,3 +67,60 @@ export const navLinks = [
         url: '/faqs',
     },
 ];
+
+export const questions = [
+    {
+        _id: 1,
+        question: 'What topics can I ask about here?',
+        answer: 'Questions that need additional work or that are not a good fit for this site may be put on hold by experienced community members. While questions are on hold, they cannot be answered, but can be edited to make them eligible for reopening.',
+    },
+    {
+        _id: 2,
+        question: 'What types of questions should I avoid asking?',
+        answer: 'Questions that need additional work or that are not a good fit for this site may be put on hold by experienced community members. While questions are on hold, they cannot be answered, but can be edited to make them eligible for reopening.',
+    },
+    {
+        _id: 3,
+        question: 'What does it mean if a question is?',
+        answer: 'Questions that need additional work or that are not a good fit for this site may be put on hold by experienced community members. While questions are on hold, they cannot be answered, but can be edited to make them eligible for reopening.',
+    },
+    {
+        _id: 4,
+        question: 'How to create a Minimal, Complete, and Verifiable example?',
+        answer: 'Questions that need additional work or that are not a good fit for this site may be put on hold by experienced community members. While questions are on hold, they cannot be answered, but can be edited to make them eligible for reopening.',
+    },
+    {
+        _id: 5,
+        question:
+            'What if I disagree with the closure of a question? How to reopen it?',
+        answer: 'Questions that need additional work or that are not a good fit for this site may be put on hold by experienced community members. While questions are on hold, they cannot be answered, but can be edited to make them eligible for reopening.',
+    },
+    {
+        _id: 6,
+        question:
+            'Why do I see a message that my question does not meet standards?',
+        answer: 'Questions that need additional work or that are not a good fit for this site may be put on hold by experienced community members. While questions are on hold, they cannot be answered, but can be edited to make them eligible for reopening.',
+    },
+
+    {
+        _id: 7,
+        question: 'Why are some questions marked as duplicate?',
+        answer: 'Questions that need additional work or that are not a good fit for this site may be put on hold by experienced community members. While questions are on hold, they cannot be answered, but can be edited to make them eligible for reopening.',
+    },
+    {
+        _id: 8,
+        question: 'Why are questions no longer being accepted from my account?',
+        answer: 'Questions that need additional work or that are not a good fit for this site may be put on hold by experienced community members. While questions are on hold, they cannot be answered, but can be edited to make them eligible for reopening.',
+    },
+    {
+        _id: 9,
+        question:
+            'Why is the system asking me to wait a day before asking another?',
+        answer: 'Questions that need additional work or that are not a good fit for this site may be put on hold by experienced community members. While questions are on hold, they cannot be answered, but can be edited to make them eligible for reopening.',
+    },
+    {
+        _id: 10,
+        question: 'How do I ask a good question?',
+        answer: 'Questions that need additional work or that are not a good fit for this site may be put on hold by experienced community members. While questions are on hold, they cannot be answered, but can be edited to make them eligible for reopening.',
+    },
+];
