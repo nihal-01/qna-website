@@ -5,6 +5,7 @@ import { BsSearch } from 'react-icons/bs';
 import { FiLock, FiMenu, FiChevronDown, FiBell } from 'react-icons/fi';
 
 import { logoImg, avatarImg } from '../public/images';
+import { LoginCard, SignupCard } from './';
 
 const styles = {
     wrapper: `w-[100%] h-[70px] lg:h-[100px] bg-primaryColor`,
@@ -38,13 +39,25 @@ const styles = {
     accountDropdownActive: `max-h-[500px]`,
 };
 
-const IS_LOGGEDIN = true;
+const IS_LOGGEDIN = false;
 
 export default function Header() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [isLoginOpen, setIsLoginOpen] = useState(false);
+    const [isSignupOpen, setIsSignupOpen] = useState(true);
+
+    console.log('object');
 
     return (
         <div className={styles.wrapper}>
+            <LoginCard
+                isLoginOpen={isLoginOpen}
+                setIsLoginOpen={setIsLoginOpen}
+            />
+            <SignupCard
+                isSignupOpen={isSignupOpen}
+                setIsSignupOpen={setIsSignupOpen}
+            />
             <div className={styles.container}>
                 <div className={styles.headerLeft}>
                     <button className={styles.menuIcon}>
@@ -163,6 +176,9 @@ export default function Header() {
                                 className={
                                     styles.button + ' ' + styles.signinBtn
                                 }
+                                onClick={() => {
+                                    setIsLoginOpen(true);
+                                }}
                             >
                                 Sign In
                             </button>
@@ -170,9 +186,13 @@ export default function Header() {
                                 className={
                                     styles.button + ' ' + styles.signupBtn
                                 }
+                                onClick={() => {
+                                    setIsSignupOpen(true);
+                                }}
                             >
                                 Sign Up
                             </button>
+                            {/* <SignupCard /> */}
                         </>
                     )}
                 </div>

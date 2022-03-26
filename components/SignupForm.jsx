@@ -65,12 +65,12 @@ export default function SignupForm() {
                     type='checkbox'
                     name=''
                     id='checkbox'
-                    checked
+                    // checked
                     className={styles.checkbox}
                 />
                 <label
                     htmlFor='checkbox'
-                    className='text-grayColor text-[14px] lg:text-base'
+                    className='text-grayColor text-[14px] lg:text-[15px]'
                 >
                     By registering, you agree to the{' '}
                     <span className='text-primaryColor transition-all hover:text-secondaryColor'>

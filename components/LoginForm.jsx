@@ -46,7 +46,7 @@ export default function LoginForm() {
                         type='checkbox'
                         name=''
                         id='checkbox'
-                        checked
+                        // checked
                         className={styles.checkbox}
                     />
                     <label htmlFor='checkbox' className='text-grayColor text-[15px] lg:text-base'>Remember Me!</label>
