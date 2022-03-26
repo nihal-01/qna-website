@@ -3,8 +3,8 @@ import React from 'react';
 import { HiUsers } from 'react-icons/hi';
 
 const styles = {
-    container: `border border-[#e1e3e3]`,
-    section: `relative p-[15px] border-b border-[#e1e3e3] before:content-[''] before:absolute before:left-0 before:top-[50%] before:translate-y-[-50%] before:w-[3px] before:h-[25px] before:bg-secondaryColor`,
+    container: `border border-borderColor`,
+    section: `relative p-[15px] border-b border-borderColor before:content-[''] before:absolute before:left-0 before:top-[50%] before:translate-y-[-50%] before:w-[3px] before:h-[25px] before:bg-secondaryColor`,
     seconLink: `flex items-center gap-[10px] text-primaryColor font-semibold text-base`,
     icon: `text-xl`,
     sectionFollow: `p-[10px] flex items-center gap-[1em]`,

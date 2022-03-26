@@ -49,10 +49,10 @@ const tags = [
 
 const styles = {
     container: `h-[100%] w-[100%]`,
-    header: `block p-[15px] lg:p-[30px] lg:flex items-center justify-between border-b-2 border-[#e1e3e3]`,
+    header: `block p-[15px] lg:p-[30px] lg:flex items-center justify-between border-b-2 border-borderColor`,
     headerRight: `block lg:flex items-center gap-[1em] mt-[10px]`,
-    selectOption: `w-[100%] border border-[#e1e3e3] bg-transparent rounded-sm text-grayColor h-[45px] outline-none lg:w-[110px] px-[10px]`,
-    searchInputWrapper: `border border-[#e1e3e3] h-[45px] rounded-sm flex items-center mt-[10px] lg:mt-0 lg:w-[220px]`,
+    selectOption: `w-[100%] border border-borderColor bg-transparent rounded-sm text-grayColor h-[45px] outline-none lg:w-[110px] px-[10px]`,
+    searchInputWrapper: `border border-borderColor h-[45px] rounded-sm flex items-center mt-[10px] lg:mt-0 lg:w-[220px]`,
     searchInput: `h-[100%] w-[100%] px-[10px] outline-none`,
     searchIcons: `px-[10px] text-grayColor`,
     contentWrapper: `px-[15px] py-[30px] grid gap-[1.5em] lg:p-[30px] lg:grid-cols-2`,

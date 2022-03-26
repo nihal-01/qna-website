@@ -10,6 +10,7 @@ module.exports = {
                 secondaryColor: '#2d6ff7',
                 grayColor: '#7c7f85',
                 paraColor: '#707885',
+                borderColor: '#e1e3e3',
             },
         },
     },

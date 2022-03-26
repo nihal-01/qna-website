@@ -5,7 +5,7 @@ import React from 'react';
 import { avatarImg } from '../public/images';
 
 const styles = {
-    container: `border border-[#e1e3e3] text-center p-[15px] rounded-sm`,
+    container: `border border-borderColor text-center p-[15px] rounded-sm`,
     imgWrapper: `block w-[85px] h-[85px] mx-auto p-[5px] border-2 border-secondaryColor rounded-full hover:border-primaryColor transition-all mb-[5px]`,
     img: `relative w-[100%] h-[100%] rounded-full overflow-hidden`,
     usernameTxt: `text-secondaryColor transition-colors hover:text-primaryColor text-[17px] font-semibold`,
