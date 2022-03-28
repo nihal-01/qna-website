@@ -12,6 +12,7 @@ import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
 import SignupCard from './SignupCard';
 import LoginCard from './LoginCard';
+import AddGroupForm from './AddGroupForm';
 
 export {
     Footer,
@@ -28,4 +29,5 @@ export {
     SignupForm,
     LoginCard,
     SignupCard,
+    AddGroupForm,
 };

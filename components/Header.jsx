@@ -44,7 +44,7 @@ const IS_LOGGEDIN = false;
 export default function Header() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isLoginOpen, setIsLoginOpen] = useState(false);
-    const [isSignupOpen, setIsSignupOpen] = useState(true);
+    const [isSignupOpen, setIsSignupOpen] = useState(false);
 
     console.log('object');
 

@@ -19,7 +19,7 @@ const styles = {
     signInBtn: `grow-0 w-[100%] h-[45px] bg-primaryColor text-white font-semibold`,
     formWrapper: `p-[15px] lg:p-[50px]`,
     closeBtn: `absolute right-0 top-[-37px] text-3xl text-white `,
-    signInTxt: `text-center text-white mt-[10px] font-semibold `,
+    signInTxt: `text-center text-white mt-[10px] font-semibold lg:hidden `,
 };
 
 export default function SignupCard({ isSignupOpen, setIsSignupOpen }) {
