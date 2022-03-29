@@ -4,7 +4,6 @@ import { navLinks } from '../utils/constants';
 
 const styles = {
     container: `my-[30px] sticky top-[30px]`,
-    navList: ``,
     navListItem: `mb-[1.3em]`,
     navListItemLink: `group flex items-center gap-[13px]`,
     navListIcon: `text-xl text-[#26333b] transition-colors group-hover:text-secondaryColor`,
@@ -19,7 +18,7 @@ export default function LeftSidebar() {
                     return (
                         <li key={index} className={styles.navListItem}>
                             <Link href={url}>
-                                <a href='' className={styles.navListItemLink}>
+                                <a href={url} className={styles.navListItemLink}>
                                     <span className={styles.navListIcon}>
                                         {icon}
                                     </span>

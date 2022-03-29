@@ -6,6 +6,7 @@ import { FiLock, FiMenu, FiChevronDown, FiBell } from 'react-icons/fi';
 
 import { logoImg, avatarImg } from '../public/images';
 import { LoginCard, SignupCard } from './';
+import MobileSidebar from './MobileSidebar';
 
 const styles = {
     wrapper: `w-[100%] h-[70px] lg:h-[100px] bg-primaryColor`,
@@ -45,8 +46,7 @@ export default function Header() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isLoginOpen, setIsLoginOpen] = useState(false);
     const [isSignupOpen, setIsSignupOpen] = useState(false);
-
-    console.log('object');
+    const [isSidebarOpen, setIsSIdebarOpen] = useState(false);
 
     return (
         <div className={styles.wrapper}>
@@ -58,9 +58,18 @@ export default function Header() {
                 isSignupOpen={isSignupOpen}
                 setIsSignupOpen={setIsSignupOpen}
             />
+            <MobileSidebar
+                isSidebarOpen={isSidebarOpen}
+                setIsSIdebarOpen={setIsSIdebarOpen}
+            />
             <div className={styles.container}>
                 <div className={styles.headerLeft}>
-                    <button className={styles.menuIcon}>
+                    <button
+                        className={styles.menuIcon}
+                        onClick={() => {
+                            setIsSIdebarOpen(true);
+                        }}
+                    >
                         <FiMenu />
                     </button>
                     <Link href='/'>

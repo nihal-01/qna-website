@@ -117,7 +117,6 @@ export default function AddGroupForm() {
                     </i>
                     <button
                         type='button'
-                        id='group-photo'
                         className={styles.fileInputBrowseBtn}
                     >
                         Browse

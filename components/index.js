@@ -13,6 +13,7 @@ import SignupForm from './SignupForm';
 import SignupCard from './SignupCard';
 import LoginCard from './LoginCard';
 import AddGroupForm from './AddGroupForm';
+import MobileSidebar from './MobileSidebar';
 
 export {
     Footer,
@@ -30,4 +31,5 @@ export {
     LoginCard,
     SignupCard,
     AddGroupForm,
+    MobileSidebar,
 };

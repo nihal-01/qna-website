@@ -20,32 +20,32 @@ export default function SignupForm() {
 
     return (
         <form onSubmit={handleSubmit} className={styles.form}>
-            <label htmlFor='username' className={styles.label}>
+            <label htmlFor='signup-username' className={styles.label}>
                 Username <span className='text-[#f00]'>*</span>
             </label>
             <div className={styles.inputWrapper}>
                 <i className={styles.inputIcon}>
                     <HiUser />
                 </i>
-                <input type='text' id='username' className={styles.input} />
+                <input type='text' id='signup-username' className={styles.input} />
             </div>
-            <label htmlFor='email' className={styles.label}>
+            <label htmlFor='signup-email' className={styles.label}>
                 Email <span className='text-[#f00]'>*</span>
             </label>
             <div className={styles.inputWrapper}>
                 <i className={styles.inputIcon}>
                     <HiMail />
                 </i>
-                <input type='email' id='email' className={styles.input} />
+                <input type='email' id='signup-email' className={styles.input} />
             </div>
-            <label htmlFor='password' className={styles.label}>
+            <label htmlFor='signup-password' className={styles.label}>
                 Password <span className='text-[#f00]'>*</span>
             </label>
             <div className={styles.inputWrapper}>
                 <i className={styles.inputIcon}>
                     <HiLockOpen />
                 </i>
-                <input type='password' id='password' className={styles.input} />
+                <input type='password' id='signup-password' className={styles.input} />
             </div>
             <label htmlFor='cpassword' className={styles.label}>
                 Confirm Password <span className='text-[#f00]'>*</span>
@@ -64,12 +64,12 @@ export default function SignupForm() {
                 <input
                     type='checkbox'
                     name=''
-                    id='checkbox'
+                    id='signup-checkbox'
                     // checked
                     className={styles.checkbox}
                 />
                 <label
-                    htmlFor='checkbox'
+                    htmlFor='signup-checkbox'
                     className='text-grayColor text-[14px] lg:text-[15px]'
                 >
                     By registering, you agree to the{' '}
