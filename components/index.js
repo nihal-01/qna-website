@@ -14,6 +14,7 @@ import SignupCard from './SignupCard';
 import LoginCard from './LoginCard';
 import AddGroupForm from './AddGroupForm';
 import MobileSidebar from './MobileSidebar';
+import HomeHero from './HomeHero';
 
 export {
     Footer,
@@ -32,4 +33,5 @@ export {
     SignupCard,
     AddGroupForm,
     MobileSidebar,
+    HomeHero,
 };
