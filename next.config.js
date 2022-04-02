@@ -5,6 +5,7 @@ const nextConfig = {
         domains: [
             'gansons.com',
             'www.theportlandclinic.com',
+            'media.istockphoto.com',
             'dergreif-online.de',
         ],
     },

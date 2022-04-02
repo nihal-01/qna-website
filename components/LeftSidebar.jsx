@@ -1,16 +1,20 @@
 import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+
 import { navLinks } from '../utils/constants';
 
 const styles = {
     container: `my-[30px] sticky top-[30px]`,
     navListItem: `mb-[1.3em]`,
     navListItemLink: `group flex items-center gap-[13px]`,
-    navListIcon: `text-xl text-[#26333b] transition-colors group-hover:text-secondaryColor`,
+    navListIcon: `text-xl text-[#26333b] transition-colors group-hover:text-secondaryColor `,
     navListText: `text-lg font-semibold text-[#26333b] transition-colors group-hover:text-secondaryColor`,
 };
 
 export default function LeftSidebar() {
+    const router = useRouter();
+
     return (
         <div className={styles.container}>
             <ul>
@@ -18,11 +22,30 @@ export default function LeftSidebar() {
                     return (
                         <li key={index} className={styles.navListItem}>
                             <Link href={url}>
-                                <a href={url} className={styles.navListItemLink}>
-                                    <span className={styles.navListIcon}>
+                                <a
+                                    href={url}
+                                    className={styles.navListItemLink}
+                                >
+                                    <span
+                                        className={
+                                            styles.navListIcon +
+                                            ` ${
+                                                router.pathname === url &&
+                                                'text-[#2d6ff7]'
+                                            }`
+                                        }
+                                    >
                                         {icon}
                                     </span>
-                                    <span className={styles.navListText}>
+                                    <span
+                                        className={
+                                            styles.navListText +
+                                            ` ${
+                                                router.pathname === url &&
+                                                'text-[#2d6ff7]'
+                                            }`
+                                        }
+                                    >
                                         {name}
                                     </span>
                                 </a>

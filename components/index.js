@@ -15,6 +15,9 @@ import LoginCard from './LoginCard';
 import AddGroupForm from './AddGroupForm';
 import MobileSidebar from './MobileSidebar';
 import HomeHero from './HomeHero';
+import PagesTopNavbar from './PagesTopNavbar';
+import Questions from './Questions';
+import SingleQuestion from './SingleQuestion';
 
 export {
     Footer,
@@ -34,4 +37,7 @@ export {
     AddGroupForm,
     MobileSidebar,
     HomeHero,
+    PagesTopNavbar,
+    Questions,
+    SingleQuestion,
 };

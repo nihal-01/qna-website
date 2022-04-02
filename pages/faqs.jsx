@@ -2,7 +2,7 @@ import React from 'react';
 import { BsInfo } from 'react-icons/bs';
 
 import { Accordion, Breadcrumbs, SidebarLayout } from '../components';
-import { questions } from '../utils/constants';
+import { faqQuestions } from '../utils/constants';
 
 const styles = {
     container: `h-[100%] w-[100%]`,
@@ -33,7 +33,7 @@ export default function Faqs() {
                     {" "}<span className='text-secondaryColor cursor-pointer transition-all hover:text-[#000]'>info@qna.com</span>
                 </p>
                 <div>
-                    {questions.map((question) => {
+                    {faqQuestions.map((question) => {
                         return (
                             <Accordion key={question._id} question={question} />
                         );

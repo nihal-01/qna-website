@@ -10,6 +10,21 @@ import {
 import { BiPoll, BiGlobe, BiHelpCircle } from 'react-icons/bi';
 import { MdRssFeed } from 'react-icons/md';
 
+export const headerNavLinks = [
+    {
+        name: 'Home',
+        url: '/',
+    },
+    {
+        name: 'About Us',
+        url: '/about',
+    },
+    {
+        name: 'Contact Us',
+        url: '/contact',
+    },
+];
+
 export const navLinks = [
     {
         icon: <BsHouseFill />,
@@ -19,12 +34,12 @@ export const navLinks = [
     {
         icon: <MdRssFeed />,
         name: 'Feed',
-        url: '/',
+        url: '/feed',
     },
     {
         icon: <BsPersonFill />,
         name: 'User Profile',
-        url: '/',
+        url: '/user-profile',
     },
     {
         icon: <BsFolderFill />,
@@ -68,7 +83,7 @@ export const navLinks = [
     },
 ];
 
-export const questions = [
+export const faqQuestions = [
     {
         _id: 1,
         question: 'What topics can I ask about here?',

@@ -1,10 +1,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { BsSearch } from 'react-icons/bs';
 import { FiLock, FiMenu, FiChevronDown, FiBell } from 'react-icons/fi';
 
 import { logoImg, avatarImg } from '../public/images';
+import { headerNavLinks } from '../utils/constants';
 import { LoginCard, SignupCard } from './';
 import MobileSidebar from './MobileSidebar';
 
@@ -48,6 +50,8 @@ export default function Header() {
     const [isSignupOpen, setIsSignupOpen] = useState(false);
     const [isSidebarOpen, setIsSIdebarOpen] = useState(false);
 
+    const router = useRouter();
+
     return (
         <div className={styles.wrapper}>
             <LoginCard
@@ -86,21 +90,22 @@ export default function Header() {
                 </div>
                 <nav className={styles.navbar}>
                     <ul className={styles.navList}>
-                        <li
-                            className={
-                                styles.navListItem +
-                                ' ' +
-                                styles.navListItemActive
-                            }
-                        >
-                            <Link href='/about'>Home</Link>
-                        </li>
-                        <li className={styles.navListItem}>
-                            <Link href='/about'>About</Link>
-                        </li>
-                        <li className={styles.navListItem}>
-                            <Link href='/about'>Contact</Link>
-                        </li>
+                        {headerNavLinks.map(({ name, url }, index) => {
+                            return (
+                                <li
+                                    key={index}
+                                    className={
+                                        styles.navListItem +
+                                        ` ${
+                                            router.pathname === url &&
+                                            styles.navListItemActive
+                                        }`
+                                    }
+                                >
+                                    <Link href={url}>{name}</Link>
+                                </li>
+                            );
+                        })}
                     </ul>
                     <form className={styles.searchWrapper}>
                         <input
