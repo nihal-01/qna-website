@@ -16,7 +16,7 @@ import AddGroupForm from './AddGroupForm';
 import MobileSidebar from './MobileSidebar';
 import HomeHero from './HomeHero';
 import PagesTopNavbar from './PagesTopNavbar';
-import Questions from './Questions';
+import QuestionsList from './QuestionsList';
 import SingleQuestion from './SingleQuestion';
 
 export {
@@ -38,6 +38,6 @@ export {
     MobileSidebar,
     HomeHero,
     PagesTopNavbar,
-    Questions,
+    QuestionsList,
     SingleQuestion,
 };

@@ -32,6 +32,7 @@ const questions = [
             fullName: `John Deo`,
             avatar: `https://media.istockphoto.com/photos/smiling-man-outdoors-in-the-city-picture-id1179420343?k=20&m=1179420343&s=612x612&w=0&h=G2UGMVSzAXGAQs3pFZpvWlHNRAzwPIWIVtSOxZHsEuc=`,
             badge: 'Beginner',
+            isVerified: true,
         },
         likes: 118,
         createdAt: '2022-04-02T03:44:23.700Z',
@@ -111,7 +112,7 @@ const questions = [
     },
 ];
 
-export default function Questions() {
+export default function QuestionsList() {
     return (
         <div>
             {questions.map((question) => {

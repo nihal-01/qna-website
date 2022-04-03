@@ -5,6 +5,7 @@ import {
     BsFillTriangleFill,
     BsFillChatLeftFill,
     BsEyeFill,
+    BsCheck,
 } from 'react-icons/bs';
 
 import { avatarImg } from '../public/images';
@@ -15,7 +16,7 @@ const styles = {
     avatarWrapper: `w-[50px] h-[50px] rounded-full p-[4px] border-2 border-secondaryColor lg:row-span-2 lg:w-[55px] lg:h-[55px]`,
     avatarImg: `relative w-[100%] h-[100%] rounded-full overflow-hidden`,
     infoWrapper: `flex items-center gap-[20px]`,
-    voteWrapper: `text-center lg:w-[110px]`,
+    voteWrapper: `text-center lg:w-[55px] lg:min-w-[55px]`,
     voteBtnUp: `text-[#677075] flex mx-auto transition-all hover:text-[#000] lg:text-[17px]`,
     voteBtnDown: `text-[#677075] flex mx-auto rotate-180 transition-all hover:text-[#000] lg:text-[17px]`,
     voteCount: `text-[#677075] text-lg py-[5px] font-semibold lg:text-[22px] lg:py-[10px]`,
@@ -25,7 +26,7 @@ const styles = {
     askedDate: `text-grayColor text-sm lg:ml-[12px]`,
     category: `text-grayColor text-sm capitalize`,
     titleWrapper: `col-span-2 mb-[0.6em] lg:col-span-1 lg:mb-[1em] lg:mt-[8px]`,
-    title: `text-primaryColor font-semibold text-lg transition-all hover:text-secondaryColor lg:text-[22px]`,
+    title: `text-primaryColor font-semibold text-lg transition-all lg:text-[22px]`,
     body: `lg:flex gap-[20px]`,
     desc: `text-grayColor text-base leading-[28px] mb-[1.2em] lg:text-[18px] lg:leading-[33px] lg:mb-[1.5em]`,
     tags: `flex items-center gap-[6px] mb-[12px] lg:mb-[1.5em]`,
@@ -34,6 +35,7 @@ const styles = {
     answersBox: `inline-block text-[#26aa6c] border border-[#26aa6c] py-[5px] px-[10px] flex items-center gap-[8px] rounded-sm text-sm lg:text-base`,
     viewsBox: `inline-block text-grayColor border border-grayColor py-[5px] px-[10px] flex items-center gap-[8px] rounded-sm text-sm lg:text-base`,
     answerBtn: `inline-block bg-primaryColor text-white py-[6px] px-[15px] font-semibold text-sm rounded-sm transition-all hover:bg-secondaryColor lg:text-base`,
+    verified: `inline-block bg-secondaryColor rounded-full text-white ml-[5px] text-base w-[15px] h-[15px] lg:w-[18px] lg:h-[18px] lg:text-[16px]`,
 };
 
 export default function SingleQuestion({
@@ -48,6 +50,7 @@ export default function SingleQuestion({
     tags,
     answers,
     views,
+    isFullVisible,
 }) {
     return (
         <div className={styles.container}>
@@ -98,6 +101,13 @@ export default function SingleQuestion({
                                 </a>
                             </Link>
                         )}
+                        {user?.isVerified && (
+                            <span className={styles.verified}>
+                                <span className='flex h-[100%] w-[100%] items-center justify-center'>
+                                    <BsCheck />
+                                </span>
+                            </span>
+                        )}
                         {user?.badge && (
                             <span className={styles.badge}>{user.badge}</span>
                         )}
@@ -118,8 +128,17 @@ export default function SingleQuestion({
                     </div>
                 </div>
                 <div className={styles.titleWrapper}>
-                    <h2 className={styles.title}>
-                        <Link href={'/'}>{question}</Link>
+                    <h2
+                        className={
+                            styles.title +
+                            ` ${!isFullVisible && 'hover:text-secondaryColor'}`
+                        }
+                    >
+                        {isFullVisible ? (
+                            question
+                        ) : (
+                            <Link href={'/'}>{question}</Link>
+                        )}
                     </h2>
                 </div>
             </div>
@@ -141,8 +160,10 @@ export default function SingleQuestion({
                 </ul>
                 <div>
                     <p className={styles.desc}>
-                        {description.slice(0, 220)}{' '}
-                        {description.length > 220 && '...'}
+                        {!isFullVisible
+                            ? description.slice(0, 220) +
+                              (description.length > 220 && ' ...')
+                            : description}
                     </p>
                     {tags && (
                         <ul className={styles.tags}>
@@ -169,11 +190,13 @@ export default function SingleQuestion({
                                 <BsEyeFill /> 12k views
                             </button>
                         </div>
-                        <Link href={'/'}>
-                            <a href={'/'} className={styles.answerBtn}>
-                                Answer
-                            </a>
-                        </Link>
+                        {!isFullVisible && (
+                            <Link href={'/'}>
+                                <a href={'/'} className={styles.answerBtn}>
+                                    Answer
+                                </a>
+                            </Link>
+                        )}
                     </div>
                 </div>
             </div>
