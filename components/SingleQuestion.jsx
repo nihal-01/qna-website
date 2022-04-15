@@ -6,7 +6,17 @@ import {
     BsFillChatLeftFill,
     BsEyeFill,
     BsCheck,
+    BsPlus,
+    BsStar,
+    BsExclamationTriangle,
+    BsShareFill,
 } from 'react-icons/bs';
+import {
+    FaFacebookF,
+    FaLinkedinIn,
+    FaTwitter,
+    FaWhatsapp,
+} from 'react-icons/fa';
 
 import { avatarImg } from '../public/images';
 
@@ -14,7 +24,7 @@ const styles = {
     container: `px-[15px] py-[15px] lg:p-[30px] border-b border-borderColor`,
     header: `grid grid-cols-[auto_1fr] gap-[20px] items-center lg:items-start lg:gap-0 lg:gap-x-[20px]`,
     avatarWrapper: `w-[50px] h-[50px] rounded-full p-[4px] border-2 border-secondaryColor lg:row-span-2 lg:w-[55px] lg:h-[55px]`,
-    avatarImg: `relative w-[100%] h-[100%] rounded-full overflow-hidden`,
+    avatarImg: `relative inline-block w-[100%] h-[100%] w-[100%] h-[100%] rounded-full overflow-hidden`,
     infoWrapper: `flex items-center gap-[20px]`,
     voteWrapper: `text-center lg:w-[55px] lg:min-w-[55px]`,
     voteBtnUp: `text-[#677075] flex mx-auto transition-all hover:text-[#000] lg:text-[17px]`,
@@ -26,16 +36,22 @@ const styles = {
     askedDate: `text-grayColor text-sm lg:ml-[12px]`,
     category: `text-grayColor text-sm capitalize`,
     titleWrapper: `col-span-2 mb-[0.6em] lg:col-span-1 lg:mb-[1em] lg:mt-[8px]`,
-    title: `text-primaryColor font-semibold text-lg transition-all lg:text-[22px]`,
-    body: `lg:flex gap-[20px]`,
-    desc: `text-grayColor text-base leading-[28px] mb-[1.2em] lg:text-[18px] lg:leading-[33px] lg:mb-[1.5em]`,
-    tags: `flex items-center gap-[6px] mb-[12px] lg:mb-[1.5em]`,
+    title: `text-primaryColor font-semibold text-lg transition-all lg:text-[22px] lg:leading-normal`,
+    body: `lg:flex gap-[20px] `,
+    desc: `text-base leading-[28px] mb-[1.2em] lg:text-[18px] lg:leading-loose lg:mb-[2em]`,
+    tags: `flex items-center gap-[6px] mb-[1.2em] lg:mb-[2em]`,
     singleTag: `border border-borderColor rounded-sm text-grayColor text-sm py-[2px] px-[10px] cursor-pointer transition-all hover:bg-secondaryColor hover:text-white rounded-sm lg:text-[15px]`,
     articleFooter: `bg-[#f5f5f5] p-[10px] flex items-center gap-[12px] flex-wrap lg:p-[20px]`,
-    answersBox: `inline-block text-[#26aa6c] border border-[#26aa6c] py-[5px] px-[10px] flex items-center gap-[8px] rounded-sm text-sm lg:text-base`,
-    viewsBox: `inline-block text-grayColor border border-grayColor py-[5px] px-[10px] flex items-center gap-[8px] rounded-sm text-sm lg:text-base`,
+    answersBox: `inline-block text-[#26aa6c] border border-[#26aa6c] bg-white py-[5px] px-[10px] flex items-center gap-[8px] rounded-sm text-sm lg:text-base`,
+    footerBtn: `inline-block text-grayColor border border-[#d9dadb] bg-white py-[5px] px-[10px] flex items-center gap-[8px] rounded-sm text-sm lg:text-base`,
     answerBtn: `inline-block bg-primaryColor text-white py-[6px] px-[15px] font-semibold text-sm rounded-sm transition-all hover:bg-secondaryColor lg:text-base`,
     verified: `inline-block bg-secondaryColor rounded-full text-white ml-[5px] text-base w-[15px] h-[15px] lg:w-[18px] lg:h-[18px] lg:text-[16px]`,
+    socialWrapper: `pt-[15px] lg:pt-[30px] flex items-center justify-between flex-wrap gap-[1em]`,
+    report: `flex items-center gap-[7px] text-[#474e7b] text-sm transition-all hover:text-secondaryColor cursor-pointer lg:text-[15px]`,
+    socialIconsWrapper: `flex items-center gap-[10px] flex-wrap lg:gap-[1em]`,
+    shareIcon: `flex items-center gap-[8px] text-[#707885] text-sm lg:text-[15px]`,
+    socilaIconsList: `flex items-center gap-[10px]`,
+    socialIcon: `w-[30px] h-[30px] rounded-sm text-base flex items-center justify-center text-white lg:w-[35px] lg:h-[35px] lg:text-[20px] transition-all hover:bg-primaryColor cursor-pointer`,
 };
 
 export default function SingleQuestion({
@@ -56,18 +72,16 @@ export default function SingleQuestion({
         <div className={styles.container}>
             <div className={styles.header}>
                 <div className={styles.avatarWrapper}>
-                    <div className={styles.avatarImg}>
-                        <Link href={'/'}>
-                            <a href=''>
-                                <Image
-                                    src={user?.avatar || avatarImg}
-                                    alt=''
-                                    layout='fill'
-                                    objectFit='cover'
-                                />
-                            </a>
-                        </Link>
-                    </div>
+                    <Link href={'/'}>
+                        <a href='' className={styles.avatarImg}>
+                            <Image
+                                src={user?.avatar || avatarImg}
+                                alt=''
+                                layout='fill'
+                                objectFit='cover'
+                            />
+                        </a>
+                    </Link>
                 </div>
                 <div className={styles.infoWrapper}>
                     <ul className={styles.voteWrapper + ` lg:hidden`}>
@@ -142,7 +156,14 @@ export default function SingleQuestion({
                     </h2>
                 </div>
             </div>
-            <div className={styles.body}>
+            <div
+                className={
+                    styles.body +
+                    ` ${
+                        isFullVisible && 'border-b border-borderColor pb-[40px]'
+                    }`
+                }
+            >
                 <ul className={styles.voteWrapper + ` hidden lg:block`}>
                     <li>
                         <button className={styles.voteBtnUp}>
@@ -159,7 +180,16 @@ export default function SingleQuestion({
                     </li>
                 </ul>
                 <div>
-                    <p className={styles.desc}>
+                    <p
+                        className={
+                            styles.desc +
+                            ` ${
+                                isFullVisible
+                                    ? ' text-primaryColor'
+                                    : ' text-grayColor'
+                            }`
+                        }
+                    >
                         {!isFullVisible
                             ? description.slice(0, 220) +
                               (description.length > 220 && ' ...')
@@ -185,8 +215,8 @@ export default function SingleQuestion({
                                 <BsFillChatLeftFill /> 3 Answers
                             </a>
                         </Link>
-                        <div className='lg:grow'>
-                            <button className={styles.viewsBox}>
+                        <div className={`${!isFullVisible && ' lg:grow'}`}>
+                            <button className={styles.footerBtn}>
                                 <BsEyeFill /> 12k views
                             </button>
                         </div>
@@ -197,9 +227,53 @@ export default function SingleQuestion({
                                 </a>
                             </Link>
                         )}
+                        {isFullVisible && (
+                            <>
+                                <button className={styles.footerBtn}>
+                                    <BsPlus /> 8 Followers
+                                </button>
+                                <button className={styles.footerBtn}>
+                                    <BsStar /> 3
+                                </button>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>
+            {isFullVisible && (
+                <div className={styles.socialWrapper}>
+                    <div className={styles.report}>
+                        <BsExclamationTriangle /> Report
+                    </div>
+                    <div className={styles.socialIconsWrapper}>
+                        <span className={styles.shareIcon}>
+                            <BsShareFill /> Share
+                        </span>
+                        <ul className={styles.socilaIconsList}>
+                            <li className={styles.socialIcon + ' bg-[#4267B2]'}>
+                                <a href='https://google.com' target='blank'>
+                                    <FaFacebookF />
+                                </a>
+                            </li>
+                            <li className={styles.socialIcon + ' bg-[#00acee]'}>
+                                <a href='https://google.com' target='blank'>
+                                    <FaTwitter />
+                                </a>
+                            </li>
+                            <li className={styles.socialIcon + ' bg-[#0e76a8]'}>
+                                <a href='https://google.com' target='blank'>
+                                    <FaLinkedinIn />
+                                </a>
+                            </li>
+                            <li className={styles.socialIcon + ' bg-[#25D366]'}>
+                                <a href='https://google.com' target='blank'>
+                                    <FaWhatsapp />
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -3,7 +3,7 @@ import React from 'react';
 import { LeftSidebar, RightSidebar } from '.';
 
 const styles = {
-    container: `relative w-[100%] max-w-[750px] mx-auto lg:max-w-[1500px] overflow-hidden lg:px-[30px] lg:flex xl:grid lg:gap-[20px] `,
+    container: `relative w-[100%] max-w-[750px] mx-auto lg:max-w-[1500px] lg:px-[30px] lg:flex xl:grid lg:gap-[20px] `,
     leftSidebar: `hidden lg:block lg:flex-[25%]`,
     rightSidebar: `hidden xl:block border-x border-[#e4e5e6]`,
     mainContent: `w-[100%] border-x border-[#e4e5e6] bg-white`,

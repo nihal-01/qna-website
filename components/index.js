@@ -18,6 +18,7 @@ import HomeHero from './HomeHero';
 import PagesTopNavbar from './PagesTopNavbar';
 import QuestionsList from './QuestionsList';
 import SingleQuestion from './SingleQuestion';
+import SingleAnswer from './SingleAnswer';
 
 export {
     Footer,
@@ -40,4 +41,5 @@ export {
     PagesTopNavbar,
     QuestionsList,
     SingleQuestion,
+    SingleAnswer,
 };
