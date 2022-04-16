@@ -81,9 +81,11 @@ export default function LoginCard({ isLoginOpen, setIsLoginOpen }) {
                             </button>
                         </div>
                     </div>
+
                     <div className={styles.formWrapper}>
                         <LoginForm />
                     </div>
+                    
                     <button
                         className={styles.closeBtn}
                         onClick={() => {

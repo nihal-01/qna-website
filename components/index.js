@@ -19,6 +19,7 @@ import PagesTopNavbar from './PagesTopNavbar';
 import QuestionsList from './QuestionsList';
 import SingleQuestion from './SingleQuestion';
 import SingleAnswer from './SingleAnswer';
+import AskQuestionPopup from './AskQuestionPopup';
 
 export {
     Footer,
@@ -42,4 +43,5 @@ export {
     QuestionsList,
     SingleQuestion,
     SingleAnswer,
+    AskQuestionPopup,
 };

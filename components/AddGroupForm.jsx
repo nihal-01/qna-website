@@ -16,7 +16,7 @@ const styles = {
     cameraIcon: `text-grayColor absolute top-[10px] left-[10px] text-xl`,
     fileInputBrowseBtn: `absolute top-[7px] right-[10px] bg-primaryColor rounded-sm py-[2px] px-[10px] text-white transition-all group-hover:bg-secondaryColor text-[15px] font-semibold`,
     textarea: `w-[100%] h-[150px] border border-borderColor resize-none mt-[5px] rounded-sm outline-none px-[20px] py-[15px]`,
-   submitBtn: `w-[100%] h-[45px] text-white font-semibold bg-secondaryColor transition-all hover:bg-grayColor rounded-sm`
+    submitBtn: `w-[100%] h-[45px] text-white font-semibold bg-secondaryColor transition-all hover:bg-grayColor rounded-sm`,
 };
 
 export default function AddGroupForm() {
@@ -115,10 +115,7 @@ export default function AddGroupForm() {
                     <i className={styles.cameraIcon}>
                         <BsCameraFill />
                     </i>
-                    <button
-                        type='button'
-                        className={styles.fileInputBrowseBtn}
-                    >
+                    <button type='button' className={styles.fileInputBrowseBtn}>
                         Browse
                     </button>
                 </div>
@@ -156,7 +153,9 @@ export default function AddGroupForm() {
                 ></textarea>
             </div>
 
-            <button type='submit' className={styles.submitBtn}>Add Group</button>
+            <button type='submit' className={styles.submitBtn}>
+                Add Group
+            </button>
         </form>
     );
 }

@@ -7,8 +7,7 @@ import { FiLock, FiMenu, FiChevronDown, FiBell } from 'react-icons/fi';
 
 import { logoImg, avatarImg } from '../public/images';
 import { headerNavLinks } from '../utils/constants';
-import { LoginCard, SignupCard } from './';
-import MobileSidebar from './MobileSidebar';
+import { LoginCard, SignupCard, AskQuestionPopup, MobileSidebar } from './';
 
 const styles = {
     wrapper: `w-[100%] h-[70px] lg:h-[100px] bg-primaryColor`,
@@ -66,6 +65,8 @@ export default function Header() {
                 isSidebarOpen={isSidebarOpen}
                 setIsSIdebarOpen={setIsSIdebarOpen}
             />
+            <AskQuestionPopup />
+
             <div className={styles.container}>
                 <div className={styles.headerLeft}>
                     <button
