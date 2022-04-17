@@ -6,7 +6,7 @@ const styles = {
     formControl: `mb-[1.5em]`,
     label: `text-grayColor text-[14px] lg:text-base`,
     inputWrapper: `border border-borderColor flex items-center rounded-sm h-[45px] mt-[5px]`,
-    input: `w-[100%] outline-none `,
+    input: `w-[100%] h-[100%] outline-none `,
     icon: `text-grayColor text-xl mx-[10px]`,
     radioContainer: `flex items-center gap-[1em] mt-[5px]`,
     radioInputWrapper: `flex items-center gap-[0.7em]`,

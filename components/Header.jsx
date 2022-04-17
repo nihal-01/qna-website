@@ -65,7 +65,7 @@ export default function Header() {
                 isSidebarOpen={isSidebarOpen}
                 setIsSIdebarOpen={setIsSIdebarOpen}
             />
-            <AskQuestionPopup />
+            {/* <AskQuestionPopup /> */}
 
             <div className={styles.container}>
                 <div className={styles.headerLeft}>

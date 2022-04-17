@@ -17,11 +17,11 @@ export const headerNavLinks = [
     },
     {
         name: 'About Us',
-        url: '/about',
+        url: '/about-us',
     },
     {
         name: 'Contact Us',
-        url: '/contact',
+        url: '/contact-us',
     },
 ];
 

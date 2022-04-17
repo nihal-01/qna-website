@@ -29,6 +29,7 @@ export default function SignupForm() {
                 </i>
                 <input type='text' id='signup-username' className={styles.input} />
             </div>
+
             <label htmlFor='signup-email' className={styles.label}>
                 Email <span className='text-[#f00]'>*</span>
             </label>
@@ -38,6 +39,7 @@ export default function SignupForm() {
                 </i>
                 <input type='email' id='signup-email' className={styles.input} />
             </div>
+
             <label htmlFor='signup-password' className={styles.label}>
                 Password <span className='text-[#f00]'>*</span>
             </label>
@@ -47,6 +49,7 @@ export default function SignupForm() {
                 </i>
                 <input type='password' id='signup-password' className={styles.input} />
             </div>
+
             <label htmlFor='cpassword' className={styles.label}>
                 Confirm Password <span className='text-[#f00]'>*</span>
             </label>
@@ -60,6 +63,7 @@ export default function SignupForm() {
                     className={styles.input}
                 />
             </div>
+
             <div className={styles.checkboxWrapper}>
                 <input
                     type='checkbox'
@@ -83,6 +87,7 @@ export default function SignupForm() {
                     .<span className='text-[#f00]'>*</span>
                 </label>
             </div>
+            
             <input type='submit' name='submit' className={styles.submitBtn} />
         </form>
     );

@@ -5,7 +5,6 @@ import { AiFillTag } from 'react-icons/ai';
 import { MdClose, MdOutlineChatBubble } from 'react-icons/md';
 
 const styles = {
-    // container: `absolute top-0 left-0 bottom-0 right-0 bg-[#000b] z-20 p-[15px] flex items-start justify-center`,
     overlay: `fixed inset-0 bg-[#000b] z-20`,
     container: `absolute top-[3em] left-[50%] translate-x-[-50%] z-20 w-[100%] min-h-fit max-w-[850px] p-[15px] `,
     formWrapper: `relative w-[100%] h-[100%] bg-white p-[30px] rounded-sm`,

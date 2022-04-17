@@ -65,7 +65,7 @@ const styles = {
     mainBtn: `h-[45px] lg:h-[47px] bg-secondaryColor w-[100%] text-white font-bold rounded-sm lg:text-[17px] transition-all hover:bg-grayColor`,
     answersHeader: `pt-[15px] md:pt-[30px] px-[15px] lg:px-[30px] md:flex md:justify-between md:flex-wrap border-b border-borderColor bg-[#f9f9f9]`,
     answersHeaderTitle: `pb-[15px] md:pb-[30px] text-primaryColor font-bold text-[15px] md:text-[17px]`,
-    answersTabsList: `flex items-center h-[100%] relative top-[1px]`,
+    answersTabsList: `flex items-center flex-wrap h-[100%] relative top-[1px]`,
     answersTabsListItem: `border bg-white flex items-center justify-center h-[47px] md:h-[100%] px-[14px] text-grayColor cursor-pointer transition-all hover:text-secondaryColor text-[15px] md:text-base`,
     activeTab: ` border-b-0 text text-[#222] cursor-default hover:text-[#222]`,
 };
