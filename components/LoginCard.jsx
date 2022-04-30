@@ -2,9 +2,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import { MdClose } from 'react-icons/md';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { LoginForm } from '.';
 import { loginImg } from '../public/images';
+import { updateSigninBox, updateSignupBox } from '../redux/slices/layoutSlice';
 
 const styles = {
     container: `fixed inset-0 bg-[#000b] z-20 flex items-center justify-center`,
@@ -23,18 +25,22 @@ const styles = {
     signupTxt: `text-center text-white mt-[10px] font-semibold lg:hidden `,
 };
 
-export default function LoginCard({ isLoginOpen, setIsLoginOpen }) {
+export default function LoginCard() {
+    const { signinBox } = useSelector((state) => state.layout);
+
+    const dispatch = useDispatch();
+
     return (
         <div
             className={
-                styles.container + ` ${isLoginOpen ? 'visible' : 'invisible'}`
+                styles.container + ` ${signinBox ? 'visible' : 'invisible'}`
             }
             id='loginCardContainer'
             onClick={(e) => {
                 if (
                     e.target === document.getElementById('loginCardContainer')
                 ) {
-                    setIsLoginOpen(false);
+                    dispatch(updateSigninBox(false));
                 }
             }}
         >
@@ -43,7 +49,7 @@ export default function LoginCard({ isLoginOpen, setIsLoginOpen }) {
                 id='loginCard'
                 onClick={(e) => {
                     if (e.target === document.getElementById('loginCard')) {
-                        setIsLoginOpen(false);
+                        dispatch(updateSigninBox(false));
                     }
                 }}
             >
@@ -51,7 +57,7 @@ export default function LoginCard({ isLoginOpen, setIsLoginOpen }) {
                     className={
                         styles.card +
                         ` ${
-                            isLoginOpen
+                            signinBox
                                 ? 'opacity-100 translate-y-0'
                                 : 'opacity-0 translate-y-[-50%]'
                         }`
@@ -76,7 +82,13 @@ export default function LoginCard({ isLoginOpen, setIsLoginOpen }) {
                                     questions & connect with other people.
                                 </p>
                             </div>
-                            <button className={styles.signUpBtn}>
+                            <button
+                                className={styles.signUpBtn}
+                                onClick={() => {
+                                    dispatch(updateSigninBox(false));
+                                    dispatch(updateSignupBox(true));
+                                }}
+                            >
                                 Sign Up Here
                             </button>
                         </div>
@@ -85,11 +97,11 @@ export default function LoginCard({ isLoginOpen, setIsLoginOpen }) {
                     <div className={styles.formWrapper}>
                         <LoginForm />
                     </div>
-                    
+
                     <button
                         className={styles.closeBtn}
                         onClick={() => {
-                            setIsLoginOpen(false);
+                            dispatch(updateSigninBox(false));
                         }}
                     >
                         <MdClose />

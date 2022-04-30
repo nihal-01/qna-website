@@ -4,6 +4,8 @@ import { MdClose } from 'react-icons/md';
 
 import { SignupForm } from '.';
 import { loginImg } from '../public/images';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateSigninBox, updateSignupBox } from '../redux/slices/layoutSlice';
 
 const styles = {
     container: `fixed inset-0 bg-[#000b] z-20 flex items-center justify-center`,
@@ -22,18 +24,21 @@ const styles = {
     signInTxt: `text-center text-white mt-[10px] font-semibold lg:hidden `,
 };
 
-export default function SignupCard({ isSignupOpen, setIsSignupOpen }) {
+export default function SignupCard() {
+    const { signupBox } = useSelector((state) => state.layout);
+    const dispacth = useDispatch();
+
     return (
         <div
             className={
-                styles.container + ` ${isSignupOpen ? 'visible' : 'invisible'}`
+                styles.container + ` ${signupBox ? 'visible' : 'invisible'}`
             }
             id='signupCardContainer'
             onClick={(e) => {
                 if (
                     e.target === document.getElementById('signupCardContainer')
                 ) {
-                    setIsSignupOpen(false);
+                    dispacth(updateSignupBox(false));
                 }
             }}
         >
@@ -42,7 +47,7 @@ export default function SignupCard({ isSignupOpen, setIsSignupOpen }) {
                 id='signupCard'
                 onClick={(e) => {
                     if (e.target === document.getElementById('signupCard')) {
-                        setIsSignupOpen(false);
+                        dispacth(updateSignupBox(false));
                     }
                 }}
             >
@@ -50,7 +55,7 @@ export default function SignupCard({ isSignupOpen, setIsSignupOpen }) {
                     className={
                         styles.card +
                         ` ${
-                            isSignupOpen
+                            signupBox
                                 ? 'opacity-100 translate-y-0'
                                 : 'opacity-0 translate-y-[-50%]'
                         }`
@@ -75,7 +80,13 @@ export default function SignupCard({ isSignupOpen, setIsSignupOpen }) {
                                     questions, and connect with other people.
                                 </p>
                             </div>
-                            <button className={styles.signInBtn}>
+                            <button
+                                className={styles.signInBtn}
+                                onClick={() => {
+                                    dispacth(updateSignupBox(false));
+                                    dispacth(updateSigninBox(true));
+                                }}
+                            >
                                 Sign In Here
                             </button>
                         </div>
@@ -86,7 +97,7 @@ export default function SignupCard({ isSignupOpen, setIsSignupOpen }) {
                     <button
                         className={styles.closeBtn}
                         onClick={() => {
-                            setIsSignupOpen(false);
+                            dispacth(updateSignupBox(false));
                         }}
                     >
                         <MdClose />

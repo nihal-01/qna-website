@@ -1,6 +1,12 @@
+import Cookies from 'js-cookie';
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
 import { HiLockClosed, HiUser } from 'react-icons/hi';
+import { useDispatch } from 'react-redux';
+
+import axios from '../axios';
+import { updateSigninBox } from '../redux/slices/layoutSlice';
+import { signUser } from '../redux/slices/userSlice';
 
 const styles = {
     form: ``,
@@ -12,24 +18,64 @@ const styles = {
     bottomFlex: `flex items-center justify-between mt-[20px]`,
     checkboxWrapper: `flex items-center gap-[10px]`,
     checkbox: `w-[16px] h-[16px] text-[#0f0]`,
-    forgotTxt: `text-[14px] lg:text-[15px] text-priamryColor transition-all hover:text-secondaryColor`
+    forgotTxt: `text-[14px] lg:text-[15px] text-priamryColor transition-all hover:text-secondaryColor`,
+    errorMsg: `text-[red] text-[15px] lg:text-base`,
 };
 
 export default function LoginForm() {
-    const handleSubmit = () => {
-        console.log('object');
+    const [user, setUser] = useState({
+        info: '',
+        password: '',
+    });
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const dispacth = useDispatch();
+
+    const handleChange = (e) => {
+        setUser({ ...user, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        try {
+            e.preventDefault();
+            setError('');
+
+            if (!user.info || !user.password) {
+                return setError('* fill required fields');
+            }
+
+            const response = await axios.post('/auth/signin', {
+                ...user,
+            });
+
+            Cookies.set('user-info', JSON.stringify(response.data));
+            dispacth(signUser(response.data));
+            dispacth(updateSigninBox(false));
+        } catch (err) {
+            setError(
+                err.response.data?.error || 'Something went wrong, Try again'
+            );
+        }
     };
 
     return (
         <form onSubmit={handleSubmit} className={styles.form}>
-            <label htmlFor='username' className={styles.label}>
+            <label htmlFor='info' className={styles.label}>
                 Username or email <span className='text-[#f00]'>*</span>
             </label>
             <div className={styles.inputWrapper}>
                 <i className={styles.inputIcon}>
                     <HiUser />
                 </i>
-                <input type='text' id='username' className={styles.input} />
+                <input
+                    type='text'
+                    id='info'
+                    className={styles.input}
+                    name='info'
+                    value={user.info || ''}
+                    onChange={handleChange}
+                />
             </div>
             <label htmlFor='password' className={styles.label}>
                 Password <span className='text-[#f00]'>*</span>
@@ -38,8 +84,18 @@ export default function LoginForm() {
                 <i className={styles.inputIcon}>
                     <HiLockClosed />
                 </i>
-                <input type='password' id='password' className={styles.input} />
+                <input
+                    type='password'
+                    id='password'
+                    className={styles.input}
+                    name='password'
+                    value={user.password || ''}
+                    onChange={handleChange}
+                />
             </div>
+
+            {error && <p className={styles.errorMsg}>{error}</p>}
+
             <div className={styles.bottomFlex}>
                 <div className={styles.checkboxWrapper}>
                     <input
@@ -49,7 +105,12 @@ export default function LoginForm() {
                         // checked
                         className={styles.checkbox}
                     />
-                    <label htmlFor='checkbox' className='text-grayColor text-[15px] lg:text-base'>Remember Me!</label>
+                    <label
+                        htmlFor='checkbox'
+                        className='text-grayColor text-[15px] lg:text-base'
+                    >
+                        Remember Me!
+                    </label>
                 </div>
                 <p className={styles.forgotTxt}>
                     <Link href={'/'}>Forgot Password?</Link>

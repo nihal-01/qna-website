@@ -20,6 +20,8 @@ import QuestionsList from './QuestionsList';
 import SingleQuestion from './SingleQuestion';
 import SingleAnswer from './SingleAnswer';
 import AskQuestionPopup from './AskQuestionPopup';
+import ProfileHero from './ProfileHero';
+import ProfileLayout from './ProfileLayout';
 
 export {
     Footer,
@@ -44,4 +46,6 @@ export {
     SingleQuestion,
     SingleAnswer,
     AskQuestionPopup,
+    ProfileHero,
+    ProfileLayout,
 };

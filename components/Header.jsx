@@ -4,8 +4,10 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { BsSearch } from 'react-icons/bs';
 import { FiLock, FiMenu, FiChevronDown, FiBell } from 'react-icons/fi';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { logoImg, avatarImg } from '../public/images';
+import { updateSigninBox, updateSignupBox } from '../redux/slices/layoutSlice';
 import { headerNavLinks } from '../utils/constants';
 import { LoginCard, SignupCard, AskQuestionPopup, MobileSidebar } from './';
 
@@ -45,22 +47,17 @@ const IS_LOGGEDIN = false;
 
 export default function Header() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [isLoginOpen, setIsLoginOpen] = useState(false);
-    const [isSignupOpen, setIsSignupOpen] = useState(false);
     const [isSidebarOpen, setIsSIdebarOpen] = useState(false);
 
     const router = useRouter();
+    const dispatch = useDispatch();
+
+    const { user } = useSelector((state) => state.user);
 
     return (
         <div className={styles.wrapper}>
-            <LoginCard
-                isLoginOpen={isLoginOpen}
-                setIsLoginOpen={setIsLoginOpen}
-            />
-            <SignupCard
-                isSignupOpen={isSignupOpen}
-                setIsSignupOpen={setIsSignupOpen}
-            />
+            <SignupCard />
+            <LoginCard />
             <MobileSidebar
                 isSidebarOpen={isSidebarOpen}
                 setIsSIdebarOpen={setIsSIdebarOpen}
@@ -120,7 +117,7 @@ export default function Header() {
                     </form>
                 </nav>
                 <div className={styles.headerRight}>
-                    {IS_LOGGEDIN ? (
+                    {user ? (
                         <>
                             <div className={styles.accountWrapper}>
                                 <div
@@ -145,7 +142,7 @@ export default function Header() {
                                                 Welcome
                                             </span>
                                             <div className={styles.accountName}>
-                                                Nihal
+                                                {user?.username}
                                             </div>
                                         </div>
                                     </div>
@@ -192,7 +189,7 @@ export default function Header() {
                                     styles.button + ' ' + styles.signinBtn
                                 }
                                 onClick={() => {
-                                    setIsLoginOpen(true);
+                                    dispatch(updateSigninBox(true));
                                 }}
                             >
                                 Sign In
@@ -202,7 +199,7 @@ export default function Header() {
                                     styles.button + ' ' + styles.signupBtn
                                 }
                                 onClick={() => {
-                                    setIsSignupOpen(true);
+                                    dispatch(updateSignupBox(true));
                                 }}
                             >
                                 Sign Up
