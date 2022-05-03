@@ -1,5 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
+import { updateQuestionBox } from '../redux/slices/layoutSlice';
+import { useDispatch } from 'react-redux';
 
 const styles = {
     container: `bg-white h-[100%]`,
@@ -8,16 +10,19 @@ const styles = {
 };
 
 export default function RightSidebar() {
+    const dispatch = useDispatch();
+
     return (
         <div className={styles.container}>
             <div className={styles.askBtnWrapper}>
-                <Link href='add-question'>
-                    <a href=''>
-                        <button className={styles.askBtn}>
-                            Ask A Question
-                        </button>
-                    </a>
-                </Link>
+                <button
+                    className={styles.askBtn}
+                    onClick={() => {
+                        dispatch(updateQuestionBox(true));
+                    }}
+                >
+                    Ask A Question
+                </button>
             </div>
         </div>
     );

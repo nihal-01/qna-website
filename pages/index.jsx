@@ -5,8 +5,6 @@ import {
     SidebarLayout,
 } from '../components';
 
-const IS_LOGGEDIN = false;
-
 export default function Home() {
     return (
         <div>
@@ -19,7 +17,7 @@ export default function Home() {
 Home.getLayout = function getLayout(page) {
     return (
         <>
-            {!IS_LOGGEDIN && <HomeHero />}
+            <HomeHero />
             <SidebarLayout>{page}</SidebarLayout>
         </>
     );

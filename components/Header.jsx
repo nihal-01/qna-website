@@ -5,10 +5,12 @@ import React, { useState } from 'react';
 import { BsSearch } from 'react-icons/bs';
 import { FiLock, FiMenu, FiChevronDown, FiBell } from 'react-icons/fi';
 import { useDispatch, useSelector } from 'react-redux';
+import axios from '../axios';
 
 import { logoImg, avatarImg } from '../public/images';
 import { updateSigninBox, updateSignupBox } from '../redux/slices/layoutSlice';
-import { headerNavLinks } from '../utils/constants';
+import { logout } from '../redux/slices/userSlice';
+import { dropDownMenu, headerNavLinks } from '../utils/constants';
 import { LoginCard, SignupCard, AskQuestionPopup, MobileSidebar } from './';
 
 const styles = {
@@ -39,11 +41,12 @@ const styles = {
     accountIcons: `flex items-center`,
     accountDropdownIcon: `text-white bg-grayColor rounded-sm`,
     accountBellIcon: `text-grayColor border-l border-grayColor pl-[0.8em] text-[22px]`,
-    accountDropdown: `absolute w-[250px] bg-[#0f0] right-[0] top-[100%] overflow-hidden max-h-[0px] transition-all z-10`,
+    accountDropdown: `absolute w-[250px] bg-white right-[0] top-[100%] overflow-hidden max-h-[0px] transition-all z-10 shadow-lg rounded-sm`,
     accountDropdownActive: `max-h-[500px]`,
+    dropDownList: `p-[10px]`,
+    dropDownItem: `py-[10px] px-[15px]`,
+    dropDownItemTxt: `flex items-center gap-[14px] font-[600] text-primaryColor transition-all hover:text-secondaryColor cursor-pointer`,
 };
-
-const IS_LOGGEDIN = false;
 
 export default function Header() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -54,6 +57,23 @@ export default function Header() {
 
     const { user } = useSelector((state) => state.user);
 
+    const handleLogout = async () => {
+        try {
+            setIsDropdownOpen(false);
+            dispatch(logout());
+            const response = await axios.post(
+                '/auth/signout',
+                {},
+                {
+                    headers: { Authorization: `Bearer ${user?.token}` },
+                }
+            );
+            console.log(response.data);
+        } catch (err) {
+            console.log(err.response.data?.error);
+        }
+    };
+
     return (
         <div className={styles.wrapper}>
             <SignupCard />
@@ -62,7 +82,7 @@ export default function Header() {
                 isSidebarOpen={isSidebarOpen}
                 setIsSIdebarOpen={setIsSIdebarOpen}
             />
-            {/* <AskQuestionPopup /> */}
+            <AskQuestionPopup />
 
             <div className={styles.container}>
                 <div className={styles.headerLeft}>
@@ -161,18 +181,54 @@ export default function Header() {
                                             : styles.accountDropdown
                                     }
                                 >
-                                    <ul>
-                                        <li>Profile Info</li>
-                                        <li>Profile Info</li>
-                                        <li>Profile Info</li>
-                                        <li>Profile Info</li>
-                                        <li>Profile Info</li>
-                                        <li>Profile Info</li>
-                                        <li>Profile Info</li>
-                                        <li>Profile Info</li>
-                                        <li>Profile Info</li>
-                                        <li>Profile Info</li>
-                                        <li>Profile Info</li>
+                                    <ul className={styles.dropDownList}>
+                                        {dropDownMenu.map((item) => {
+                                            const { _id, name, icon, url } =
+                                                item;
+                                            return (
+                                                <li
+                                                    key={_id}
+                                                    className={
+                                                        styles.dropDownItem
+                                                    }
+                                                >
+                                                    {url === '/logout' ? (
+                                                        <span
+                                                            onClick={
+                                                                handleLogout
+                                                            }
+                                                            className={
+                                                                styles.dropDownItemTxt
+                                                            }
+                                                        >
+                                                            <span className='text-[17px]'>
+                                                                {icon}
+                                                            </span>
+                                                            {name}
+                                                        </span>
+                                                    ) : (
+                                                        <Link href={url}>
+                                                            <a
+                                                                href={url}
+                                                                className={
+                                                                    styles.dropDownItemTxt
+                                                                }
+                                                                onClick={() => {
+                                                                    setIsDropdownOpen(
+                                                                        false
+                                                                    );
+                                                                }}
+                                                            >
+                                                                <span className='text-[17px]'>
+                                                                    {icon}
+                                                                </span>
+                                                                {name}
+                                                            </a>
+                                                        </Link>
+                                                    )}
+                                                </li>
+                                            );
+                                        })}
                                     </ul>
                                 </div>
                             </div>
@@ -204,7 +260,6 @@ export default function Header() {
                             >
                                 Sign Up
                             </button>
-                            {/* <SignupCard /> */}
                         </>
                     )}
                 </div>

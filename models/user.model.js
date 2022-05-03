@@ -7,6 +7,7 @@ const userSchema = new Schema({
     username: {
         type: String,
         required: true,
+        lowercase: true,
         minlength: [3, 'Username must be atleast 3 characteres'],
     },
     fname: {
@@ -331,7 +332,6 @@ const userSchema = new Schema({
     },
     token: {
         type: String,
-        required: true,
         trim: true,
     },
 });

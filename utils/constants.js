@@ -6,9 +6,17 @@ import {
     BsGlobe,
     BsBookHalf,
     BsFolderFill,
+    BsPenFill,
 } from 'react-icons/bs';
-import { BiPoll, BiGlobe, BiHelpCircle } from 'react-icons/bi';
+import {
+    BiPoll,
+    BiGlobe,
+    BiHelpCircle,
+    BiUserVoice,
+    BiLogOut,
+} from 'react-icons/bi';
 import { MdRssFeed } from 'react-icons/md';
+import { FiActivity } from 'react-icons/fi';
 
 export const headerNavLinks = [
     {
@@ -137,5 +145,44 @@ export const faqQuestions = [
         _id: 10,
         question: 'How do I ask a good question?',
         answer: 'Questions that need additional work or that are not a good fit for this site may be put on hold by experienced community members. While questions are on hold, they cannot be answered, but can be edited to make them eligible for reopening.',
+    },
+];
+
+export const dropDownMenu = [
+    {
+        _id: 0,
+        name: 'User Profile',
+        icon: <BsPersonFill />,
+        url: '/about-us',
+    },
+    {
+        _id: 1,
+        name: 'Edit Profile',
+        icon: <BsPenFill />,
+        url: '/contact-us',
+    },
+    {
+        _id: 2,
+        name: 'Groups',
+        icon: <BsGlobe />,
+        url: '',
+    },
+    {
+        _id: 3,
+        name: 'Asked Questions',
+        icon: <BiUserVoice />,
+        url: '',
+    },
+    {
+        _id: 4,
+        name: 'Activity Log',
+        icon: <FiActivity />,
+        url: '',
+    },
+    {
+        _id: 5,
+        name: 'Logout',
+        icon: <BiLogOut />,
+        url: '/logout',
     },
 ];

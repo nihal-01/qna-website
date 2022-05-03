@@ -3,10 +3,14 @@ import { IoMdChatbubbles } from 'react-icons/io';
 import { IoFolderOpenSharp } from 'react-icons/io5';
 import { AiFillTag } from 'react-icons/ai';
 import { MdClose, MdOutlineChatBubble } from 'react-icons/md';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateQuestionBox } from '../redux/slices/layoutSlice';
+
+import PollForm from './PollForm';
 
 const styles = {
-    overlay: `fixed inset-0 bg-[#000b] z-20`,
-    container: `absolute top-[3em] left-[50%] translate-x-[-50%] z-20 w-[100%] min-h-fit max-w-[850px] p-[15px] `,
+    overlay: `fixed inset-0 bg-[#000b] z-20 transition-all`,
+    container: `absolute top-[3em] left-[50%] translate-x-[-50%] z-20 w-[100%] min-h-fit max-w-[850px] p-[15px] transition-all `,
     formWrapper: `relative w-[100%] h-[100%] bg-white p-[30px] rounded-sm`,
     formControl: `mb-[1.5em]`,
     label: `text-grayColor text-[14px] lg:text-base`,
@@ -23,13 +27,18 @@ const styles = {
     textarea: `w-[100%] h-[200px] border border-borderColor resize-none mt-[5px] rounded-sm outline-none px-[20px] py-[15px]`,
     checkboxWrapper: `flex items-center gap-[1em] mb-[10px]`,
     pollWrapper: `mb-[1.5em]`,
-    pollInputClose: `bg-[red] text-white rounded-sm text-[14px] hover:bg-primaryColor cursor-pointer p-[1px]`,
-    addMoreBtn: `px-[10px] text-white bg-primaryColor transition-all hover:bg-secondaryColor font-bold py-[10px] rounded-sm mt-[1.5em]`,
 };
 
 export default function AskQuestionPopup() {
     const [tags, setTags] = useState([]);
     const [isPollQuestion, setIsPollQuestion] = useState(false);
+    const [optionsList, setOptionsList] = useState([
+        { option: '' },
+        { option: '' },
+    ]);
+
+    const { questionBox } = useSelector((state) => state.layout);
+    const dispatch = useDispatch();
 
     const addTag = (tag) => {
         if (tags.includes(tag.toLowerCase())) {
@@ -61,18 +70,42 @@ export default function AskQuestionPopup() {
         console.log('submit qstn');
     };
 
-    console.log('ask qstn');
-
     return (
         <div>
-            <div className={styles.overlay}></div>
-            <div className={styles.container}>
+            <div
+                className={
+                    styles.overlay +
+                    ` ${
+                        questionBox
+                            ? ' opacity-100 visible'
+                            : 'opacity-0 invisible'
+                    }`
+                }
+                onClick={() => {
+                    dispatch(updateQuestionBox(false));
+                }}
+            ></div>
+            <div
+                className={
+                    styles.container +
+                    ` ${
+                        questionBox
+                            ? ' opacity-100 visible'
+                            : 'opacity-0 invisible'
+                    }`
+                }
+            >
                 <form
                     action=''
                     className={styles.formWrapper}
                     onSubmit={handleSubmit}
                 >
-                    <button className={styles.closeBtn}>
+                    <button
+                        className={styles.closeBtn}
+                        onClick={() => {
+                            dispatch(updateQuestionBox(false));
+                        }}
+                    >
                         <MdClose />
                     </button>
 
@@ -178,6 +211,7 @@ export default function AskQuestionPopup() {
                                 onChange={(e) => {
                                     setIsPollQuestion(!isPollQuestion);
                                 }}
+                                className='w-[16px] h-[16px]'
                             />
                             <label
                                 htmlFor='isPollQstn'
@@ -189,60 +223,11 @@ export default function AskQuestionPopup() {
                         </div>
 
                         {isPollQuestion && (
-                            <>
-                                <div
-                                    className={
-                                        styles.formControl + ' mb-0 mt-[1em]'
-                                    }
-                                >
-                                    <div className={styles.inputWrapper}>
-                                        <i className={styles.icon}>
-                                            <MdOutlineChatBubble />
-                                        </i>
-                                        <input
-                                            type='text'
-                                            className={styles.input}
-                                        />
-                                        <i
-                                            className={
-                                                styles.icon +
-                                                ` ${styles.pollInputClose}`
-                                            }
-                                        >
-                                            <MdClose />
-                                        </i>
-                                    </div>
-                                </div>
-
-                                <div
-                                    className={
-                                        styles.formControl + ' mb-0 mt-[1.3em]'
-                                    }
-                                >
-                                    <div className={styles.inputWrapper}>
-                                        <i className={styles.icon}>
-                                            <MdOutlineChatBubble />
-                                        </i>
-                                        <input
-                                            type='text'
-                                            className={styles.input}
-                                        />
-                                        <i
-                                            className={
-                                                styles.icon +
-                                                ` ${styles.pollInputClose}`
-                                            }
-                                        >
-                                            <MdClose />
-                                        </i>
-                                    </div>
-                                </div>
-                            </>
+                            <PollForm
+                                optionsList={optionsList}
+                                setOptionsList={setOptionsList}
+                            />
                         )}
-
-                        <button className={styles.addMoreBtn}>
-                            Add More Answers
-                        </button>
                     </div>
 
                     <div className={styles.formControl}>
@@ -259,7 +244,12 @@ export default function AskQuestionPopup() {
                     </div>
 
                     <div className={styles.checkboxWrapper}>
-                        <input type='checkbox' name='' id='isAnonymous' />
+                        <input
+                            type='checkbox'
+                            name=''
+                            id='isAnonymous'
+                            className='w-[15px] h-[15px]'
+                        />
                         <label htmlFor='isAnonymous' className={styles.label}>
                             Ask Anonymously
                         </label>
@@ -270,6 +260,7 @@ export default function AskQuestionPopup() {
                             name=''
                             id='emailSub'
                             defaultChecked
+                            className='w-[15px] h-[15px]'
                         />
                         <label htmlFor='emailSub' className={styles.label}>
                             Get notified by email when someone answers this
@@ -282,6 +273,7 @@ export default function AskQuestionPopup() {
                             name=''
                             id='policy'
                             defaultChecked
+                            className='w-[15px] h-[15px]'
                         />
                         <label htmlFor='policy' className={styles.label}>
                             By asking your question, you agree to the{' '}

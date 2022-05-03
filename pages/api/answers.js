@@ -1,6 +1,7 @@
 import nc from 'next-connect';
 
-import { connectDb, isAuth } from '../../../middlewares';
+import { Answer } from '../../models';
+import { connectDb } from '../../middlewares';
 
 const handler = nc({
     onError: (err, req, res, next) => {
@@ -11,12 +12,18 @@ const handler = nc({
     },
 });
 
-handler.use(connectDb, isAuth);
+handler.use(connectDb);
 
 handler.post(async (req, res) => {
-    req.user.token = undefined;
-    await req.user.save();
-    return res.status(200).json({ message: 'logged out successfully' });
+    const { answer, questionId, author } = req.body;
+    const newAnswer = await Answer({
+        answer,
+        questionId,
+        author,
+    });
+
+    await newAnswer.save();
+    res.status(201).json(newAnswer);
 });
 
 export default handler;

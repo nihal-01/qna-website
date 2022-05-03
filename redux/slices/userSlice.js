@@ -12,9 +12,13 @@ const userSlice = createSlice({
         signUser: (state, action) => {
             state.user = action.payload;
         },
+        logout: (state, action) => {
+            Cookies.set('user-info', '');
+            state.user = '';
+        },
     },
 });
 
-export const { signUser } = userSlice.actions;
+export const { signUser, logout } = userSlice.actions;
 
 export default userSlice.reducer;
