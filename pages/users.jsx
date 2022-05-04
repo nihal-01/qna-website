@@ -1,39 +1,11 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { BsSearch } from 'react-icons/bs';
+import { useDispatch, useSelector } from 'react-redux';
+import axios from '../axios';
 
 import { Breadcrumbs, SidebarLayout } from '../components';
 import { UserCard } from '../components';
-
-const users = [
-    {
-        _id: 1,
-        avatar: 'https://gansons.com/wp-content/uploads/2019/01/person6.jpg',
-        username: 'john',
-        followers: 100,
-        following: true,
-    },
-    {
-        _id: 2,
-        avatar: 'https://www.theportlandclinic.com/wp-content/uploads/2019/07/Person-Curtis_4x5-e1564616444404.jpg',
-        username: 'martin',
-        followers: 100,
-        following: false,
-    },
-    {
-        _id: 3,
-        avatar: 'https://dergreif-online.de/www/wp-content/uploads/2016/07/Timothy_hoch.jpg',
-        username: 'kane',
-        followers: 100,
-        following: true,
-    },
-    {
-        _id: 4,
-        avatar: '',
-        username: 'warner',
-        followers: 120,
-        following: false,
-    },
-];
+import { updateUsers } from '../redux/slices/userSlice';
 
 const styles = {
     container: `h-[100%] w-[100%]`,
@@ -46,7 +18,31 @@ const styles = {
     contentWrapper: `grid gap-[1.5em] px-[15px] py-[30px] lg:p-[30px] lg:grid-cols-2 2xl:grid-cols-3`,
 };
 
-export default function Users() {
+export default function Users(props) {
+    const { user, users } = useSelector((state) => state.user);
+    const dispatch = useDispatch();
+
+    console.log(users);
+
+    const fetchData = useCallback(async () => {
+        try {
+            if (user) {
+                const response = await axios.get(`/users`, {
+                    headers: { Authorization: `Bearer ${user?.token}` },
+                });
+                dispatch(updateUsers(response.data));
+            } else {
+                const response = await axios.get(`/all-users`);
+                dispatch(updateUsers(response.data));
+            }
+        } catch (err) {
+            console.log(err.response.data);
+        }
+    }, [user, dispatch]);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
     return (
         <div className={styles.container}>
             <div className={styles.header}>
@@ -71,7 +67,7 @@ export default function Users() {
             </div>
             <div className={styles.contentWrapper}>
                 {users.map((user) => {
-                    return <UserCard key={user._id} user={user} />;
+                    return <UserCard key={user._id} {...user} />;
                 })}
             </div>
         </div>

@@ -1,4 +1,4 @@
-import { Provider } from 'react-redux';
+import { Provider, useDispatch } from 'react-redux';
 
 import { Layout } from '../components';
 import '../styles/globals.css';

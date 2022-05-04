@@ -1,7 +1,9 @@
 import React from 'react';
 import Image from 'next/image';
 import { heroImg } from '../public/images';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { updateSignupBox } from '../redux/slices/layoutSlice';
 
 const styles = {
     container: `relative w-[100%] h-[320px] lg:h-[280px] max-h-max overflow-hidden`,
@@ -15,6 +17,7 @@ const styles = {
 
 export default function HomeHero() {
     const { user } = useSelector((state) => state.user);
+    const dispatch = useDispatch();
 
     return (
         <div>
@@ -44,7 +47,12 @@ export default function HomeHero() {
                                     share their knowledge.
                                 </p>
                             </div>
-                            <button className={styles.btn}>
+                            <button
+                                className={styles.btn}
+                                onClick={() => {
+                                    dispatch(updateSignupBox(true));
+                                }}
+                            >
                                 Create A New Account
                             </button>
                         </div>

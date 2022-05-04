@@ -1,8 +1,11 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import axios from '../axios';
 
 import { avatarImg } from '../public/images';
+import { updateIsFollowing } from '../redux/slices/userSlice';
 
 const styles = {
     container: `border border-borderColor text-center p-[15px] rounded-sm`,
@@ -15,14 +18,49 @@ const styles = {
     answersTxt: `text-[15px] text-primaryColor mt-[5px]`,
 };
 
-export default function UserCard({ user }) {
+export default function UserCard({
+    _id,
+    username,
+    followers,
+    avatar,
+    numOfQuestions,
+    numOfAnswers,
+    isFollowing,
+}) {
+    const { user } = useSelector((state) => state.user);
+    const dispatch = useDispatch();
+
+    const handleFollow = async () => {
+        try {
+            if (isFollowing) {
+                const response = await axios.patch(
+                    `http://localhost:3000/api/users/unfollow/${_id}`,
+                    {},
+                    { headers: { Authorization: `Bearer ${user?.token}` } }
+                );
+                console.log(response.data);
+                dispatch(updateIsFollowing({ _id, isFollowing: false }));
+            } else {
+                const response = await axios.patch(
+                    `http://localhost:3000/api/users/follow/${_id}`,
+                    {},
+                    { headers: { Authorization: `Bearer ${user?.token}` } }
+                );
+                console.log(response.data);
+                dispatch(updateIsFollowing({ _id, isFollowing: true }));
+            }
+        } catch (err) {
+            console.log(err.response);
+        }
+    };
+
     return (
         <div className={styles.container}>
             <Link href='/'>
                 <a href='' className={styles.imgWrapper}>
                     <div className={styles.img}>
                         <Image
-                            src={user?.avatar || avatarImg}
+                            src={avatar || avatarImg}
                             alt=''
                             layout='fill'
                             objectFit='cover'
@@ -33,18 +71,19 @@ export default function UserCard({ user }) {
             <h4>
                 <Link href={'/'}>
                     <a href='' className={styles.usernameTxt}>
-                        {user.username}
+                        {username}
                     </a>
                 </Link>
             </h4>
-            <p className={styles.followersTxt}>{user.followers} followers</p>
-            <p className={styles.answersTxt}>0 Questions | 12 Answers</p>
+            <p className={styles.followersTxt}>{followers} followers</p>
+            <p className={styles.answersTxt}>
+                {numOfQuestions} Questions | {numOfAnswers} Answers
+            </p>
             <button
-                className={
-                    user.following ? styles.unfollowBtn : styles.followBtn
-                }
+                className={isFollowing ? styles.unfollowBtn : styles.followBtn}
+                onClick={handleFollow}
             >
-                {user.following ? 'Unfollow' : 'Follow'}
+                {isFollowing ? 'Unfollow' : 'Follow'}
             </button>
         </div>
     );

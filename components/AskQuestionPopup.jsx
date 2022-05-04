@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateQuestionBox } from '../redux/slices/layoutSlice';
 
 import PollForm from './PollForm';
+import axios from '../axios';
 
 const styles = {
     overlay: `fixed inset-0 bg-[#000b] z-20 transition-all`,
@@ -17,7 +18,7 @@ const styles = {
     inputWrapper: `border border-borderColor flex items-center rounded-sm h-[45px] mt-[5px]`,
     input: `w-[100%] h-[100%] outline-none `,
     icon: `text-grayColor text-xl mx-[10px]`,
-    select: `bg-transparent w-[100%] h-[100%] outline-none text-grayColor`,
+    select: `bg-transparent w-[100%] h-[100%] outline-none text-grayColor capitalize`,
     spanTxt: `inline-block text-[#707885] mt-[5px] text-[15px]`,
     closeBtn: `absolute right-0 top-[-37px] text-3xl text-white `,
     submitBtn: `w-[100%] h-[45px] text-white font-semibold bg-secondaryColor transition-all hover:bg-grayColor rounded-sm mt-[1em]`,
@@ -27,6 +28,7 @@ const styles = {
     textarea: `w-[100%] h-[200px] border border-borderColor resize-none mt-[5px] rounded-sm outline-none px-[20px] py-[15px]`,
     checkboxWrapper: `flex items-center gap-[1em] mb-[10px]`,
     pollWrapper: `mb-[1.5em]`,
+    errorTxt: `text-[red] text-[15px] lg:text-base`,
 };
 
 export default function AskQuestionPopup() {
@@ -36,8 +38,23 @@ export default function AskQuestionPopup() {
         { option: '' },
         { option: '' },
     ]);
+    const [question, setQuestion] = useState({
+        title: '',
+        category: '',
+        details: '',
+    });
+    const [checkBox, setCheckBox] = useState({
+        isAnonymous: false,
+        notifyEmail: true,
+        policy: true,
+    });
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState('');
 
     const { questionBox } = useSelector((state) => state.layout);
+    const { categories } = useSelector((state) => state.question);
+    const { user } = useSelector((state) => state.user);
+
     const dispatch = useDispatch();
 
     const addTag = (tag) => {
@@ -65,9 +82,49 @@ export default function AskQuestionPopup() {
         }
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log('submit qstn');
+    const handleChange = (e) => {
+        setQuestion({ ...question, [e.target.name]: e.target.value });
+    };
+
+    const handleChangeCheckBox = (e) => {
+        setCheckBox({ ...checkBox, [e.target.name]: e.target.checked });
+    };
+
+    const handleSubmit = async (e) => {
+        try {
+            e.preventDefault();
+            setError('');
+
+            if (!question.title || !question.category || !question.details) {
+                return setError('* Fill all required fields');
+            }
+
+            if (!checkBox.policy) {
+                return setError('You should agree Terms and Conditions');
+            }
+
+            const filteredOptionsList = optionsList.filter((singleOption) => {
+                return singleOption.option !== '';
+            });
+
+            const response = await axios.post(
+                '/questions',
+                {
+                    ...question,
+                    tags,
+                    poll: filteredOptionsList,
+                    ...checkBox,
+                },
+                {
+                    headers: { Authorization: `Bearer ${user?.token}` },
+                }
+            );
+            console.log(response.data);
+        } catch (err) {
+            setError(
+                err.response?.data?.error || 'Something went wrong, Try again'
+            );
+        }
     };
 
     return (
@@ -118,7 +175,13 @@ export default function AskQuestionPopup() {
                             <i className={styles.icon}>
                                 <IoMdChatbubbles />
                             </i>
-                            <input type='text' className={styles.input} />
+                            <input
+                                type='text'
+                                className={styles.input}
+                                name='title'
+                                value={question.title || ''}
+                                onChange={handleChange}
+                            />
                         </div>
                     </div>
 
@@ -130,10 +193,24 @@ export default function AskQuestionPopup() {
                             <i className={styles.icon}>
                                 <IoFolderOpenSharp />
                             </i>
-                            <select name='' id='' className={styles.select}>
-                                <option value=''>Analytics</option>
-                                <option value=''>Communication</option>
-                                <option value=''>Company</option>
+                            <select
+                                name='category'
+                                id=''
+                                className={styles.select}
+                                value={question.category || ''}
+                                onChange={handleChange}
+                            >
+                                <option value='' hidden>Select Category</option>
+                                {categories.map((category, index) => {
+                                    return (
+                                        <option
+                                            value={category._id}
+                                            key={index}
+                                        >
+                                            {category.name}
+                                        </option>
+                                    );
+                                })}
                             </select>
                         </div>
                         <span className={styles.spanTxt}>
@@ -235,20 +312,24 @@ export default function AskQuestionPopup() {
                             Details <span className='text-[#f00]'>*</span>
                         </label>
                         <textarea
-                            name=''
+                            name='details'
                             id='group-rules'
                             cols='30'
                             rows='10'
                             className={styles.textarea}
+                            value={question.details || ''}
+                            onChange={handleChange}
                         ></textarea>
                     </div>
 
                     <div className={styles.checkboxWrapper}>
                         <input
                             type='checkbox'
-                            name=''
+                            name='isAnonymous'
                             id='isAnonymous'
                             className='w-[15px] h-[15px]'
+                            value={checkBox.isAnonymous}
+                            onChange={handleChangeCheckBox}
                         />
                         <label htmlFor='isAnonymous' className={styles.label}>
                             Ask Anonymously
@@ -257,10 +338,12 @@ export default function AskQuestionPopup() {
                     <div className={styles.checkboxWrapper}>
                         <input
                             type='checkbox'
-                            name=''
+                            name='notifyEmail'
                             id='emailSub'
                             defaultChecked
                             className='w-[15px] h-[15px]'
+                            value={checkBox.notifyEmail}
+                            onChange={handleChangeCheckBox}
                         />
                         <label htmlFor='emailSub' className={styles.label}>
                             Get notified by email when someone answers this
@@ -270,10 +353,12 @@ export default function AskQuestionPopup() {
                     <div className={styles.checkboxWrapper}>
                         <input
                             type='checkbox'
-                            name=''
+                            name='policy'
                             id='policy'
                             defaultChecked
                             className='w-[15px] h-[15px]'
+                            value={checkBox.policy}
+                            onChange={handleChangeCheckBox}
                         />
                         <label htmlFor='policy' className={styles.label}>
                             By asking your question, you agree to the{' '}
@@ -282,6 +367,8 @@ export default function AskQuestionPopup() {
                             <span className='text-[#f00]'>*</span>
                         </label>
                     </div>
+
+                    {error && <p className={styles.errorTxt}>{error}</p>}
 
                     <button type='submit' className={styles.submitBtn}>
                         Publish Your Question

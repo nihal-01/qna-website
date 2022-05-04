@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 
 const initialState = {
     user: Cookies.get('user-info') ? JSON.parse(Cookies.get('user-info')) : '',
+    users: [],
 };
 
 const userSlice = createSlice({
@@ -16,9 +17,26 @@ const userSlice = createSlice({
             Cookies.set('user-info', '');
             state.user = '';
         },
+        updateUsers: (state, action) => {
+            state.users = action.payload;
+        },
+        updateIsFollowing: (state, action) => {
+            state.users = state.users.map((singleUser) => {
+                if (singleUser._id === action.payload._id) {
+                    singleUser.isFollowing = action.payload.isFollowing;
+                    if (action.payload.isFollowing) {
+                        singleUser.followers += 1;
+                    } else {
+                        singleUser.followers -= 1;
+                    }
+                }
+                return singleUser;
+            });
+        },
     },
 });
 
-export const { signUser, logout } = userSlice.actions;
+export const { signUser, logout, updateIsFollowing, updateUsers } =
+    userSlice.actions;
 
 export default userSlice.reducer;

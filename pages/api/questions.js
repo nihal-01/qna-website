@@ -115,27 +115,18 @@ handler.get(async (req, res) => {
 handler.use(isAuth);
 
 handler.post(async (req, res) => {
-    const {
-        title,
-        category,
-        tags,
-        details,
-        poll,
-        isAnonymous,
-        notifyEmail,
-        author,
-    } = req.body;
+    const { title, category, tags, details, poll, isAnonymous, notifyEmail } =
+        req.body;
     const newQuestion = await Question({
         title,
         category,
         tags,
         details,
         poll,
-        isPoll: !poll && 0,
+        isPoll: poll ? (poll.length > 0 ? true : false) : false,
         isAnonymous,
         notifyEmail,
-        author,
-        likes: 5,
+        author: req.user._id,
     });
 
     await newQuestion.save();

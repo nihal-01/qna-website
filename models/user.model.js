@@ -334,6 +334,36 @@ const userSchema = new Schema({
         type: String,
         trim: true,
     },
+    following: {
+        type: [
+            {
+                type: mongoose.Types.ObjectId,
+                ref: 'User',
+            },
+        ],
+    },
+    followers: {
+        type: [
+            {
+                type: mongoose.Types.ObjectId,
+                ref: 'User',
+            },
+        ],
+    },
+});
+
+userSchema.virtual('numOfQuestions', {
+    ref: 'Question',
+    localField: '_id',
+    foreignField: 'author',
+    count: true,
+});
+
+userSchema.virtual('numOfAnswers', {
+    ref: 'Answer',
+    localField: '_id',
+    foreignField: 'author',
+    count: true,
 });
 
 const User = mongoose.models.User || mongoose.model('User', userSchema);
