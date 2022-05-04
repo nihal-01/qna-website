@@ -62,9 +62,29 @@ const questionSchema = new Schema(
             type: Number,
             default: 0,
         },
-        likes: {
+        votes: {
             type: Number,
             default: 0,
+        },
+        views: {
+            type: Number,
+            default: 0,
+        },
+        upvotes: {
+            type: [
+                {
+                    type: mongoose.Types.ObjectId,
+                    ref: 'User',
+                },
+            ],
+        },
+        downvotes: {
+            type: [
+                {
+                    type: mongoose.Types.ObjectId,
+                    ref: 'User',
+                },
+            ],
         },
     },
     { timestamps: true }

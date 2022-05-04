@@ -350,6 +350,15 @@ const userSchema = new Schema({
             },
         ],
     },
+    badge: {
+        type: String,
+        default: 'beginner',
+        enum: ['beginner', 'professional', 'enlightened'],
+    },
+    isVerified: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 userSchema.virtual('numOfQuestions', {

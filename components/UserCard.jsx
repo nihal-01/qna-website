@@ -79,12 +79,16 @@ export default function UserCard({
             <p className={styles.answersTxt}>
                 {numOfQuestions} Questions | {numOfAnswers} Answers
             </p>
-            <button
-                className={isFollowing ? styles.unfollowBtn : styles.followBtn}
-                onClick={handleFollow}
-            >
-                {isFollowing ? 'Unfollow' : 'Follow'}
-            </button>
+            {user && (
+                <button
+                    className={
+                        isFollowing ? styles.unfollowBtn : styles.followBtn
+                    }
+                    onClick={handleFollow}
+                >
+                    {isFollowing ? 'Unfollow' : 'Follow'}
+                </button>
+            )}
         </div>
     );
 }

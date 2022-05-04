@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
+import axios from '../../axios';
 
 import {
     Breadcrumbs,
@@ -6,27 +7,6 @@ import {
     SingleAnswer,
     SingleQuestion,
 } from '../../components';
-
-const question = {
-    _id: 1,
-    question: `Is this statement, “i see him last night” can be understood as “I saw him last night”?`,
-    description:
-        'In my local language (Bahasa Indonesia) there are no verb-2 or past tense form as time tracker. So, I often forget to use the past form of verb when speaking english. I saw him last night (correct) I see him last night. In my local language (Bahasa Indonesia) there are no verb-2 or past tense form as time tracker. So, I often forget to use the past form of verb when speaking english. I saw him last night (correct) I see him last night',
-    isAnonymous: false,
-    user: {
-        _id: 1,
-        fullName: `John Deo`,
-        avatar: ``,
-        badge: 'beginner',
-        isVerified: true,
-    },
-    likes: 118,
-    createdAt: '2022-04-02T03:44:23.700Z',
-    category: 'language',
-    tags: ['english', 'nihal'],
-    answers: 3,
-    views: 12000,
-};
 
 const answers = [
     {
@@ -71,6 +51,14 @@ const styles = {
 };
 
 export default function SingleQuestionPage() {
+    const fetchQuestion = useCallback(async () => {
+        const response = await axios.get('');
+    }, []);
+
+    useEffect(() => {
+        fetchQuestion();
+    }, [fetchQuestion]);
+
     return (
         <div>
             <div className={styles.header}>

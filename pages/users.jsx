@@ -22,8 +22,6 @@ export default function Users(props) {
     const { user, users } = useSelector((state) => state.user);
     const dispatch = useDispatch();
 
-    console.log(users);
-
     const fetchData = useCallback(async () => {
         try {
             if (user) {
@@ -32,7 +30,7 @@ export default function Users(props) {
                 });
                 dispatch(updateUsers(response.data));
             } else {
-                const response = await axios.get(`/all-users`);
+                const response = await axios.get(`/users/all-users`);
                 dispatch(updateUsers(response.data));
             }
         } catch (err) {

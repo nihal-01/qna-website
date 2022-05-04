@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     BsFillTriangleFill,
     BsFillChatLeftFill,
@@ -17,8 +17,12 @@ import {
     FaTwitter,
     FaWhatsapp,
 } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+import axios from '../axios';
 
 import { avatarImg } from '../public/images';
+import { updateVotesCount } from '../redux/slices/questionSlice';
+import { monthNames } from '../utils/constants';
 
 const styles = {
     container: `px-[15px] py-[15px] lg:p-[30px] border-b border-borderColor`,
@@ -52,30 +56,77 @@ const styles = {
     shareIcon: `flex items-center gap-[8px] text-[#707885] text-sm lg:text-[15px]`,
     socilaIconsList: `flex items-center gap-[10px]`,
     socialIcon: `w-[30px] h-[30px] rounded-sm text-base flex items-center justify-center text-white lg:w-[35px] lg:h-[35px] lg:text-[20px] transition-all hover:bg-primaryColor cursor-pointer`,
+    errorTxt: `text-[red] bg-[#fbcccc] p-[14px] text-[14px] mb-[1.5em] font-bold rounded-sm tracking-wider`,
 };
 
 export default function SingleQuestion({
     _id,
-    question,
-    description,
+    title,
+    details,
     isAnonymous,
-    user,
-    likes,
+    author,
+    votes,
     createdAt,
     category,
     tags,
-    answers,
+    numOfAnswers,
     views,
     isFullVisible,
 }) {
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const myDate = new Date(createdAt);
+
+    const { user } = useSelector((state) => state.user);
+    const dispatch = useDispatch();
+
+    const handleVote = async (isUpvote) => {
+        try {
+            setError('');
+            const response = await axios.patch(
+                '/questions/vote',
+                {
+                    isUpvote,
+                    questionId: _id,
+                },
+                {
+                    headers: { Authorization: `Bearer ${user?.token}` },
+                }
+            );
+            console.log(response.data);
+            dispatch(
+                updateVotesCount({
+                    questionId: _id,
+                    votes: response.data.votes,
+                })
+            );
+        } catch (err) {
+            setError(
+                err.response?.data?.error || 'Something went wrong, Try again'
+            );
+        }
+    };
+
+    // useEffect(() => {
+    //     console.log('timeout is here');
+    //     const timeout = setTimeout(() => {
+    //         setError('');
+    //     }, 3000);
+
+    //     return () => {
+    //         clearTimeout(timeout);
+    //     };
+    // }, [error]);
+
     return (
         <div className={styles.container}>
             <div className={styles.header}>
                 <div className={styles.avatarWrapper}>
-                    <Link href={'/'}>
+                    <Link href={'/s'}>
                         <a href='' className={styles.avatarImg}>
                             <Image
-                                src={user?.avatar || avatarImg}
+                                src={author?.avatar || avatarImg}
                                 alt=''
                                 layout='fill'
                                 objectFit='cover'
@@ -91,7 +142,7 @@ export default function SingleQuestion({
                             </button>
                         </li>
                         <li>
-                            <div className={styles.voteCount}>300</div>
+                            <div className={styles.voteCount}>{votes}</div>
                         </li>
                         <li>
                             <button className={styles.voteBtnDown}>
@@ -103,7 +154,7 @@ export default function SingleQuestion({
                         {isAnonymous ? (
                             <span className={styles.authorName}>Anonymous</span>
                         ) : (
-                            <Link href={'/'}>
+                            <Link href={'/dd'}>
                                 <a
                                     href={'/'}
                                     className={
@@ -111,31 +162,35 @@ export default function SingleQuestion({
                                         ` hover:text-primaryColor`
                                     }
                                 >
-                                    {user?.fullName}
+                                    {author?.username}
                                 </a>
                             </Link>
                         )}
-                        {user?.isVerified && (
+                        {author?.isVerified && (
                             <span className={styles.verified}>
                                 <span className='flex h-[100%] w-[100%] items-center justify-center'>
                                     <BsCheck />
                                 </span>
                             </span>
                         )}
-                        {user?.badge && (
-                            <span className={styles.badge}>{user.badge}</span>
+                        {author?.badge && (
+                            <span className={styles.badge}>{author.badge}</span>
                         )}
                         <div className='grid mt-[5px] lg:mt-[0px] lg:grid-cols-2 lg:gap-[12px]'>
                             <span className={styles.askedDate}>
                                 Asked:{' '}
                                 <span className='text-secondaryColor'>
-                                    April 19, 2022
+                                    {monthNames[myDate.getMonth()] +
+                                        ' ' +
+                                        myDate.getDate() +
+                                        ', ' +
+                                        myDate.getFullYear()}
                                 </span>
                             </span>
                             <span className={styles.category}>
                                 In:{' '}
                                 <span className='text-secondaryColor transition-all hover:text-primaryColor'>
-                                    <Link href={'/'}>{category}</Link>
+                                    <Link href={'/dd'}>{category.name}</Link>
                                 </span>
                             </span>
                         </div>
@@ -149,9 +204,11 @@ export default function SingleQuestion({
                         }
                     >
                         {isFullVisible ? (
-                            question
+                            title
                         ) : (
-                            <Link href={'/'}>{question}</Link>
+                            <Link href={`/questions/${_id}`}>
+                                <a href={`/questions/${_id}`}>{title}</a>
+                            </Link>
                         )}
                     </h2>
                 </div>
@@ -166,15 +223,25 @@ export default function SingleQuestion({
             >
                 <ul className={styles.voteWrapper + ` hidden lg:block`}>
                     <li>
-                        <button className={styles.voteBtnUp}>
+                        <button
+                            className={styles.voteBtnUp}
+                            onClick={() => {
+                                handleVote(true);
+                            }}
+                        >
                             <BsFillTriangleFill />
                         </button>
                     </li>
                     <li>
-                        <div className={styles.voteCount}>300</div>
+                        <div className={styles.voteCount}>{votes}</div>
                     </li>
                     <li>
-                        <button className={styles.voteBtnDown}>
+                        <button
+                            className={styles.voteBtnDown}
+                            onClick={() => {
+                                handleVote(false);
+                            }}
+                        >
                             <BsFillTriangleFill />
                         </button>
                     </li>
@@ -191,9 +258,9 @@ export default function SingleQuestion({
                         }
                     >
                         {!isFullVisible
-                            ? description.slice(0, 220) +
-                              (description.length > 220 && ' ...')
-                            : description}
+                            ? details.slice(0, 220) +
+                              (details.length > 220 && ' ...')
+                            : details}
                     </p>
                     {tags && (
                         <ul className={styles.tags}>
@@ -209,20 +276,27 @@ export default function SingleQuestion({
                             })}
                         </ul>
                     )}
+
+                    {error && (
+                        // <div className={styles.errorWrapper}>
+                        <p className={styles.errorTxt}>{error}</p>
+                        // </div>
+                    )}
+
                     <div className={styles.articleFooter}>
-                        <Link href={'/'}>
-                            <a href={'/'} className={styles.answersBox}>
-                                <BsFillChatLeftFill /> 3 Answers
+                        <Link href={'/dd'}>
+                            <a href={'/dd'} className={styles.answersBox}>
+                                <BsFillChatLeftFill /> {numOfAnswers} Answers
                             </a>
                         </Link>
                         <div className={`${!isFullVisible && ' lg:grow'}`}>
                             <button className={styles.footerBtn}>
-                                <BsEyeFill /> 12k views
+                                <BsEyeFill /> {views} views
                             </button>
                         </div>
                         {!isFullVisible && (
-                            <Link href={'/'}>
-                                <a href={'/'} className={styles.answerBtn}>
+                            <Link href={'/dd'}>
+                                <a href={'/dd'} className={styles.answerBtn}>
                                     Answer
                                 </a>
                             </Link>

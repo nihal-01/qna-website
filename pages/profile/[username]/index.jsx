@@ -1,11 +1,11 @@
 import React from 'react';
-import { ProfileHero, SidebarLayout, ProfileLayout } from '../../components';
+import { ProfileHero, SidebarLayout, ProfileLayout } from '../../../components';
 
-export default function Profile() {
+export default function About() {
     return <div>Hello</div>;
 }
 
-Profile.getLayout = function getLayout(page) {
+About.getLayout = function getLayout(page) {
     return (
         <>
             <ProfileHero />

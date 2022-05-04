@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 import nc from 'next-connect';
 
-import { Question } from '../../models';
-import { connectDb, isAuth } from '../../middlewares';
+import { Question } from '../../../models';
+import { connectDb, isAuth } from '../../../middlewares';
 
 const handler = nc({
     onError: (err, req, res, next) => {
@@ -79,7 +79,9 @@ handler.get(async (req, res) => {
                 details: 1,
                 isPoll: 1,
                 isAnonymous: 1,
-                likes: 1,
+                votes: 1,
+                createdAt: 1,
+                views: 1,
             },
         },
         {
@@ -98,7 +100,9 @@ handler.get(async (req, res) => {
                 details: 1,
                 isPoll: 1,
                 isAnonymous: 1,
-                likes: 1,
+                votes: 1,
+                createdAt: 1,
+                views: 1,
             },
         },
     ];

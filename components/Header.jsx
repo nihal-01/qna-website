@@ -1,7 +1,8 @@
+import Cookie from 'js-cookie';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BsSearch } from 'react-icons/bs';
 import { FiLock, FiMenu, FiChevronDown, FiBell } from 'react-icons/fi';
 import { useDispatch, useSelector } from 'react-redux';

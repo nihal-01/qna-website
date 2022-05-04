@@ -47,7 +47,7 @@ export const navLinks = [
     {
         icon: <BsPersonFill />,
         name: 'User Profile',
-        url: '/user-profile',
+        url: '/profile',
     },
     {
         icon: <BsFolderFill />,
@@ -185,4 +185,19 @@ export const dropDownMenu = [
         icon: <BiLogOut />,
         url: '/logout',
     },
+];
+
+export const monthNames = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
 ];

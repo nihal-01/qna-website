@@ -22,7 +22,7 @@ export default function ProfileLayout() {
                     </button>
                 </div>
             </div>
-            <PagesTopNavbar />
+            <PagesTopNavbar query={false} />
         </>
     );
 }
