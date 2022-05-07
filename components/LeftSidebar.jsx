@@ -31,7 +31,7 @@ export default function LeftSidebar() {
                                             styles.navListIcon +
                                             ` ${
                                                 router.pathname === url &&
-                                                'text-[#2d6ff7]'
+                                                'text-secondaryColor'
                                             }`
                                         }
                                     >
@@ -42,7 +42,7 @@ export default function LeftSidebar() {
                                             styles.navListText +
                                             ` ${
                                                 router.pathname === url &&
-                                                'text-[#2d6ff7]'
+                                                'text-secondaryColor'
                                             }`
                                         }
                                     >

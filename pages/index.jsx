@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import axios from '../axios';
 
 import {
     HomeHero,
@@ -10,6 +11,7 @@ import {
 } from '../components';
 import {
     fetchQuestions,
+    updateIsLoading,
     updateNoanswerFilter,
     updatePollFilter,
     updateSort,
@@ -53,6 +55,7 @@ export default function Home() {
     const router = useRouter();
 
     useEffect(() => {
+        dispatch(updateIsLoading(true));
         dispatch(fetchQuestions());
     }, [dispatch, sort, filters]);
 
@@ -76,7 +79,7 @@ export default function Home() {
     return (
         <div>
             <PagesTopNavbar links={links} />
-            <QuestionsList questions={questions} />
+            <QuestionsList />
         </div>
     );
 }

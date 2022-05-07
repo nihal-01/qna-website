@@ -6,7 +6,7 @@ const answerSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        likes: {
+        votes: {
             type: Number,
             default: 0,
         },

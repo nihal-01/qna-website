@@ -22,6 +22,7 @@ import axios from '../axios';
 
 import { avatarImg } from '../public/images';
 import { updateVotesCount } from '../redux/slices/questionSlice';
+import { logout } from '../redux/slices/userSlice';
 import { monthNames } from '../utils/constants';
 
 const styles = {
@@ -102,22 +103,26 @@ export default function SingleQuestion({
                 })
             );
         } catch (err) {
+            if (err.response.status === 401) {
+                dispatch(logout());
+                return setError('Please Login to vote');
+            }
             setError(
                 err.response?.data?.error || 'Something went wrong, Try again'
             );
         }
     };
 
-    // useEffect(() => {
-    //     console.log('timeout is here');
-    //     const timeout = setTimeout(() => {
-    //         setError('');
-    //     }, 3000);
+    useEffect(() => {
+        console.log('timeout is here');
+        const timeout = setTimeout(() => {
+            setError('');
+        }, 3000);
 
-    //     return () => {
-    //         clearTimeout(timeout);
-    //     };
-    // }, [error]);
+        return () => {
+            clearTimeout(timeout);
+        };
+    }, [error]);
 
     return (
         <div className={styles.container}>

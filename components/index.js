@@ -23,6 +23,7 @@ import AskQuestionPopup from './AskQuestionPopup';
 import ProfileHero from './ProfileHero';
 import ProfileLayout from './ProfileLayout';
 import PollForm from './PollForm';
+import QuestionSkeleton from './QuestionSkeleton';
 
 export {
     Footer,
@@ -50,4 +51,5 @@ export {
     ProfileHero,
     ProfileLayout,
     PollForm,
+    QuestionSkeleton,
 };

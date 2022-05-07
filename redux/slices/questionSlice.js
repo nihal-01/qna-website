@@ -25,12 +25,15 @@ const fetchQuestions = createAsyncThunk(
 
 const initialState = {
     questions: [],
+    isLoading: true,
     categories: [],
     filters: {
         polls: false,
         noAnswers: false,
     },
     sort: 'createdAt:desc',
+    sidebarData: {},
+    rightSidebarLoading: true,
 };
 
 const questionSlice = createSlice({
@@ -60,12 +63,22 @@ const questionSlice = createSlice({
             state.filters.polls = false;
             state.filters.noAnswers = action.payload;
         },
+        updateIsLoading: (state, action) => {
+            state.isLoading = action.payload;
+        },
+        updateSidebarData: (state, action) => {
+            state.sidebarData = action.payload;
+        },
+        updateRightSidebarLoading: (state, action) => {
+            state.rightSidebarLoading = action.payload;
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(fetchCategories.fulfilled, (state, action) => {
             state.categories = action.payload;
         });
         builder.addCase(fetchQuestions.fulfilled, (state, action) => {
+            state.isLoading = false;
             state.questions = action.payload;
         });
     },
@@ -78,6 +91,9 @@ export const {
     updateNoanswerFilter,
     updatePollFilter,
     updateSort,
+    updateIsLoading,
+    updateSidebarData,
+    updateRightSidebarLoading,
 } = questionSlice.actions;
 
 export default questionSlice.reducer;
