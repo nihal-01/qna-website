@@ -10,6 +10,7 @@ import {
 import { IoMdShareAlt } from 'react-icons/io';
 
 import { avatarImg } from '../public/images';
+import { monthNames } from '../utils/constants';
 
 const styles = {
     container: `px-[15px] py-[15px] lg:p-[30px] border-b border-borderColor grid grid-cols-[65px_auto] lg:grid-cols-[75px_auto]`,
@@ -34,7 +35,16 @@ const styles = {
     shareIcon: `whitespace-nowrap py-[8px] px-[10px] text-grayColor cursor-pointer transition-all hover:text-secondaryColor text-[15px] last:border-b-0 translate-x-[20px] opacity-0 group-hover:opacity-100 group-hover:translate-x-0`,
 };
 
-export default function SingleAnswer({ _id, answer, avatar }) {
+export default function SingleAnswer({
+    _id,
+    answer,
+    avatar,
+    author,
+    votes,
+    createdAt,
+}) {
+    const myDate = new Date(createdAt);
+    
     return (
         <div className={styles.container}>
             <div className={styles.avatarWrapper}>
@@ -59,20 +69,35 @@ export default function SingleAnswer({ _id, answer, avatar }) {
                                 styles.authorName + ` hover:text-primaryColor`
                             }
                         >
-                            Nihal N
+                            {author?.username}
                         </a>
                     </Link>
-                    {true && (
+                    {author?.isVerified && (
                         <span className={styles.verified}>
                             <span className='flex h-[100%] w-[100%] items-center justify-center'>
                                 <BsCheck />
                             </span>
                         </span>
                     )}
-                    {true && <span className={styles.badge}>Beginner</span>}
+                    {author?.badge && (
+                        <span className={styles.badge}>{author?.badge}</span>
+                    )}
                 </div>
                 <p className={styles.createdAt}>
-                    Added an answer on April 19, 2018 at 2:00 am
+                    Added an answer on{' '}
+                    {monthNames[myDate.getMonth()] +
+                        ' ' +
+                        myDate.getDate() +
+                        ', ' +
+                        myDate.getFullYear() +
+                        ' at ' +
+                        (myDate.getHours() > 12
+                            ? myDate.getHours() - 12
+                            : myDate.getHours()) +
+                        ':' +
+                        myDate.getMinutes() +
+                        ' ' +
+                        (myDate.getHours() > 11 ? 'pm' : 'am')}
                 </p>
             </div>
 
@@ -84,7 +109,7 @@ export default function SingleAnswer({ _id, answer, avatar }) {
                             <span className={styles.voteIcon}>
                                 <BsFillTriangleFill />
                             </span>
-                            <span className={styles.voteTxt}>79</span>
+                            <span className={styles.voteTxt}>{votes}</span>
                             <span className={styles.voteIcon + ' rotate-180'}>
                                 <BsFillTriangleFill />
                             </span>

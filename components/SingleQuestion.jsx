@@ -194,9 +194,13 @@ export default function SingleQuestion({
                             </span>
                             <span className={styles.category}>
                                 In:{' '}
-                                <span className='text-secondaryColor transition-all hover:text-primaryColor'>
-                                    <Link href={'/dd'}>{category.name}</Link>
-                                </span>
+                                <Link href={`/category/${category?.name}`}>
+                                    <a href=''>
+                                        <span className='text-secondaryColor transition-all hover:text-primaryColor'>
+                                            {category?.name}
+                                        </span>
+                                    </a>
+                                </Link>
                             </span>
                         </div>
                     </div>
@@ -309,7 +313,7 @@ export default function SingleQuestion({
                         {isFullVisible && (
                             <>
                                 <button className={styles.footerBtn}>
-                                    <BsPlus /> 8 Followers
+                                    <BsPlus /> {author?.followers?.length || 0} Followers
                                 </button>
                                 <button className={styles.footerBtn}>
                                     <BsStar /> 3

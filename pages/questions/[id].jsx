@@ -1,4 +1,9 @@
-import React, { useCallback, useEffect } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React, { useCallback, useEffect, useState } from 'react';
+import { BiLogOut } from 'react-icons/bi';
+import { BsPersonFill } from 'react-icons/bs';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from '../../axios';
 
 import {
@@ -7,37 +12,8 @@ import {
     SingleAnswer,
     SingleQuestion,
 } from '../../components';
-
-const answers = [
-    {
-        _id: 1,
-        answer: 'Yes, I understand it. I hear a lot of this incorrect grammar from my wife. I would expect that the person that spoke this was possibly Chinese. In Chinese there are no tenses or plurals. No he or she pronouns. The context tells all. So it might have been a direct translation from Chinese.',
-    },
-    {
-        _id: 2,
-        answer: `No, ‘I see him last night’ is always incorrect and will be only just barely understandable. It is a very serious and basic error, and it will be tiring for a native speaker to converse with someone who speaks like this, because they will constantly have to be remembering what the person really means. It will not be ‘immediately obvious without thinking about it’.
-
-        Someone just asked this question recently, and I replied, saying that ‘I see him last night’ is never correct. That is exactly what i meant.`,
-    },
-    {
-        _id: 3,
-        answer: `You are correct that both are understandable.
-
-        The only other possible everyday meaning I could think of would be ‘I see him [in my mind’s eye] last night’; that is, I am, at this very moment, imagining him last night. But it should almost always be clear from context which one is intended.
-        
-        ‘Correct’ doesn’t mean ‘understandable’, though. If I say ‘Me want have fooding’ it’s pretty clear what to understand from that, but it’s not anywhere near correct Standard English grammar. If you lived somewhere where you spoke a dialect of English in which this was acceptable grammar, however, then it would be correct for that dialect.`,
-    },
-    {
-        _id: 4,
-        answer: 'Yes, I understand it. I hear a lot of this incorrect grammar from my wife. I would expect that the person that spoke this was possibly Chinese. In Chinese there are no tenses or plurals. No he or she pronouns. The context tells all. So it might have been a direct translation from Chinese.',
-    },
-    {
-        _id: 5,
-        answer: 'Yes, I understand it. I hear a lot of this incorrect grammar from my wife. I would expect that the person that spoke this was possibly Chinese. In Chinese there are no tenses or plurals. No he or she pronouns. The context tells all. So it might have been a direct translation from Chinese.',
-    },
-];
-
-const IS_LOGGEDIN = true;
+import { updateSigninBox } from '../../redux/slices/layoutSlice';
+import { logout } from '../../redux/slices/userSlice';
 
 const styles = {
     header: `block p-[15px] lg:p-[30px] lg:flex items-center justify-between border-b-2 border-borderColor`,
@@ -48,16 +24,62 @@ const styles = {
     answersTabsList: `flex items-center flex-wrap h-[100%] relative top-[1px]`,
     answersTabsListItem: `border bg-white flex items-center justify-center h-[47px] md:h-[100%] px-[14px] text-grayColor cursor-pointer transition-all hover:text-secondaryColor text-[15px] md:text-base`,
     activeTab: ` border-b-0 text text-[#222] cursor-default hover:text-[#222]`,
+    formTitle: `font-bold text-[17px]`,
+    formMeta: `flex items-center gap-[12px] text-grayColor text-base mt-[1em]`,
+    formLink: `flex items-center gap-[7px] text-primaryColor transition-all hover:text-secondaryColor`,
+    formTextarea: `w-[100%] border border-borderColor outline-none rounded-sm mt-[2em] resize-none p-[10px] mb-[1.2em]`,
 };
 
 export default function SingleQuestionPage() {
+    const [question, setQuestion] = useState({});
+    const [answerTxt, setAnswerTxt] = useState('');
+    const [answers, setAnswers] = useState([]);
+
+    const router = useRouter();
+    const dispatch = useDispatch();
+    const { id } = router.query;
+    const { user } = useSelector((state) => state.user);
+
     const fetchQuestion = useCallback(async () => {
-        const response = await axios.get('');
-    }, []);
+        const response = await axios.get(
+            `http://localhost:3000/api/questions/single/${id}`
+        );
+        setQuestion(response.data);
+    }, [id]);
+
+    const fetchAnswers = useCallback(async () => {
+        try {
+            const response = await axios.get(
+                `http://localhost:3000/api/answers/${id}`
+            );
+            setAnswers(response.data);
+            console.log(response.data);
+        } catch (err) {
+            console.log(err.response?.data);
+        }
+    }, [id]);
+
+    const addAnswer = async (e) => {
+        try {
+            e.preventDefault();
+
+            const response = await axios.post(
+                `http://localhost:3000/api/answers/`,
+                { answer: answerTxt, questionId: question?._id },
+                {
+                    headers: { Authorization: `Bearer ${user?.token}` },
+                }
+            );
+            console.log(response.data);
+        } catch (err) {
+            console.log(err.response?.data);
+        }
+    };
 
     useEffect(() => {
         fetchQuestion();
-    }, [fetchQuestion]);
+        fetchAnswers();
+    }, [fetchQuestion, fetchAnswers]);
 
     return (
         <div>
@@ -65,25 +87,75 @@ export default function SingleQuestionPage() {
                 <Breadcrumbs
                     crumbs={[
                         { name: 'Questions', url: '/questions' },
-                        { name: 'Q 199' },
+                        { name: question?._id?.slice(0, 5) },
                     ]}
                 />
             </div>
             <div>
                 <SingleQuestion {...question} isFullVisible={true} />
                 <div className={styles.formWrapper}>
-                    {IS_LOGGEDIN ? (
-                        <div>
-                            <button className={styles.mainBtn}>
+                    {user ? (
+                        <form>
+                            <h3 className={styles.formTitle}>
+                                Leave an answer
+                            </h3>
+                            <p className={styles.formMeta}>
+                                Logged in as{' '}
+                                <Link href={'/nihal'}>
+                                    <a
+                                        href={'/questions'}
+                                        className={styles.formLink}
+                                    >
+                                        <i>
+                                            <BsPersonFill />
+                                        </i>
+                                        {user?.username}
+                                    </a>
+                                </Link>
+                                <button
+                                    className={styles.formLink}
+                                    onClick={() => {
+                                        dispatch(logout());
+                                    }}
+                                >
+                                    <i>
+                                        <BiLogOut />
+                                    </i>
+                                    Logout
+                                </button>
+                            </p>
+                            <textarea
+                                name=''
+                                id=''
+                                cols='30'
+                                rows='10'
+                                className={styles.formTextarea}
+                                onChange={(e) => {
+                                    setAnswerTxt(e.target.value);
+                                }}
+                            ></textarea>
+                            <button
+                                className={styles.mainBtn}
+                                onClick={addAnswer}
+                            >
                                 Leave An Answer
                             </button>
-                        </div>
+                        </form>
                     ) : (
-                        <button className={styles.mainBtn}>Sign In</button>
+                        <button
+                            className={styles.mainBtn}
+                            onClick={() => {
+                                dispatch(updateSigninBox(true));
+                            }}
+                        >
+                            Sign In
+                        </button>
                     )}
                 </div>
                 <div className={styles.answersHeader}>
-                    <h3 className={styles.answersHeaderTitle}>350 Answers</h3>
+                    <h3 className={styles.answersHeaderTitle}>
+                        {answers?.length} Answers
+                    </h3>
                     <div>
                         <ul className={styles.answersTabsList}>
                             <li className={styles.answersTabsListItem}>
