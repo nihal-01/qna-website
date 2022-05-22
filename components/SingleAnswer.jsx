@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
 import {
     BsCheck,
     BsThreeDotsVertical,
@@ -8,6 +8,8 @@ import {
     BsShareFill,
 } from 'react-icons/bs';
 import { IoMdShareAlt } from 'react-icons/io';
+import { useSelector } from 'react-redux';
+import axios from '../axios';
 
 import { avatarImg } from '../public/images';
 import { monthNames } from '../utils/constants';
@@ -43,8 +45,37 @@ export default function SingleAnswer({
     votes,
     createdAt,
 }) {
+    const [error, setError] = useState('');
+
     const myDate = new Date(createdAt);
-    
+    const { user } = useSelector((state) => state.user);
+
+    const handleVote = async (isUpvote) => {
+        try {
+            setError('');
+            const response = await axios.patch(
+                '/answers/vote',
+                {
+                    isUpvote,
+                    answerId: _id,
+                },
+                {
+                    headers: { Authorization: `Bearer ${user?.token}` },
+                }
+            );
+            console.log(response.data);
+        } catch (err) {
+            // if (err.response.status === 401) {
+            //     dispatch(logout());
+            //     return setError('Please Login to vote');
+            // }
+            // setError(
+            //     err.response?.data?.error || 'Something went wrong, Try again'
+            // );
+            console.log(err?.response?.data);
+        }
+    };
+
     return (
         <div className={styles.container}>
             <div className={styles.avatarWrapper}>
@@ -106,11 +137,21 @@ export default function SingleAnswer({
                 <div className={styles.answerFooter}>
                     <div className={styles.answerFooterLeft}>
                         <div className={styles.voteWrapper}>
-                            <span className={styles.voteIcon}>
+                            <span
+                                className={styles.voteIcon}
+                                onClick={() => {
+                                    handleVote(true);
+                                }}
+                            >
                                 <BsFillTriangleFill />
                             </span>
                             <span className={styles.voteTxt}>{votes}</span>
-                            <span className={styles.voteIcon + ' rotate-180'}>
+                            <span
+                                className={styles.voteIcon + ' rotate-180'}
+                                onClick={() => {
+                                    handleVote(false);
+                                }}
+                            >
                                 <BsFillTriangleFill />
                             </span>
                         </div>

@@ -304,8 +304,8 @@ export default function SingleQuestion({
                             </button>
                         </div>
                         {!isFullVisible && (
-                            <Link href={'/dd'}>
-                                <a href={'/dd'} className={styles.answerBtn}>
+                            <Link href={`/questions/${_id}#answer`}>
+                                <a href={`/questions/${_id}#answer`} className={styles.answerBtn}>
                                     Answer
                                 </a>
                             </Link>
@@ -313,7 +313,8 @@ export default function SingleQuestion({
                         {isFullVisible && (
                             <>
                                 <button className={styles.footerBtn}>
-                                    <BsPlus /> {author?.followers?.length || 0} Followers
+                                    <BsPlus /> {author?.followers?.length || 0}{' '}
+                                    Followers
                                 </button>
                                 <button className={styles.footerBtn}>
                                     <BsStar /> 3

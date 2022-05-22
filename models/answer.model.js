@@ -24,6 +24,22 @@ const answerSchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
+        upvotes: {
+            type: [
+                {
+                    type: mongoose.Types.ObjectId,
+                    ref: 'User',
+                },
+            ],
+        },
+        downvotes: {
+            type: [
+                {
+                    type: mongoose.Types.ObjectId,
+                    ref: 'User',
+                },
+            ],
+        },
     },
     { timestamps: true }
 );

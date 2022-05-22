@@ -25,7 +25,7 @@ const fetchQuestions = createAsyncThunk(
 
 const initialState = {
     questions: [],
-    isLoading: true,
+    isLoading: false,
     categories: [],
     filters: {
         polls: false,
@@ -72,6 +72,9 @@ const questionSlice = createSlice({
         updateRightSidebarLoading: (state, action) => {
             state.rightSidebarLoading = action.payload;
         },
+        updateQuestions: (state, action) => {
+            state.questions = action.payload;
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(fetchCategories.fulfilled, (state, action) => {
@@ -94,6 +97,7 @@ export const {
     updateIsLoading,
     updateSidebarData,
     updateRightSidebarLoading,
+    updateQuestions,
 } = questionSlice.actions;
 
 export default questionSlice.reducer;

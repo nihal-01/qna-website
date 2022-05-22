@@ -15,12 +15,19 @@ const handler = nc({
 handler.use(connectDb);
 
 handler.get(async (req, res) => {
-    const { questionId } = req.query;
+    const { questionId, sortBy } = req.query;
 
-    const answers = await Answer.find({ questionId }).populate(
-        'author',
-        '_id username avatar isVerified badge'
-    );
+    const sort = {};
+
+    if (sortBy === 'voted') {
+        sort.votes = -1;
+    } else if (sortBy === 'recent') {
+        sort.createdAt = -1;
+    }
+
+    const answers = await Answer.find({ questionId })
+        .populate('author', '_id username avatar isVerified badge')
+        .sort(sort);
 
     res.status(200).json(answers);
 });

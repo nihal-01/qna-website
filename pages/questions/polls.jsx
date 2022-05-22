@@ -5,7 +5,7 @@ import axios from '../../axios';
 import { PagesTopNavbar, QuestionsList, SidebarLayout } from '../../components';
 import { updateQuestions } from '../../redux/slices/questionSlice';
 
-export default function Questions({ questions }) {
+export default function Polls({ questions }) {
     const dispatch = useDispatch();
     dispatch(updateQuestions(questions));
 
@@ -17,12 +17,12 @@ export default function Questions({ questions }) {
     );
 }
 
-Questions.getLayout = function (page) {
+Polls.getLayout = function (page) {
     return <SidebarLayout>{page}</SidebarLayout>;
 };
 
 export async function getServerSideProps() {
-    const res = await axios.get(`questions?sort=createdAt:desc`);
+    const res = await axios.get(`questions?polls=true`);
 
     return {
         props: {

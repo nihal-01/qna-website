@@ -10,75 +10,16 @@ import {
     SidebarLayout,
 } from '../components';
 import {
-    fetchQuestions,
-    updateIsLoading,
-    updateNoanswerFilter,
-    updatePollFilter,
-    updateSort,
+    updateQuestions,
 } from '../redux/slices/questionSlice';
 
-const links = [
-    {
-        name: 'Recent Questions',
-        query: 'recent-questions',
-    },
-    {
-        name: 'Most Answered',
-        query: 'most-answered',
-    },
-    {
-        name: 'Most Voted',
-        query: 'most-voted',
-    },
-    {
-        name: 'Most Visited',
-        query: 'most-visited',
-    },
-    {
-        name: 'Polls',
-        query: 'polls',
-    },
-    {
-        name: 'Answers',
-        query: 'answers',
-    },
-    {
-        name: 'No Answers',
-        query: 'no-answers',
-    },
-];
-
-export default function Home() {
-    const { questions, sort, filters } = useSelector((state) => state.question);
+export default function Home({ questions }) {
     const dispatch = useDispatch();
-
-    const router = useRouter();
-
-    useEffect(() => {
-        dispatch(updateIsLoading(true));
-        dispatch(fetchQuestions());
-    }, [dispatch, sort, filters]);
-
-    useEffect(() => {
-        if (
-            Object.keys(router.query).length < 1 ||
-            router.query.show === 'recent-questions'
-        ) {
-            dispatch(updateSort('createdAt:desc'));
-        } else if (router.query.show === 'most-answered') {
-            dispatch(updateSort('numOfAnswers:desc'));
-        } else if (router.query.show === 'most-voted') {
-            dispatch(updateSort('votes:desc'));
-        } else if (router.query.show === 'polls') {
-            dispatch(updatePollFilter(true));
-        } else if (router.query.show === 'no-answers') {
-            dispatch(updateNoanswerFilter(true));
-        }
-    }, [router.query, dispatch]);
+    dispatch(updateQuestions(questions));
 
     return (
         <div>
-            <PagesTopNavbar links={links} />
+            <PagesTopNavbar />
             <QuestionsList />
         </div>
     );
@@ -92,3 +33,13 @@ Home.getLayout = function getLayout(page) {
         </>
     );
 };
+
+export async function getServerSideProps() {
+    const res = await axios.get(`questions?sort=${'createdAt:desc'}`);
+
+    return {
+        props: {
+            questions: res.data,
+        },
+    };
+}

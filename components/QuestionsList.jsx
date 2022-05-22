@@ -12,7 +12,7 @@ export default function QuestionsList() {
                 ? Array.from({ length: 5 }).map((_, index) => {
                       return <QuestionSkeleton key={index} />;
                   })
-                : questions.map((question) => {
+                : questions?.map((question) => {
                       return (
                           <SingleQuestion key={question._id} {...question} />
                       );

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 import { navLinks } from '../utils/constants';
+import { useSelector } from 'react-redux';
 
 const styles = {
     container: `my-[30px] sticky top-[30px]`,
@@ -14,6 +15,7 @@ const styles = {
 
 export default function LeftSidebar() {
     const router = useRouter();
+    const { user } = useSelector((state) => state.user);
 
     return (
         <div className={styles.container}>
@@ -21,7 +23,13 @@ export default function LeftSidebar() {
                 {navLinks.map(({ icon, name, url }, index) => {
                     return (
                         <li key={index} className={styles.navListItem}>
-                            <Link href={url}>
+                            <Link
+                                href={
+                                    url === '/profile'
+                                        ? `${url}/${user.username}`
+                                        : url
+                                }
+                            >
                                 <a
                                     href={url}
                                     className={styles.navListItemLink}

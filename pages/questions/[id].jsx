@@ -4,8 +4,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { BiLogOut } from 'react-icons/bi';
 import { BsPersonFill } from 'react-icons/bs';
 import { useDispatch, useSelector } from 'react-redux';
-import axios from '../../axios';
 
+import axios from '../../axios';
 import {
     Breadcrumbs,
     SidebarLayout,
@@ -30,34 +30,16 @@ const styles = {
     formTextarea: `w-[100%] border border-borderColor outline-none rounded-sm mt-[2em] resize-none p-[10px] mb-[1.2em]`,
 };
 
-export default function SingleQuestionPage() {
-    const [question, setQuestion] = useState({});
+export default function SingleQuestionPage(params) {
+    const [question, setQuestion] = useState(params?.question);
     const [answerTxt, setAnswerTxt] = useState('');
     const [answers, setAnswers] = useState([]);
+    const [sort, setSort] = useState('');
 
     const router = useRouter();
     const dispatch = useDispatch();
     const { id } = router.query;
     const { user } = useSelector((state) => state.user);
-
-    const fetchQuestion = useCallback(async () => {
-        const response = await axios.get(
-            `http://localhost:3000/api/questions/single/${id}`
-        );
-        setQuestion(response.data);
-    }, [id]);
-
-    const fetchAnswers = useCallback(async () => {
-        try {
-            const response = await axios.get(
-                `http://localhost:3000/api/answers/${id}`
-            );
-            setAnswers(response.data);
-            console.log(response.data);
-        } catch (err) {
-            console.log(err.response?.data);
-        }
-    }, [id]);
 
     const addAnswer = async (e) => {
         try {
@@ -76,10 +58,20 @@ export default function SingleQuestionPage() {
         }
     };
 
+    const fetchAnswers = useCallback(async () => {
+        try {
+            const response = await axios.get(
+                `http://localhost:3000/api/answers/${id}?sortBy=${sort}`
+            );
+            setAnswers(response.data);
+        } catch (err) {
+            console.log(err.response?.data);
+        }
+    }, [sort, id]);
+
     useEffect(() => {
-        fetchQuestion();
         fetchAnswers();
-    }, [fetchQuestion, fetchAnswers]);
+    }, [fetchAnswers, sort]);
 
     return (
         <div>
@@ -152,28 +144,44 @@ export default function SingleQuestionPage() {
                         </button>
                     )}
                 </div>
-                <div className={styles.answersHeader}>
+                <div className={styles.answersHeader} id='answer'>
                     <h3 className={styles.answersHeaderTitle}>
                         {answers?.length} Answers
                     </h3>
                     <div>
                         <ul className={styles.answersTabsList}>
-                            <li className={styles.answersTabsListItem}>
+                            <li
+                                className={
+                                    styles.answersTabsListItem +
+                                    ` ${sort === 'voted' && styles.activeTab}`
+                                }
+                                onClick={() => {
+                                    setSort('voted');
+                                }}
+                            >
                                 Voted
                             </li>
                             <li
                                 className={
                                     styles.answersTabsListItem +
-                                    ` ${styles.activeTab}`
+                                    ` ${sort === '' && styles.activeTab}`
                                 }
+                                onClick={() => {
+                                    setSort('');
+                                }}
                             >
                                 Oldest
                             </li>
-                            <li className={styles.answersTabsListItem}>
+                            <li
+                                className={
+                                    styles.answersTabsListItem +
+                                    ` ${sort === 'recent' && styles.activeTab}`
+                                }
+                                onClick={() => {
+                                    setSort('recent');
+                                }}
+                            >
                                 Recent
-                            </li>
-                            <li className={styles.answersTabsListItem}>
-                                Random
                             </li>
                         </ul>
                     </div>
@@ -190,4 +198,16 @@ export default function SingleQuestionPage() {
 
 SingleQuestionPage.getLayout = function getLayout(page) {
     return <SidebarLayout>{page}</SidebarLayout>;
+};
+
+export const getServerSideProps = async ({ params }) => {
+    const questionRes = await axios.get(
+        `http://localhost:3000/api/questions/single/${params.id}`
+    );
+
+    return {
+        props: {
+            question: questionRes.data,
+        },
+    };
 };

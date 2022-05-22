@@ -67,6 +67,7 @@ handler.patch(async (req, res) => {
         } else {
             question.downvotes.push(req.user._id);
             question.votes -= 1;
+            await question.save();
         }
     }
 
