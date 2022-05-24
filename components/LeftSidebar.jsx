@@ -21,6 +21,9 @@ export default function LeftSidebar() {
         <div className={styles.container}>
             <ul>
                 {navLinks.map(({ icon, name, url }, index) => {
+                    if ((url === '/profile' || url === '/feed') && !user) {
+                        return;
+                    }
                     return (
                         <li key={index} className={styles.navListItem}>
                             <Link

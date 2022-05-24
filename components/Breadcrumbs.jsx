@@ -20,7 +20,9 @@ export default function Breadcrumbs({ crumbs }) {
                     <BsHouseFill />
                 </span>
                 <span className={styles.homeText}>
-                    <Link href='/'>Home</Link>
+                    <Link href='/'>
+                        <a href={'/'}>Home</a>
+                    </Link>
                 </span>
             </span>
             <span className={styles.slash}>/</span>
@@ -33,9 +35,11 @@ export default function Breadcrumbs({ crumbs }) {
                             }
                         >
                             {crumb.url ? (
-                                <Link href={crumb.url}>{crumb.name}</Link>
+                                <Link href={crumb?.url}>
+                                    <a href={crumb?.url}>{crumb?.name}</a>
+                                </Link>
                             ) : (
-                                crumb.name
+                                crumb?.name
                             )}
                         </span>
                         {index + 1 < crumbs.length && <span>/</span>}

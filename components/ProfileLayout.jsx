@@ -1,7 +1,10 @@
+import Link from 'next/link';
 import React from 'react';
 import { BsPencil } from 'react-icons/bs';
 import { useSelector } from 'react-redux';
+
 import { Breadcrumbs, PagesTopNavbar } from '.';
+import { profilePageLinks } from '../utils/constants';
 
 const styles = {
     header: `p-[15px] lg:p-[30px] flex flex-wrap items-center justify-between border-b-2 border-borderColor`,
@@ -26,16 +29,20 @@ export default function ProfileLayout({ user, crumbName = undefined }) {
                 />
                 {user.username === signedUser?.user?.username && (
                     <div className={styles.headerRight}>
-                        <button className={styles.editProfileBtn}>
-                            <span>
-                                <BsPencil />
-                            </span>
-                            Edit Profile
-                        </button>
+                        <Link href={`/profile/${user?.username}/edit`}>
+                            <a href={`/profile/${user?.username}/edit`}>
+                                <button className={styles.editProfileBtn}>
+                                    <span>
+                                        <BsPencil />
+                                    </span>
+                                    Edit Profile
+                                </button>
+                            </a>
+                        </Link>
                     </div>
                 )}
             </div>
-            <PagesTopNavbar isProfilePage={true} />
+            <PagesTopNavbar links={profilePageLinks} isProfilePage={true} />
         </>
     );
 }

@@ -24,6 +24,7 @@ import ProfileHero from './ProfileHero';
 import ProfileLayout from './ProfileLayout';
 import PollForm from './PollForm';
 import QuestionSkeleton from './QuestionSkeleton';
+import EditProfileLayout from './EditProfileLayout';
 
 export {
     Footer,
@@ -52,4 +53,5 @@ export {
     ProfileLayout,
     PollForm,
     QuestionSkeleton,
+    EditProfileLayout,
 };

@@ -10,12 +10,13 @@ const styles = {
     icon: `text-grayColor text-xl mx-[10px]`,
     radioContainer: `flex items-center gap-[1em] mt-[5px]`,
     radioInputWrapper: `flex items-center gap-[0.7em]`,
-    checkbox: `mr-[0.7em]`,
+    radioInput: `w-[16px] min-w-[16px] h-[16px] min-h-[16px]`,
+    checkbox: `w-[16px] min-w-[16px] h-[16px] min-h-[16px] mr-[0.7em]`,
     fileInputWrapper: `relative group w-[100%] h-[45px] border border-borderColor rounded-sm flex items-center mt-[5px] `,
     fileInput: `file:hidden cursor-pointer w-full h-[100%] py-[8px] pr-[8px] pl-[40px] z-10 text-grayColor`,
     cameraIcon: `text-grayColor absolute top-[10px] left-[10px] text-xl`,
     fileInputBrowseBtn: `absolute top-[7px] right-[10px] bg-primaryColor rounded-sm py-[2px] px-[10px] text-white transition-all group-hover:bg-secondaryColor text-[15px] font-semibold`,
-    textarea: `w-[100%] h-[150px] border border-borderColor resize-none mt-[5px] rounded-sm outline-none px-[20px] py-[15px]`,
+    textarea: `w-[100%] h-[200px] border border-borderColor resize-none mt-[5px] rounded-sm outline-none px-[20px] py-[15px]`,
     submitBtn: `w-[100%] h-[45px] text-white font-semibold bg-secondaryColor transition-all hover:bg-grayColor rounded-sm`,
 };
 
@@ -40,13 +41,23 @@ export default function AddGroupForm() {
                 </label>
                 <div className={styles.radioContainer}>
                     <div className={styles.radioInputWrapper}>
-                        <input type='radio' name='group-privacy' id='public' />
+                        <input
+                            type='radio'
+                            name='group-privacy'
+                            id='public'
+                            className={styles.radioInput}
+                        />
                         <label htmlFor='public' className={styles.label}>
                             Public
                         </label>
                     </div>
                     <div className={styles.radioInputWrapper}>
-                        <input type='radio' name='group-privacy' id='private' />
+                        <input
+                            type='radio'
+                            name='group-privacy'
+                            id='private'
+                            className={styles.radioInput}
+                        />
                         <label htmlFor='private' className={styles.label}>
                             Private
                         </label>
@@ -60,7 +71,12 @@ export default function AddGroupForm() {
                 </label>
                 <div className={styles.radioContainer}>
                     <div className={styles.radioInputWrapper}>
-                        <input type='radio' name='group-posts' id='group-all' />
+                        <input
+                            type='radio'
+                            name='group-posts'
+                            id='group-all'
+                            className={styles.radioInput}
+                        />
                         <label htmlFor='group-all' className={styles.label}>
                             All group members
                         </label>
@@ -70,6 +86,7 @@ export default function AddGroupForm() {
                             type='radio'
                             name='group-posts'
                             id='group-admin'
+                            className={styles.radioInput}
                         />
                         <label htmlFor='group-admin' className={styles.label}>
                             Admin only

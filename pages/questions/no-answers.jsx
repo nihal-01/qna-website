@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import axios from '../../axios';
 import { PagesTopNavbar, QuestionsList, SidebarLayout } from '../../components';
 import { updateQuestions } from '../../redux/slices/questionSlice';
+import { qstnPageLinks } from '../../utils/constants';
 
 export default function NoAnswers({ questions }) {
     const dispatch = useDispatch();
@@ -11,7 +12,7 @@ export default function NoAnswers({ questions }) {
 
     return (
         <main>
-            <PagesTopNavbar />
+            <PagesTopNavbar links={qstnPageLinks} />
             <QuestionsList />
         </main>
     );

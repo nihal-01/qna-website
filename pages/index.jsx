@@ -9,9 +9,8 @@ import {
     QuestionsList,
     SidebarLayout,
 } from '../components';
-import {
-    updateQuestions,
-} from '../redux/slices/questionSlice';
+import { updateQuestions } from '../redux/slices/questionSlice';
+import { qstnPageLinks } from '../utils/constants';
 
 export default function Home({ questions }) {
     const dispatch = useDispatch();
@@ -19,7 +18,7 @@ export default function Home({ questions }) {
 
     return (
         <div>
-            <PagesTopNavbar />
+            <PagesTopNavbar links={qstnPageLinks} />
             <QuestionsList />
         </div>
     );
