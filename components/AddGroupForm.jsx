@@ -1,6 +1,6 @@
 import React from 'react';
 import { IoMdChatbubbles } from 'react-icons/io';
-import { BsCameraFill, BsFillCameraFill } from 'react-icons/bs';
+import { BsCameraFill } from 'react-icons/bs';
 
 const styles = {
     formControl: `mb-[1.5em]`,
@@ -11,7 +11,6 @@ const styles = {
     radioContainer: `flex items-center gap-[1em] mt-[5px]`,
     radioInputWrapper: `flex items-center gap-[0.7em]`,
     radioInput: `w-[16px] min-w-[16px] h-[16px] min-h-[16px]`,
-    checkbox: `w-[16px] min-w-[16px] h-[16px] min-h-[16px] mr-[0.7em]`,
     fileInputWrapper: `relative group w-[100%] h-[45px] border border-borderColor rounded-sm flex items-center mt-[5px] `,
     fileInput: `file:hidden cursor-pointer w-full h-[100%] py-[8px] pr-[8px] pl-[40px] z-10 text-grayColor`,
     cameraIcon: `text-grayColor absolute top-[10px] left-[10px] text-xl`,
@@ -32,36 +31,6 @@ export default function AddGroupForm() {
                         <IoMdChatbubbles />
                     </i>
                     <input type='text' className={styles.input} />
-                </div>
-            </div>
-
-            <div className={styles.formControl}>
-                <label className={styles.label}>
-                    Group privacy <span className='text-[#f00]'>*</span>
-                </label>
-                <div className={styles.radioContainer}>
-                    <div className={styles.radioInputWrapper}>
-                        <input
-                            type='radio'
-                            name='group-privacy'
-                            id='public'
-                            className={styles.radioInput}
-                        />
-                        <label htmlFor='public' className={styles.label}>
-                            Public
-                        </label>
-                    </div>
-                    <div className={styles.radioInputWrapper}>
-                        <input
-                            type='radio'
-                            name='group-privacy'
-                            id='private'
-                            className={styles.radioInput}
-                        />
-                        <label htmlFor='private' className={styles.label}>
-                            Private
-                        </label>
-                    </div>
                 </div>
             </div>
 
@@ -93,30 +62,6 @@ export default function AddGroupForm() {
                         </label>
                     </div>
                 </div>
-            </div>
-
-            <div className={styles.formControl}>
-                <input
-                    type='checkbox'
-                    name=''
-                    id='posts-auto-approve'
-                    className={styles.checkbox}
-                />
-                <label htmlFor='posts-auto-approve' className={styles.label}>
-                    Auto approval for the posts in this group?
-                </label>
-            </div>
-
-            <div className={styles.formControl}>
-                <input
-                    type='checkbox'
-                    name=''
-                    id='comments'
-                    className={styles.checkbox}
-                />
-                <label htmlFor='comments' className={styles.label}>
-                    Activate comments in this group?
-                </label>
             </div>
 
             <div className={styles.formControl}>
