@@ -85,7 +85,7 @@ export default function SingleQuestionPage(params) {
             </div>
             <div>
                 <SingleQuestion {...question} isFullVisible={true} />
-                <div className={styles.formWrapper}>
+                <div className={styles.formWrapper} id='answer'>
                     {user ? (
                         <form>
                             <h3 className={styles.formTitle}>
@@ -144,8 +144,8 @@ export default function SingleQuestionPage(params) {
                         </button>
                     )}
                 </div>
-                <div className={styles.answersHeader} id='answer'>
-                    <h3 className={styles.answersHeaderTitle}>
+                <div className={styles.answersHeader} id='answers'>
+                    <h3 className={styles.answersHeaderTitle} >
                         {answers?.length} Answers
                     </h3>
                     <div>

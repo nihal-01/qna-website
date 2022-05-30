@@ -2,9 +2,11 @@ import React from 'react';
 import { IoMdChatbubbles } from 'react-icons/io';
 import { BsCameraFill } from 'react-icons/bs';
 import { useState } from 'react';
-import axios from '../axios';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
+
+import axios from '../axios';
+import { BtnLoader } from '.';
 
 const styles = {
     formControl: `mb-[1.5em]`,
@@ -20,10 +22,11 @@ const styles = {
     cameraIcon: `text-grayColor absolute top-[10px] left-[10px] text-xl`,
     fileInputBrowseBtn: `absolute top-[7px] right-[10px] bg-primaryColor rounded-sm py-[2px] px-[10px] text-white transition-all group-hover:bg-secondaryColor text-[15px] font-semibold`,
     textarea: `w-[100%] h-[200px] border border-borderColor resize-none mt-[5px] rounded-sm outline-none px-[20px] py-[15px]`,
-    submitBtn: `w-[100%] h-[45px] text-white font-semibold bg-secondaryColor transition-all hover:bg-grayColor rounded-sm`,
+    submitBtn: `w-[100%] h-[45px] text-white font-semibold bg-secondaryColor transition-all hover:bg-grayColor rounded-sm disabled:cursor-not-allowed`,
     uploadingTxt: `text-right text-grayColor mt-[6px]`,
     uploadedTxt: `text-right text-[green] mt-[6px]`,
     errorTxt: `text-[red] text-right mt-[6px]`,
+    error: `text-[red] text-[15px] lg:text-base mb-[1em]`,
 };
 
 export default function AddGroupForm() {
@@ -36,6 +39,8 @@ export default function AddGroupForm() {
     });
     const [cover, setCover] = useState({ uploading: '', error: '' });
     const [profile, setProfile] = useState({ uploading: '', error: '' });
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const { user } = useSelector((state) => state.user);
     const router = useRouter();
@@ -47,6 +52,14 @@ export default function AddGroupForm() {
     const handleSubmit = async (e) => {
         try {
             e.preventDefault();
+            setError('');
+
+            if (!data.title) {
+                return setError('* Fill all required fields');
+            }
+
+            setLoading(true);
+
             await axios.post(
                 '/groups',
                 {
@@ -61,7 +74,10 @@ export default function AddGroupForm() {
 
             router.push('/groups');
         } catch (err) {
-            console.log(err?.response?.data);
+            setError(
+                err?.response?.data?.error || 'Something Went wrong, Try again'
+            );
+            setLoading(false);
         }
     };
 
@@ -275,8 +291,14 @@ export default function AddGroupForm() {
                 ></textarea>
             </div>
 
-            <button type='submit' className={styles.submitBtn}>
-                Add Group
+            {error && <p className={styles.error}>{error}</p>}
+
+            <button
+                type='submit'
+                className={styles.submitBtn}
+                disabled={loading}
+            >
+                {loading ? <BtnLoader /> : 'Add Group'}
             </button>
         </form>
     );

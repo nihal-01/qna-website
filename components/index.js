@@ -29,6 +29,7 @@ import GroupCard from './GroupCard';
 import SingleGroupHero from './SingleGroupHero';
 import SinglePost from './SinglePost';
 import SingleComment from './SingleComment';
+import BtnLoader from './BtnLoader';
 
 export {
     Footer,
@@ -62,4 +63,5 @@ export {
     SingleGroupHero,
     SinglePost,
     SingleComment,
+    BtnLoader,
 };

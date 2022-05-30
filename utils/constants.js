@@ -47,7 +47,7 @@ export const navLinks = [
     {
         icon: <BsPersonFill />,
         name: 'User Profile',
-        url: '/profile',
+        url: '/profile/[username]',
     },
     {
         icon: <BsFolderFill />,
@@ -57,7 +57,25 @@ export const navLinks = [
     {
         icon: <BsBookHalf />,
         name: 'Questions',
-        url: '/questions',
+        url: '#',
+        sub: [
+            {
+                name: 'Most Answered',
+                url: '/questions/most-answered',
+            },
+            {
+                name: 'Most Voted',
+                url: '/questions/most-voted',
+            },
+            {
+                name: 'Oldest Questions',
+                url: '/questions/oldest-questions',
+            },
+            {
+                name: 'Polls',
+                url: '/polls',
+            },
+        ],
     },
     {
         icon: <BiPoll />,
@@ -153,31 +171,31 @@ export const dropDownMenu = [
         _id: 0,
         name: 'User Profile',
         icon: <BsPersonFill />,
-        url: '/about-us',
+        url: '/profile/[username]',
     },
     {
         _id: 1,
         name: 'Edit Profile',
         icon: <BsPenFill />,
-        url: '/contact-us',
+        url: '/profile/[username]/edit',
     },
     {
         _id: 2,
         name: 'Groups',
         icon: <BsGlobe />,
-        url: '',
+        url: '/groups',
     },
     {
         _id: 3,
         name: 'Asked Questions',
         icon: <BiUserVoice />,
-        url: '',
+        url: '/questions/asked-questions',
     },
     {
         _id: 4,
         name: 'Activity Log',
         icon: <FiActivity />,
-        url: '',
+        url: '/profile/[username]/activities',
     },
     {
         _id: 5,
@@ -247,8 +265,12 @@ export const qstnPageLinks = [
         link: '/questions/polls',
     },
     {
+        name: 'Oldest Questions',
+        link: '/questions/oldest-questions',
+    },
+    {
         name: 'Answers',
-        link: 'answers',
+        link: '/questions/answers',
     },
     {
         name: 'No Answers',

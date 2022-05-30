@@ -11,6 +11,8 @@ const styles = {
     navListItemLink: `group flex items-center gap-[13px]`,
     navListIcon: `text-xl text-[#26333b] transition-colors group-hover:text-secondaryColor `,
     navListText: `text-lg font-semibold text-[#26333b] transition-colors group-hover:text-secondaryColor`,
+    subLinks: `ml-[35px] my-[15px]`,
+    subLinkItem: `mb-[10px] last:mb-0 transition-all hover:text-primaryColor`,
 };
 
 export default function LeftSidebar() {
@@ -20,16 +22,21 @@ export default function LeftSidebar() {
     return (
         <div className={styles.container}>
             <ul>
-                {navLinks.map(({ icon, name, url }, index) => {
-                    if ((url === '/profile' || url === '/feed') && !user) {
+                {navLinks.map(({ icon, name, url, sub }, index) => {
+                    if (
+                        (url === '/profile/[username]' ||
+                            url === '/feed' ||
+                            url === '/add-group') &&
+                        !user
+                    ) {
                         return;
                     }
                     return (
                         <li key={index} className={styles.navListItem}>
                             <Link
                                 href={
-                                    url === '/profile'
-                                        ? `${url}/${user.username}`
+                                    url === '/profile/[username]'
+                                        ? `${url}?username=${user.username}`
                                         : url
                                 }
                             >
@@ -61,6 +68,27 @@ export default function LeftSidebar() {
                                     </span>
                                 </a>
                             </Link>
+                            {sub && (
+                                <ul className={styles.subLinks}>
+                                    {sub.map(({ name, url }, index) => {
+                                        return (
+                                            <li
+                                                key={index}
+                                                className={
+                                                    styles.subLinkItem +
+                                                    (url === router.pathname
+                                                        ? ' text-secondaryColor'
+                                                        : ' text-grayColor')
+                                                }
+                                            >
+                                                <Link href={url}>
+                                                    <a href=''>{name}</a>
+                                                </Link>
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                            )}
                         </li>
                     );
                 })}

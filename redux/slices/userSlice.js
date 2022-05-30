@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import Cookies from 'js-cookie';
 
 const initialState = {
-    user: Cookies.get('user-info') ? JSON.parse(Cookies.get('user-info')) : '',
+    user: '',
     users: [],
 };
 

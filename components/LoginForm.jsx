@@ -1,5 +1,6 @@
 import Cookies from 'js-cookie';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { HiLockClosed, HiUser } from 'react-icons/hi';
 import { useDispatch } from 'react-redux';
@@ -7,6 +8,7 @@ import { useDispatch } from 'react-redux';
 import axios from '../axios';
 import { updateSigninBox } from '../redux/slices/layoutSlice';
 import { signUser } from '../redux/slices/userSlice';
+import { BtnLoader } from './';
 
 const styles = {
     form: ``,
@@ -14,12 +16,12 @@ const styles = {
     inputWrapper: `flex items-center border border-borderColor rounded-sm h-[45px] mb-[10px] mt-[5px] lg:mb-[20px]`,
     inputIcon: `text-lg text-grayColor mx-[10px]`,
     input: `w-[100%] h-[100%] outline-none`,
-    submitBtn: `w-[100%] h-[40px] lg:h-[45px] bg-secondaryColor text-white font-semibold hover:bg-grayColor transition-all cursor-pointer rounded-sm mt-[20px]`,
+    submitBtn: `w-[100%] h-[40px] lg:h-[45px] bg-secondaryColor text-white font-semibold hover:bg-grayColor transition-all cursor-pointer rounded-sm mt-[20px] disabled:cursor-not-allowed`,
     bottomFlex: `flex items-center justify-between mt-[20px]`,
     checkboxWrapper: `flex items-center gap-[10px]`,
     checkbox: `w-[16px] h-[16px] text-[#0f0]`,
-    forgotTxt: `text-[14px] lg:text-[15px] text-priamryColor transition-all hover:text-secondaryColor`,
-    errorMsg: `text-[red] text-[15px] lg:text-base`,
+    forgotTxt: `text-[14px] lg:text-[15px] text-priamryColor transition-all hover:text-secondaryColor cursor-pointer`,
+    errorMsg: `text-[red] text-[15px] lg:text-base overflow-scroll`,
 };
 
 export default function LoginForm() {
@@ -31,6 +33,7 @@ export default function LoginForm() {
     const [loading, setLoading] = useState(false);
 
     const dispacth = useDispatch();
+    const router = useRouter();
 
     const handleChange = (e) => {
         setUser({ ...user, [e.target.name]: e.target.value });
@@ -45,9 +48,13 @@ export default function LoginForm() {
                 return setError('* fill required fields');
             }
 
+            setLoading(true);
+
             const response = await axios.post('/auth/signin', {
                 ...user,
             });
+
+            setLoading(false);
 
             Cookies.set('user-info', JSON.stringify(response.data));
             dispacth(signUser(response.data));
@@ -56,6 +63,7 @@ export default function LoginForm() {
             setError(
                 err.response.data?.error || 'Something went wrong, Try again'
             );
+            setLoading(false);
         }
     };
 
@@ -112,11 +120,23 @@ export default function LoginForm() {
                         Remember Me!
                     </label>
                 </div>
-                <p className={styles.forgotTxt}>
-                    <Link href={'/'}>Forgot Password?</Link>
+                <p
+                    className={styles.forgotTxt}
+                    onClick={() => {
+                        dispacth(updateSigninBox(false));
+                        router.push('/forgot-password');
+                    }}
+                >
+                    Forgot Password?
                 </p>
             </div>
-            <input type='submit' name='submit' className={styles.submitBtn} />
+            <button
+                type='submit'
+                className={styles.submitBtn}
+                disabled={loading}
+            >
+                {loading ? <BtnLoader /> : 'submit'}
+            </button>
         </form>
     );
 }

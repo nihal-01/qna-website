@@ -18,9 +18,11 @@ const styles = {
     contentWrapper: `grid gap-[1.5em] px-[15px] py-[30px] lg:p-[30px] lg:grid-cols-2 2xl:grid-cols-3`,
 };
 
-export default function Users(props) {
+export default function Users({ cookies }) {
     const { user, users } = useSelector((state) => state.user);
     const dispatch = useDispatch();
+
+    console.log(cookies);
 
     const fetchData = useCallback(async () => {
         try {

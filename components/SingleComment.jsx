@@ -5,8 +5,8 @@ import { BsCheck } from 'react-icons/bs';
 import { avatarImg } from '../public/images';
 
 const styles = {
-    container: `mt-[1.5em] py-[15px] lg:py-[30px] border-b last:border-b-0 grid grid-cols-[65px_auto] lg:grid-cols-[75px_auto]`,
-    imgWrapper: `w-[55px] min-w-[55px] h-[55px] min-h-[55px] mr-[15px] rounded-full border-2 border-secondaryColor transition-all hover:border-primaryColor cursor-pointer p-[4px]`,
+    container: `relative mt-[1.5em] py-[15px] lg:py-[30px] border-b last:border-b-0 grid grid-cols-[65px_auto] lg:grid-cols-[75px_auto]`,
+    imgWrapper: `relative w-[55px] min-w-[55px] h-[55px] min-h-[55px] mr-[15px] rounded-full border-2 border-secondaryColor transition-all hover:border-primaryColor cursor-pointer p-[4px]`,
     img: `relative w-[100%] h-[100%] rounded-full overflow-hidden`,
     header: `flex items-center mb-[5px]`,
     username: `font-bold text-[17px] text-primaryColor transition-all hover:text-secondaryColor`,

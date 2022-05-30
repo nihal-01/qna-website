@@ -7,6 +7,7 @@ import axios from '../axios';
 import { useDispatch } from 'react-redux';
 import { signUser } from '../redux/slices/userSlice';
 import { updateSignupBox } from '../redux/slices/layoutSlice';
+import BtnLoader from './BtnLoader';
 
 const styles = {
     form: ``,
@@ -14,7 +15,7 @@ const styles = {
     inputWrapper: `flex items-center border border-borderColor rounded-sm h-[45px] mb-[10px] mt-[5px] lg:mb-[20px]`,
     inputIcon: `text-lg text-grayColor mx-[10px]`,
     input: `w-[100%] h-[100%] outline-none`,
-    submitBtn: `w-[100%] h-[40px] lg:h-[45px] bg-secondaryColor text-white font-semibold hover:bg-grayColor transition-all cursor-pointer rounded-sm mt-[20px]`,
+    submitBtn: `w-[100%] h-[40px] lg:h-[45px] bg-secondaryColor text-white font-semibold hover:bg-grayColor transition-all cursor-pointer rounded-sm mt-[20px] disabled:cursor-not-allowed`,
     checkboxWrapper: `flex items-center gap-[10px] mt-[20px]`,
     checkbox: `w-[16px] min-w-[16px] h-[16px] min-h-[16px] text-[#0f0]`,
     errorMsg: `text-[red] text-[15px] lg:text-base`,
@@ -61,11 +62,15 @@ export default function SignupForm() {
                 return setError('* agree the terms and conditons');
             }
 
+            setLoading(true);
+
             const response = await axios.post('/auth/signup', {
                 username: user.username,
                 email: user.email,
                 password: user.password,
             });
+
+            setLoading(false);
 
             Cookies.set('user-info', JSON.stringify(response.data));
             dispacth(signUser(response.data));
@@ -74,6 +79,7 @@ export default function SignupForm() {
             setError(
                 err.response.data?.error || 'Something went wrong, Try again'
             );
+            setLoading(false);
         }
     };
 
@@ -176,7 +182,13 @@ export default function SignupForm() {
                 </label>
             </div>
 
-            <input type='submit' name='submit' className={styles.submitBtn} />
+            <button
+                type='submit'
+                className={styles.submitBtn}
+                disabled={loading}
+            >
+                {loading ? <BtnLoader /> : 'submit'}
+            </button>
         </form>
     );
 }

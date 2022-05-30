@@ -1,8 +1,6 @@
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import axios from '../axios';
+import { useDispatch } from 'react-redux';
 
+import axios from '../axios';
 import {
     HomeHero,
     PagesTopNavbar,
@@ -10,11 +8,15 @@ import {
     SidebarLayout,
 } from '../components';
 import { updateQuestions } from '../redux/slices/questionSlice';
+import { useEnhancedEffect } from '../utils';
 import { qstnPageLinks } from '../utils/constants';
 
 export default function Home({ questions }) {
     const dispatch = useDispatch();
-    dispatch(updateQuestions(questions));
+
+    useEnhancedEffect(() => {
+        dispatch(updateQuestions(questions));
+    }, [dispatch, questions]);
 
     return (
         <div>

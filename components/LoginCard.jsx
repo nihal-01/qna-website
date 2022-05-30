@@ -19,7 +19,7 @@ const styles = {
     contentWrapper: `grow`,
     heading: `text-white text-2xl font-semibold mb-[10px]`,
     para: `text-white text-[17px]`,
-    signUpBtn: `grow-0 w-[100%] h-[45px] bg-primaryColor text-white font-semibold`,
+    signUpBtn: `grow-0 w-[100%] h-[45px] bg-primaryColor text-white font-semibold transition-all hover:opacity-90`,
     formWrapper: `p-[15px] lg:p-[50px]`,
     closeBtn: `absolute right-0 top-[-37px] text-3xl text-white `,
     signupTxt: `text-center text-white mt-[10px] font-semibold lg:hidden `,
@@ -107,7 +107,13 @@ export default function LoginCard() {
                         <MdClose />
                     </button>
                 </div>
-                <div className={styles.signupTxt}>
+                <div
+                    className={styles.signupTxt}
+                    onClick={() => {
+                        dispatch(updateSigninBox(false));
+                        dispatch(updateSignupBox(true));
+                    }}
+                >
                     Don&#39;t have account,{' '}
                     <span className='text-secondaryColor transition-colors hover:text-white cursor-pointer'>
                         Sign Up Here

@@ -103,7 +103,13 @@ export default function SignupCard() {
                         <MdClose />
                     </button>
                 </div>
-                <div className={styles.signInTxt}>
+                <div
+                    className={styles.signInTxt}
+                    onClick={() => {
+                        dispacth(updateSignupBox(false));
+                        dispacth(updateSigninBox(true));
+                    }}
+                >
                     Have an account?{' '}
                     <span className='text-secondaryColor transition-colors hover:text-white cursor-pointer'>
                         Sign In Now

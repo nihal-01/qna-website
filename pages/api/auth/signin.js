@@ -18,6 +18,7 @@ const handler = nc({
 handler.use(connectDb);
 
 handler.post(async (req, res) => {
+    console.log('hi from signin');
     const { info, password } = req.body;
     let user;
 

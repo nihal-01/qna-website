@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import axios from '../../axios';
 import { PagesTopNavbar, QuestionsList, SidebarLayout } from '../../components';
 import { updateQuestions } from '../../redux/slices/questionSlice';
+import { useEnhancedEffect } from '../../utils';
 import { qstnPageLinks } from '../../utils/constants';
 
 export default function MostVoted({ questions }) {
     const dispatch = useDispatch();
-    dispatch(updateQuestions(questions));
+
+    useEnhancedEffect(() => {
+        dispatch(updateQuestions(questions));
+    }, [dispatch, questions]);
 
     return (
         <main>
@@ -23,7 +27,7 @@ MostVoted.getLayout = function (page) {
 };
 
 export async function getServerSideProps() {
-    const res = await axios.get(`questions?sort=${'votes:desc'}`);
+    const res = await axios.get(`questions?sort=votes:desc`);
 
     return {
         props: {

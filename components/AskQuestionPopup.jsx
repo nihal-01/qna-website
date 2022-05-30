@@ -6,7 +6,7 @@ import { MdClose, MdOutlineChatBubble } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateQuestionBox } from '../redux/slices/layoutSlice';
 
-import PollForm from './PollForm';
+import { PollForm, BtnLoader } from '.';
 import axios from '../axios';
 
 const styles = {
@@ -21,7 +21,7 @@ const styles = {
     select: `bg-transparent w-[100%] h-[100%] outline-none text-grayColor capitalize`,
     spanTxt: `inline-block text-[#707885] mt-[5px] text-[15px]`,
     closeBtn: `absolute right-0 top-[-37px] text-3xl text-white `,
-    submitBtn: `w-[100%] h-[45px] text-white font-semibold bg-secondaryColor transition-all hover:bg-grayColor rounded-sm mt-[1em]`,
+    submitBtn: `w-[100%] h-[45px] text-white font-semibold bg-secondaryColor transition-all hover:bg-grayColor rounded-sm mt-[1em] disabled:cursor-not-allowed`,
     tagsList: `flex items-center flex-wrap gap-[15px] mb-[1em] mt-[0.7em]`,
     tagsListItem: `flex items-center gap-[5px] bg-secondaryColor text-white text-[14px] px-[5px] py-[2px] tracking-wide rounded-sm break-all`,
     tagsListItemClose: `hover:text-[red] cursor-pointer`,
@@ -31,7 +31,7 @@ const styles = {
     errorTxt: `text-[red] text-[15px] lg:text-base`,
 };
 
-export default function AskQuestionPopup() {
+function AskQuestionPopup() {
     const [tags, setTags] = useState([]);
     const [isPollQuestion, setIsPollQuestion] = useState(false);
     const [optionsList, setOptionsList] = useState([
@@ -49,7 +49,7 @@ export default function AskQuestionPopup() {
         policy: true,
     });
     const [error, setError] = useState('');
-    const [loading, setLoading] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const { questionBox } = useSelector((state) => state.layout);
     const { categories } = useSelector((state) => state.question);
@@ -103,6 +103,8 @@ export default function AskQuestionPopup() {
                 return setError('You should agree Terms and Conditions');
             }
 
+            setLoading(true);
+
             const filteredOptionsList = optionsList.filter((singleOption) => {
                 return singleOption.option !== '';
             });
@@ -119,11 +121,14 @@ export default function AskQuestionPopup() {
                     headers: { Authorization: `Bearer ${user?.token}` },
                 }
             );
+
+            setLoading(false);
             console.log(response.data);
         } catch (err) {
             setError(
                 err.response?.data?.error || 'Something went wrong, Try again'
             );
+            setLoading(false);
         }
     };
 
@@ -147,8 +152,8 @@ export default function AskQuestionPopup() {
                     styles.container +
                     ` ${
                         questionBox
-                            ? ' opacity-100 visible'
-                            : 'opacity-0 invisible'
+                            ? ' opacity-100 visible block'
+                            : 'opacity-0 invisible hidden'
                     }`
                 }
             >
@@ -162,6 +167,7 @@ export default function AskQuestionPopup() {
                         onClick={() => {
                             dispatch(updateQuestionBox(false));
                         }}
+                        type='button'
                     >
                         <MdClose />
                     </button>
@@ -200,7 +206,9 @@ export default function AskQuestionPopup() {
                                 value={question.category || ''}
                                 onChange={handleChange}
                             >
-                                <option value='' hidden>Select Category</option>
+                                <option value='' hidden>
+                                    Select Category
+                                </option>
                                 {categories.map((category, index) => {
                                     return (
                                         <option
@@ -370,11 +378,17 @@ export default function AskQuestionPopup() {
 
                     {error && <p className={styles.errorTxt}>{error}</p>}
 
-                    <button type='submit' className={styles.submitBtn}>
-                        Publish Your Question
+                    <button
+                        type='submit'
+                        className={styles.submitBtn}
+                        disabled={loading}
+                    >
+                        {loading ? <BtnLoader /> : 'Publish Your Question'}
                     </button>
                 </form>
             </div>
         </div>
     );
 }
+
+export default React.memo(AskQuestionPopup);

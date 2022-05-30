@@ -7,7 +7,7 @@ import { updateQuestions } from '../../redux/slices/questionSlice';
 import { useEnhancedEffect } from '../../utils';
 import { qstnPageLinks } from '../../utils/constants';
 
-export default function MostAnswered({ questions }) {
+export default function RecentQuestions({ questions }) {
     const dispatch = useDispatch();
 
     useEnhancedEffect(() => {
@@ -22,12 +22,12 @@ export default function MostAnswered({ questions }) {
     );
 }
 
-MostAnswered.getLayout = function (page) {
+RecentQuestions.getLayout = function (page) {
     return <SidebarLayout>{page}</SidebarLayout>;
 };
 
 export async function getServerSideProps() {
-    const res = await axios.get(`questions?sort=numOfAnswers:desc`);
+    const res = await axios.get(`questions?sort=createdAt:desc`);
 
     return {
         props: {

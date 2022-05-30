@@ -38,7 +38,7 @@ export default function Footer() {
                         </div>
                         <p className={styles.description}>
                             Qna website is a social questions & Answers Engine
-                            which will help you establis your community and
+                            which will help you establish your community and
                             connect with other people.
                         </p>
                     </div>
@@ -49,7 +49,7 @@ export default function Footer() {
                                 <Link href='/users'>Meet the team</Link>
                             </li>
                             <li className={styles.linksListItem}>
-                                <Link href='/blog'>BLog</Link>
+                                <Link href='/groups'>Groups</Link>
                             </li>
                             <li className={styles.linksListItem}>
                                 <Link href='/about-us'>About us</Link>
@@ -87,20 +87,33 @@ export default function Footer() {
                     <div className={styles.linksWrapper}>
                         <h2 className={styles.linksTitle}>Follow</h2>
                         <div className={styles.socialIconsWrapper}>
-                            <a href='' className={styles.socialIcon}>
+                            <a
+                                href='https://www.facebook.com/'
+                                target='blank'
+                                className={styles.socialIcon}
+                            >
                                 <FaFacebookF />
                             </a>
-                            <a href='' className={styles.socialIcon}>
+                            <a
+                                href='https://www.instagram.com/'
+                                target='blank'
+                                className={styles.socialIcon}
+                            >
                                 <FaInstagram />
                             </a>
-                            <a href='' className={styles.socialIcon}>
+                            <a
+                                href='https://twitter.com/'
+                                target='blank'
+                                className={styles.socialIcon}
+                            >
                                 <FaTwitter />
                             </a>
-                            <a href='' className={styles.socialIcon}>
+                            <a
+                                href='https://www.linkedin.com/'
+                                target='blank'
+                                className={styles.socialIcon}
+                            >
                                 <FaLinkedinIn />
-                            </a>
-                            <a href='' className={styles.socialIcon}>
-                                <FaRss />
                             </a>
                         </div>
                     </div>

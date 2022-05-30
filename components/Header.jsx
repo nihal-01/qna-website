@@ -21,7 +21,7 @@ const styles = {
     imgWrapper: `flex items-center gap-[10px] xl:gap-[20px] hover:translate-y-[-2px] transition-transform h-[100%]`,
     logoImg: `w-[45px] lg:w-[50px] xl:w-[55px]`,
     logoTxt: `text-[#fff] text-2xl lg:text-3xl font-bold`,
-    menuIcon: `text-white text-2xl transition-colors hover:text-secondaryColor lg:hidden`,
+    menuIcon: `text-white text-2xl transition-colors hover:text-secondaryColor lg:hidden outline-none`,
     navbar: `hidden lg:flex items-center xl:justify-between w-[100%] h-[100%] xl:border-l border-[#33353c] xl:pl-[20px]`,
     navList: `flex items-center mx-[auto] xl:mx-[0] gap-[10px]`,
     navListItem: `text-white font-bold text-base hover:bg-[#1a1c21] rounded-sm px-[10px] py-[5px]`,
@@ -46,7 +46,9 @@ const styles = {
     accountDropdownActive: `max-h-[500px]`,
     dropDownList: `p-[10px]`,
     dropDownItem: `py-[10px] px-[15px]`,
-    dropDownItemTxt: `flex items-center gap-[14px] font-[600] text-primaryColor transition-all hover:text-secondaryColor cursor-pointer`,
+    dropDownItemTxt: `flex items-center gap-[14px] text-[15px] lg:text-base font-[600] text-primaryColor transition-all hover:text-secondaryColor cursor-pointer`,
+    mobile_accountWrapper: `relative lg:hidden h-[100%] flex items-center justify-center`,
+    mobile_avatarImg: `relative w-[35px] h-[35px] rounded-full overflow-hidden`,
 };
 
 export default function Header() {
@@ -57,6 +59,7 @@ export default function Header() {
     const dispatch = useDispatch();
 
     const { user } = useSelector((state) => state.user);
+    const { questionBox } = useSelector((state) => state.layout)
 
     const handleLogout = async () => {
         try {
@@ -103,9 +106,94 @@ export default function Header() {
                             <h1 className={styles.logoTxt}>QNA</h1>
                         </a>
                     </Link>
-                    <button className={styles.menuIcon}>
-                        <FiLock />
-                    </button>
+                    {!user ? (
+                        <button
+                            className={styles.menuIcon}
+                            onClick={() => {
+                                dispatch(updateSigninBox(true));
+                            }}
+                        >
+                            <FiLock />
+                        </button>
+                    ) : (
+                        <div className={styles.mobile_accountWrapper}>
+                            <div
+                                className={styles.mobile_avatarImg}
+                                onClick={() => {
+                                    setIsDropdownOpen(!isDropdownOpen);
+                                }}
+                            >
+                                <Image
+                                    src={avatarImg}
+                                    alt=''
+                                    objectFit='cover'
+                                    layout='fill'
+                                />
+                            </div>
+                            <div
+                                className={
+                                    isDropdownOpen
+                                        ? styles.accountDropdown +
+                                          ' ' +
+                                          styles.accountDropdownActive
+                                        : styles.accountDropdown
+                                }
+                            >
+                                <ul className={styles.dropDownList}>
+                                    {dropDownMenu.map((item) => {
+                                        const { _id, name, icon, url } = item;
+                                        return (
+                                            <li
+                                                key={_id}
+                                                className={styles.dropDownItem}
+                                            >
+                                                {url === '/logout' ? (
+                                                    <span
+                                                        onClick={handleLogout}
+                                                        className={
+                                                            styles.dropDownItemTxt
+                                                        }
+                                                    >
+                                                        <span className='text-[17px]'>
+                                                            {icon}
+                                                        </span>
+                                                        {name}
+                                                    </span>
+                                                ) : (
+                                                    <Link
+                                                        href={`${url}${
+                                                            url.includes(
+                                                                '[username]'
+                                                            )
+                                                                ? `?username=${user.username}`
+                                                                : ''
+                                                        }`}
+                                                    >
+                                                        <a
+                                                            href={url}
+                                                            className={
+                                                                styles.dropDownItemTxt
+                                                            }
+                                                            onClick={() => {
+                                                                setIsDropdownOpen(
+                                                                    false
+                                                                );
+                                                            }}
+                                                        >
+                                                            <span className='text-[17px]'>
+                                                                {icon}
+                                                            </span>
+                                                            {name}
+                                                        </a>
+                                                    </Link>
+                                                )}
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                            </div>
+                        </div>
+                    )}
                 </div>
                 <nav className={styles.navbar}>
                     <ul className={styles.navList}>
@@ -208,7 +296,15 @@ export default function Header() {
                                                             {name}
                                                         </span>
                                                     ) : (
-                                                        <Link href={url}>
+                                                        <Link
+                                                            href={`${url}${
+                                                                url.includes(
+                                                                    '[username]'
+                                                                )
+                                                                    ? `?username=${user.username}`
+                                                                    : ''
+                                                            }`}
+                                                        >
                                                             <a
                                                                 href={url}
                                                                 className={

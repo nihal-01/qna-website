@@ -74,7 +74,10 @@ export default function RightSidebar() {
     return (
         <div className={styles.container}>
             <div className={styles.askBtnWrapper}>
-                <button className={styles.askBtn} onClick={handleAskBtn}>
+                <button
+                    className={styles.askBtn}
+                    onClick={() => handleAskBtn()}
+                >
                     Ask A Question
                 </button>
             </div>

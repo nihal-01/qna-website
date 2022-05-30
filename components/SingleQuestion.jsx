@@ -24,16 +24,17 @@ import { avatarImg } from '../public/images';
 import { updateVotesCount } from '../redux/slices/questionSlice';
 import { logout } from '../redux/slices/userSlice';
 import { monthNames } from '../utils/constants';
+import BtnLoader from './BtnLoader';
 
 const styles = {
     container: `px-[15px] py-[15px] lg:p-[30px] border-b border-borderColor`,
     header: `grid grid-cols-[auto_1fr] gap-[20px] items-center lg:items-start lg:gap-0 lg:gap-x-[20px]`,
-    avatarWrapper: `w-[50px] h-[50px] rounded-full p-[4px] border-2 border-secondaryColor lg:row-span-2 lg:w-[55px] lg:h-[55px]`,
+    avatarWrapper: `relative w-[50px] h-[50px] rounded-full p-[4px] border-2 border-secondaryColor lg:row-span-2 lg:w-[55px] lg:h-[55px] transition-all hover:border-primaryColor`,
     avatarImg: `relative inline-block w-[100%] h-[100%] w-[100%] h-[100%] rounded-full overflow-hidden`,
     infoWrapper: `flex items-center gap-[20px]`,
     voteWrapper: `text-center lg:w-[55px] lg:min-w-[55px]`,
-    voteBtnUp: `text-[#677075] flex mx-auto transition-all hover:text-[#000] lg:text-[17px]`,
-    voteBtnDown: `text-[#677075] flex mx-auto rotate-180 transition-all hover:text-[#000] lg:text-[17px]`,
+    voteBtnUp: `text-[#677075] flex mx-auto transition-all hover:text-[#000] lg:text-[17px] disabled:cursor-not-allowed`,
+    voteBtnDown: `text-[#677075] flex mx-auto rotate-180 transition-all hover:text-[#000] lg:text-[17px] disabled:cursor-not-allowed`,
     voteCount: `text-[#677075] text-lg py-[5px] font-semibold lg:text-[22px] lg:py-[10px]`,
     postMeta: `lg:flex lg:flex-wrap lg:items-center lg:gap-[5px]`,
     authorName: `text-secondaryColor font-semibold capitalize tracking-wide transition-all lg:text-[17px]`,
@@ -48,7 +49,7 @@ const styles = {
     singleTag: `border border-borderColor rounded-sm text-grayColor text-sm py-[2px] px-[10px] cursor-pointer transition-all hover:bg-secondaryColor hover:text-white rounded-sm lg:text-[15px]`,
     articleFooter: `bg-[#f5f5f5] p-[10px] flex items-center gap-[12px] flex-wrap lg:p-[20px]`,
     answersBox: `inline-block text-[#26aa6c] border border-[#26aa6c] bg-white py-[5px] px-[10px] flex items-center gap-[8px] rounded-sm text-sm lg:text-base`,
-    footerBtn: `inline-block text-grayColor border border-[#d9dadb] bg-white py-[5px] px-[10px] flex items-center gap-[8px] rounded-sm text-sm lg:text-base`,
+    footerBtn: `inline-block text-grayColor border border-[#d9dadb] bg-white py-[5px] px-[10px] flex items-center gap-[8px] rounded-sm text-sm lg:text-base cursor-default`,
     answerBtn: `inline-block bg-primaryColor text-white py-[6px] px-[15px] font-semibold text-sm rounded-sm transition-all hover:bg-secondaryColor lg:text-base`,
     verified: `inline-block bg-secondaryColor rounded-full text-white ml-[5px] text-base w-[15px] h-[15px] lg:w-[18px] lg:h-[18px] lg:text-[16px]`,
     socialWrapper: `pt-[15px] lg:pt-[30px] flex items-center justify-between flex-wrap gap-[1em]`,
@@ -57,7 +58,7 @@ const styles = {
     shareIcon: `flex items-center gap-[8px] text-[#707885] text-sm lg:text-[15px]`,
     socilaIconsList: `flex items-center gap-[10px]`,
     socialIcon: `w-[30px] h-[30px] rounded-sm text-base flex items-center justify-center text-white lg:w-[35px] lg:h-[35px] lg:text-[20px] transition-all hover:bg-primaryColor cursor-pointer`,
-    errorTxt: `text-[red] bg-[#fbcccc] p-[14px] text-[14px] mb-[1.5em] font-bold rounded-sm tracking-wider`,
+    errorTxt: `w-[100%] text-[red] bg-[#fbcccc] p-[14px] text-[14px] mb-[1.5em] font-bold rounded-sm tracking-wider`,
 };
 
 export default function SingleQuestion({
@@ -75,7 +76,7 @@ export default function SingleQuestion({
     isFullVisible,
 }) {
     const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [voteLoading, setVoteLoading] = useState(false);
 
     const myDate = new Date(createdAt);
 
@@ -85,6 +86,8 @@ export default function SingleQuestion({
     const handleVote = async (isUpvote) => {
         try {
             setError('');
+            setVoteLoading(true);
+
             const response = await axios.patch(
                 '/questions/vote',
                 {
@@ -95,7 +98,8 @@ export default function SingleQuestion({
                     headers: { Authorization: `Bearer ${user?.token}` },
                 }
             );
-            console.log(response.data);
+
+            setVoteLoading(false);
             dispatch(
                 updateVotesCount({
                     questionId: _id,
@@ -103,6 +107,7 @@ export default function SingleQuestion({
                 })
             );
         } catch (err) {
+            setVoteLoading(false);
             if (err.response.status === 401) {
                 dispatch(logout());
                 return setError('Please Login to vote');
@@ -128,8 +133,24 @@ export default function SingleQuestion({
         <div className={styles.container}>
             <div className={styles.header}>
                 <div className={styles.avatarWrapper}>
-                    <Link href={'/s'}>
-                        <a href='' className={styles.avatarImg}>
+                    <Link
+                        href={
+                            isAnonymous ? '#' : `/profile/${author?.username}`
+                        }
+                    >
+                        <a
+                            href={
+                                isAnonymous
+                                    ? '#'
+                                    : `/profile/${author?.username}`
+                            }
+                            className={
+                                styles.avatarImg +
+                                (isAnonymous
+                                    ? ' cursor-default'
+                                    : ' cursor-pointer')
+                            }
+                        >
                             <Image
                                 src={author?.avatar || avatarImg}
                                 alt=''
@@ -159,9 +180,9 @@ export default function SingleQuestion({
                         {isAnonymous ? (
                             <span className={styles.authorName}>Anonymous</span>
                         ) : (
-                            <Link href={'/dd'}>
+                            <Link href={`/profile/${author?.username}`}>
                                 <a
-                                    href={'/'}
+                                    href={`/profile/${author?.username}`}
                                     className={
                                         styles.authorName +
                                         ` hover:text-primaryColor`
@@ -237,12 +258,23 @@ export default function SingleQuestion({
                             onClick={() => {
                                 handleVote(true);
                             }}
+                            disabled={voteLoading}
                         >
                             <BsFillTriangleFill />
                         </button>
                     </li>
                     <li>
-                        <div className={styles.voteCount}>{votes}</div>
+                        <div className={styles.voteCount}>
+                            {voteLoading ? (
+                                <BtnLoader
+                                    color={'secondaryColor'}
+                                    largeSize={20}
+                                    smallSize={20}
+                                />
+                            ) : (
+                                votes
+                            )}
+                        </div>
                     </li>
                     <li>
                         <button
@@ -250,12 +282,13 @@ export default function SingleQuestion({
                             onClick={() => {
                                 handleVote(false);
                             }}
+                            disabled={voteLoading}
                         >
                             <BsFillTriangleFill />
                         </button>
                     </li>
                 </ul>
-                <div>
+                <div className='w-[100%]'>
                     <p
                         className={
                             styles.desc +
@@ -286,15 +319,14 @@ export default function SingleQuestion({
                         </ul>
                     )}
 
-                    {error && (
-                        // <div className={styles.errorWrapper}>
-                        <p className={styles.errorTxt}>{error}</p>
-                        // </div>
-                    )}
+                    {error && <p className={styles.errorTxt}>{error}</p>}
 
                     <div className={styles.articleFooter}>
-                        <Link href={'/dd'}>
-                            <a href={'/dd'} className={styles.answersBox}>
+                        <Link href={`/questions/${_id}#answers`}>
+                            <a
+                                href={`/questions/${_id}#answers`}
+                                className={styles.answersBox}
+                            >
                                 <BsFillChatLeftFill /> {numOfAnswers} Answers
                             </a>
                         </Link>
@@ -305,7 +337,10 @@ export default function SingleQuestion({
                         </div>
                         {!isFullVisible && (
                             <Link href={`/questions/${_id}#answer`}>
-                                <a href={`/questions/${_id}#answer`} className={styles.answerBtn}>
+                                <a
+                                    href={`/questions/${_id}#answer`}
+                                    className={styles.answerBtn}
+                                >
                                     Answer
                                 </a>
                             </Link>

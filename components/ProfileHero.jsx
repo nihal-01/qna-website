@@ -11,7 +11,7 @@ const styles = {
     contentWrapper: `max-w-[750px] mx-auto lg:max-w-[1500px] px-[15px] py-[20px] lg:p-[30px] h-[100%] flex items-end`,
     content: `lg:flex items-center w-[100%] justify-between`,
     contentLeft: `flex items-center flex-wrap gap-[6px] mb-[1.2em]`,
-    avatarWrapper: `w-[65px] min-w-[65px] h-[65px] min-h-[65px] rounded-full p-[4px] border-2 border-secondaryColor mr-[10px] lg:row-span-2 lg:w-[90px] lg:min-w-[90px] lg:h-[90px] lg:min-h-[90px]`,
+    avatarWrapper: `relative w-[65px] min-w-[65px] h-[65px] min-h-[65px] rounded-full p-[4px] border-2 border-secondaryColor mr-[10px] lg:row-span-2 lg:w-[90px] lg:min-w-[90px] lg:h-[90px] lg:min-h-[90px]`,
     avatarImg: `relative inline-block w-[100%] h-[100%] w-[100%] h-[100%] rounded-full overflow-hidden`,
     authorName: `text-white font-semibold tracking-wide transition-all lg:text-2xl`,
     badge: `inline-block ml-[10px] text-white bg-[#d9a34a] capitalize rounded-sm text-xs py-[2px] px-[10px] lg:text-sm`,

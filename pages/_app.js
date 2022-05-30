@@ -1,4 +1,5 @@
-import { Provider, useDispatch } from 'react-redux';
+import { Provider } from 'react-redux';
+import NextNProgress from 'nextjs-progressbar';
 
 import { Layout } from '../components';
 import '../styles/globals.css';
@@ -9,6 +10,7 @@ function MyApp({ Component, pageProps }) {
 
     return (
         <Provider store={store}>
+            <NextNProgress color='#2d6ff7' options={{ showSpinner: false }} />
             <Layout>{getLayout(<Component {...pageProps} />)}</Layout>
         </Provider>
     );

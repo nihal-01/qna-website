@@ -4,11 +4,15 @@ import { useDispatch } from 'react-redux';
 import axios from '../../axios';
 import { PagesTopNavbar, QuestionsList, SidebarLayout } from '../../components';
 import { updateQuestions } from '../../redux/slices/questionSlice';
+import { useEnhancedEffect } from '../../utils';
 import { qstnPageLinks } from '../../utils/constants';
 
 export default function Polls({ questions }) {
     const dispatch = useDispatch();
-    dispatch(updateQuestions(questions));
+
+    useEnhancedEffect(() => {
+        dispatch(updateQuestions(questions));
+    }, [dispatch, questions]);
 
     return (
         <main>
