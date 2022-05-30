@@ -6,7 +6,7 @@ import { EditProfileLayout } from '../../../components';
 const styles = {
     container: `py-[2.5em] max-w-[750px] w-[100%] mx-auto`,
     title: `flex items-center font-bold text-[16px] text-primaryColor mb-[1.5em]`,
-    titleIcon: `block bg-primaryColor text-white rounded p-[6px] mr-[13px]`,
+    titleIcon: `block bg-primaryColor text-white rounded-sm p-[6px] mr-[13px]`,
     label: `text-grayColor text-[14px] lg:text-[15px]`,
     checkboxWrapper: `flex items-center gap-[10px]`,
     checkbox: `w-[16px] h-[16px] text-[#0f0]`,

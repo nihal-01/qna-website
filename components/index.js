@@ -25,6 +25,10 @@ import ProfileLayout from './ProfileLayout';
 import PollForm from './PollForm';
 import QuestionSkeleton from './QuestionSkeleton';
 import EditProfileLayout from './EditProfileLayout';
+import GroupCard from './GroupCard';
+import SingleGroupHero from './SingleGroupHero';
+import SinglePost from './SinglePost';
+import SingleComment from './SingleComment';
 
 export {
     Footer,
@@ -54,4 +58,8 @@ export {
     PollForm,
     QuestionSkeleton,
     EditProfileLayout,
+    GroupCard,
+    SingleGroupHero,
+    SinglePost,
+    SingleComment,
 };

@@ -308,12 +308,12 @@ export default function AskQuestionPopup() {
                     </div>
 
                     <div className={styles.formControl}>
-                        <label htmlFor='group-rules' className={styles.label}>
+                        <label htmlFor='details' className={styles.label}>
                             Details <span className='text-[#f00]'>*</span>
                         </label>
                         <textarea
                             name='details'
-                            id='group-rules'
+                            id='details'
                             cols='30'
                             rows='10'
                             className={styles.textarea}

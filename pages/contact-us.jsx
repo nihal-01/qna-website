@@ -94,12 +94,12 @@ export default function Contact() {
                     </div>
 
                     <div className={styles.formControl}>
-                        <label htmlFor='group-rules' className={styles.label}>
+                        <label htmlFor='message' className={styles.label}>
                             Your Message
                         </label>
                         <textarea
                             name=''
-                            id='group-rules'
+                            id='message'
                             cols='30'
                             rows='10'
                             className={styles.textarea}

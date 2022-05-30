@@ -2,10 +2,6 @@ import mongoose from 'mongoose';
 
 const postSchema = new mongoose.Schema(
     {
-        title: {
-            type: String,
-            required: true,
-        },
         description: {
             type: String,
             required: true,
@@ -27,6 +23,13 @@ const postSchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
+
+postSchema.virtual('numOfComments', {
+    ref: 'Comment',
+    localField: '_id',
+    foreignField: 'postId',
+    count: true,
+});
 
 const Post = mongoose.models.Post || mongoose.model('Post', postSchema);
 export default Post;

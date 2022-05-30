@@ -7,6 +7,7 @@ const nextConfig = {
             'www.theportlandclinic.com',
             'media.istockphoto.com',
             'dergreif-online.de',
+            'res.cloudinary.com',
         ],
     },
 };

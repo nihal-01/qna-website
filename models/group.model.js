@@ -33,9 +33,19 @@ const groupSchema = new Schema(
             ref: 'User',
             required: true,
         },
+        users: {
+            type: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
+        },
     },
     { timestamps: true }
 );
+
+groupSchema.virtual('numOfPosts', {
+    ref: 'Post',
+    localField: '_id',
+    foreignField: 'groupId',
+    count: true,
+});
 
 const Group = models.Group || model('Group', groupSchema);
 export default Group;

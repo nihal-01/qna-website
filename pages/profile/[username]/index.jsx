@@ -20,9 +20,9 @@ const styles = {
     metaWrapper: `flex items-center justify-center gap-[1.5em] mb-[3em]`,
     metaItem: `flex items-center gap-[10px] text-[#707885]`,
     followWrapper: `flex items-center justify-between gap-[2.5em]`,
-    followBox: `w-[100%] border bg-[#f9f9f9] rounded p-[1.5em] `,
+    followBox: `w-[100%] border bg-[#f9f9f9] rounded-sm p-[1.5em] `,
     followHeader: `flex items-center gap-[12px] font-bold text-[18px] text-primaryColor mb-[1.5em]`,
-    followHeaderIcon: `block bg-primaryColor text-white p-[7px] text-2xl rounded`,
+    followHeaderIcon: `block bg-primaryColor text-white p-[7px] text-2xl rounded-sm`,
     followImages: `flex items-center`,
     followImg: `relative w-[45px] min-w-[45px] h-[45px] min-h-[45px] rounded-full overflow-hidden first:right-0 border-2 border-white`,
 };
