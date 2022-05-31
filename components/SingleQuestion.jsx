@@ -21,7 +21,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import axios from '../axios';
 
 import { avatarImg } from '../public/images';
-import { updateVotesCount } from '../redux/slices/questionSlice';
+import {
+    updateSingleQstnVotes,
+    updateVotesCount,
+} from '../redux/slices/questionSlice';
 import { logout } from '../redux/slices/userSlice';
 import { monthNames } from '../utils/constants';
 import BtnLoader from './BtnLoader';
@@ -100,12 +103,16 @@ export default function SingleQuestion({
             );
 
             setVoteLoading(false);
-            dispatch(
-                updateVotesCount({
-                    questionId: _id,
-                    votes: response.data.votes,
-                })
-            );
+            if (isFullVisible) {
+                dispatch(updateSingleQstnVotes(response.data.votes));
+            } else {
+                dispatch(
+                    updateVotesCount({
+                        questionId: _id,
+                        votes: response.data.votes,
+                    })
+                );
+            }
         } catch (err) {
             setVoteLoading(false);
             if (err.response.status === 401) {
@@ -266,11 +273,7 @@ export default function SingleQuestion({
                     <li>
                         <div className={styles.voteCount}>
                             {voteLoading ? (
-                                <BtnLoader
-                                    color={'secondaryColor'}
-                                    largeSize={20}
-                                    smallSize={20}
-                                />
+                                <BtnLoader color={'secondaryColor'} />
                             ) : (
                                 votes
                             )}

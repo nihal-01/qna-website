@@ -54,12 +54,13 @@ const styles = {
 export default function Header() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isSidebarOpen, setIsSIdebarOpen] = useState(false);
+    const [searchTxt, setSearchTxt] = useState('');
 
     const router = useRouter();
     const dispatch = useDispatch();
 
     const { user } = useSelector((state) => state.user);
-    const { questionBox } = useSelector((state) => state.layout)
+    const { questionBox } = useSelector((state) => state.layout);
 
     const handleLogout = async () => {
         try {
@@ -214,11 +215,22 @@ export default function Header() {
                             );
                         })}
                     </ul>
-                    <form className={styles.searchWrapper}>
+                    <form
+                        className={styles.searchWrapper}
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            router.push(`/search/${searchTxt}/questions`);
+                            setSearchTxt('');
+                        }}
+                    >
                         <input
                             type='text'
                             placeholder='Type Search Words'
                             className={styles.searchInput}
+                            value={searchTxt || ''}
+                            onChange={(e) => {
+                                setSearchTxt(e.target.value);
+                            }}
                         />
                         <button type='submit'>
                             <BsSearch className={styles.searchIcon} />

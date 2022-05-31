@@ -1,7 +1,7 @@
 import nc from 'next-connect';
+import { getMyUsers } from '../../../helpers/userHelpers';
 
 import { connectDb, isAuth } from '../../../middlewares';
-import { User } from '../../../models';
 
 const handler = nc({
     onError: (err, req, res, next) => {
@@ -15,18 +15,7 @@ const handler = nc({
 handler.use(connectDb, isAuth);
 
 handler.get(async (req, res) => {
-    const users = await User.find({ _id: { $ne: req.user._id } })
-        .populate('numOfQuestions')
-        .populate('numOfAnswers')
-        .select(
-            'username avatar followers following numOfQuestions numOfAnswers'
-        )
-        .lean();
-    users.forEach((user) => {
-        user.followers = user?.followers?.length || 0;
-        user.following = user?.following?.length || 0;
-        user.isFollowing = req.user?.following?.includes(user._id);
-    });
+    const users = await getMyUsers(req.user);
     return res.status(200).json(users);
 });
 

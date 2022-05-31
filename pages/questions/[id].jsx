@@ -13,7 +13,9 @@ import {
     SingleQuestion,
 } from '../../components';
 import { updateSigninBox } from '../../redux/slices/layoutSlice';
+import { updateSingleQuestion } from '../../redux/slices/questionSlice';
 import { logout } from '../../redux/slices/userSlice';
+import { useEnhancedEffect } from '../../utils';
 
 const styles = {
     header: `block p-[15px] lg:p-[30px] lg:flex items-center justify-between border-b-2 border-borderColor`,
@@ -30,8 +32,7 @@ const styles = {
     formTextarea: `w-[100%] border border-borderColor outline-none rounded-sm mt-[2em] resize-none p-[10px] mb-[1.2em]`,
 };
 
-export default function SingleQuestionPage(params) {
-    const [question, setQuestion] = useState(params?.question);
+export default function SingleQuestionPage({ question }) {
     const [answerTxt, setAnswerTxt] = useState('');
     const [answers, setAnswers] = useState([]);
     const [sort, setSort] = useState('');
@@ -40,6 +41,7 @@ export default function SingleQuestionPage(params) {
     const dispatch = useDispatch();
     const { id } = router.query;
     const { user } = useSelector((state) => state.user);
+    const { singleQuestion } = useSelector((state) => state.question);
 
     const addAnswer = async (e) => {
         try {
@@ -47,7 +49,7 @@ export default function SingleQuestionPage(params) {
 
             const response = await axios.post(
                 `http://localhost:3000/api/answers/`,
-                { answer: answerTxt, questionId: question?._id },
+                { answer: answerTxt, questionId: singleQuestion?._id },
                 {
                     headers: { Authorization: `Bearer ${user?.token}` },
                 }
@@ -69,6 +71,10 @@ export default function SingleQuestionPage(params) {
         }
     }, [sort, id]);
 
+    useEnhancedEffect(() => {
+        dispatch(updateSingleQuestion(question));
+    }, [question, dispatch]);
+
     useEffect(() => {
         fetchAnswers();
     }, [fetchAnswers, sort]);
@@ -79,12 +85,12 @@ export default function SingleQuestionPage(params) {
                 <Breadcrumbs
                     crumbs={[
                         { name: 'Questions', url: '/questions' },
-                        { name: question?._id?.slice(0, 5) },
+                        { name: singleQuestion?._id?.slice(0, 5) },
                     ]}
                 />
             </div>
             <div>
-                <SingleQuestion {...question} isFullVisible={true} />
+                <SingleQuestion {...singleQuestion} isFullVisible={true} />
                 <div className={styles.formWrapper} id='answer'>
                     {user ? (
                         <form>
@@ -145,7 +151,7 @@ export default function SingleQuestionPage(params) {
                     )}
                 </div>
                 <div className={styles.answersHeader} id='answers'>
-                    <h3 className={styles.answersHeaderTitle} >
+                    <h3 className={styles.answersHeaderTitle}>
                         {answers?.length} Answers
                     </h3>
                     <div>

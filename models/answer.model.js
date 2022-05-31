@@ -40,6 +40,7 @@ const answerSchema = new mongoose.Schema(
                 },
             ],
         },
+        replies: [{ type: mongoose.Types.ObjectId, ref: 'Answer' }],
     },
     { timestamps: true }
 );

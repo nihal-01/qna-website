@@ -27,6 +27,17 @@ handler.get(async (req, res) => {
 
     const answers = await Answer.find({ questionId })
         .populate('author', '_id username avatar isVerified badge')
+        .populate([
+            {
+                path: 'replies',
+                model: 'Answer',
+                populate: {
+                    path: 'author',
+                    model: 'User',
+                    select: 'username avatar badge isVerified',
+                },
+            },
+        ])
         .sort(sort);
 
     res.status(200).json(answers);

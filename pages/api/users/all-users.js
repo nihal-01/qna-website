@@ -1,7 +1,7 @@
 import nc from 'next-connect';
+import { getAllUsers } from '../../../helpers/userHelpers';
 
 import { connectDb } from '../../../middlewares';
-import { User } from '../../../models';
 
 const handler = nc({
     onError: (err, req, res, next) => {
@@ -16,17 +16,7 @@ handler.use(connectDb);
 
 // All users without authentication
 handler.get(async (req, res) => {
-    const users = await User.find()
-        .populate('numOfQuestions')
-        .populate('numOfAnswers')
-        .select(
-            'username avatar followers following numOfQuestions numOfAnswers'
-        )
-        .lean();
-    users.forEach((user) => {
-        user.followers = user?.followers?.length || 0;
-        user.following = user?.following?.length || 0;
-    });
+    const users = await getAllUsers();
     return res.status(200).json(users);
 });
 
