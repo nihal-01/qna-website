@@ -26,6 +26,7 @@ import {
     updateVotesCount,
 } from '../redux/slices/questionSlice';
 import { logout } from '../redux/slices/userSlice';
+import { convertViewsCount } from '../utils';
 import { monthNames } from '../utils/constants';
 import BtnLoader from './BtnLoader';
 
@@ -315,7 +316,11 @@ export default function SingleQuestion({
                                         key={index}
                                         className={styles.singleTag}
                                     >
-                                        {tag}
+                                        <Link href={`/search/${tag}/tags`}>
+                                            <a href={`/search/${tag}/tags`}>
+                                                {tag}
+                                            </a>
+                                        </Link>
                                     </li>
                                 );
                             })}
@@ -335,7 +340,8 @@ export default function SingleQuestion({
                         </Link>
                         <div className={`${!isFullVisible && ' lg:grow'}`}>
                             <button className={styles.footerBtn}>
-                                <BsEyeFill /> {views} views
+                                <BsEyeFill />{' '}
+                                {views ? convertViewsCount(views) : 0} views
                             </button>
                         </div>
                         {!isFullVisible && (

@@ -1,7 +1,7 @@
 import nc from 'next-connect';
-import { getMyUsers } from '../../../helpers/userHelpers';
 
-import { connectDb, isAuth } from '../../../middlewares';
+import { getMyUsers } from '../../../helpers/userHelpers';
+import { isAuth } from '../../../middlewares';
 
 const handler = nc({
     onError: (err, req, res, next) => {
@@ -12,7 +12,7 @@ const handler = nc({
     },
 });
 
-handler.use(connectDb, isAuth);
+handler.use(isAuth);
 
 handler.get(async (req, res) => {
     const users = await getMyUsers(req.user);

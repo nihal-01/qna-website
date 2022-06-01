@@ -1,17 +1,17 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 
-import axios from '../../axios';
 import { PagesTopNavbar, QuestionsList, SidebarLayout } from '../../components';
 import { updateQuestions } from '../../redux/slices/questionSlice';
 import { useEnhancedEffect } from '../../utils';
 import { qstnPageLinks } from '../../utils/constants';
+import { getAllQuestions } from '../../helpers/questionsHelpers';
 
 export default function OldestQuestions({ questions }) {
     const dispatch = useDispatch();
 
     useEnhancedEffect(() => {
-        dispatch(updateQuestions(questions));
+        dispatch(updateQuestions(JSON.parse(questions)));
     }, [dispatch, questions]);
 
     return (
@@ -27,11 +27,11 @@ OldestQuestions.getLayout = function (page) {
 };
 
 export async function getServerSideProps() {
-    const res = await axios.get(`questions`);
+    const res = await getAllQuestions({ sort: '' });
 
     return {
         props: {
-            questions: res.data,
+            questions: JSON.stringify(res),
         },
     };
 }

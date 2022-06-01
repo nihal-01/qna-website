@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Breadcrumbs, GroupCard, SidebarLayout } from '../../components';
-import { Group } from '../../models';
+import { getAllGroups } from '../../helpers/groupHelpers';
 
 const styles = {
     container: `h-[100%] w-[100%]`,
@@ -31,12 +31,9 @@ Groups.getLayout = function getLayout(page) {
 };
 
 export async function getServerSideProps(context) {
-    const response = await Group.find({})
-        .populate('numOfPosts')
-        .sort({ createdAt: -1 })
-        .lean();
+    const groups = await getAllGroups();
 
     return {
-        props: { data: JSON.stringify(response) },
+        props: { data: JSON.stringify(groups) },
     };
 }

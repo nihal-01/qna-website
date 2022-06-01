@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { PagesTopNavbar, SidebarLayout, SingleAnswer } from '../../components';
-import { Answer } from '../../models';
+import { getAllAnswers } from '../../helpers/answerHelpers';
 import { qstnPageLinks } from '../../utils/constants';
 
 export default function QuestionAnswers({ data }) {
@@ -24,9 +24,7 @@ QuestionAnswers.getLayout = function (page) {
 };
 
 export async function getServerSideProps() {
-    const res = await Answer.find({})
-        .populate('author', 'username avatar isVerified badge')
-        .sort({ createdAt: -1 });
+    const res = await getAllAnswers();
 
     return {
         props: {

@@ -11,9 +11,9 @@ import {
     SingleGroupHero,
     SinglePost,
 } from '../../../components';
-import { Post, Group } from '../../../models';
 import { avatarImg } from '../../../public/images';
 import axios from '../../../axios';
+import { getGroupPosts, getSingleGroup } from '../../../helpers/groupHelpers';
 
 const styles = {
     container: `h-[100%] w-[100%]`,
@@ -150,15 +150,8 @@ SingleGroupPage.getLayout = function getLayout(page) {
 };
 
 export async function getServerSideProps(context) {
-    const group = await Group.findOne({ _id: context?.query.groupId })
-        .populate('numOfPosts')
-        .sort({ createdAt: -1 })
-        .lean();
-
-    const posts = await Post.find({ groupId: context?.query.groupId })
-        .populate('authorId', 'avatar username isVerified badge')
-        .populate('numOfComments')
-        .lean();
+    const group = await getSingleGroup(context?.query.groupId);
+    const posts = await getGroupPosts(context?.query.groupId);
 
     return {
         props: {

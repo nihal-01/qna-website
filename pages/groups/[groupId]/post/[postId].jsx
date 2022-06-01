@@ -5,7 +5,11 @@ import {
     SingleGroupHero,
     SinglePost,
 } from '../../../../components';
-import { Comment, Group, Post } from '../../../../models';
+import {
+    getGroupPostComments,
+    getSingleGroup,
+    getSingleGroupPost,
+} from '../../../../helpers/groupHelpers';
 
 const styles = {
     container: `h-[100%] w-[100%]`,
@@ -48,19 +52,9 @@ SinglePostPage.getLayout = function getLayout(page) {
 };
 
 export async function getServerSideProps(context) {
-    const group = await Group.findOne({ _id: context?.query.groupId })
-        .populate('numOfPosts')
-        .sort({ createdAt: -1 })
-        .lean();
-
-    const post = await Post.findOne({ _id: context?.query?.postId })
-        .populate('authorId', 'avatar username isVerified badge')
-        .populate('numOfComments')
-        .lean();
-
-    const comments = await Comment.find({
-        postId: context.query.postId,
-    }).populate('authorId');
+    const group = await getSingleGroup(context?.query.groupId);
+    const post = await getSingleGroupPost(context.query.postId);
+    const comments = await getGroupPostComments(context.query.postId);
 
     return {
         props: {

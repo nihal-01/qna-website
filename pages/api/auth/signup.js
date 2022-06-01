@@ -1,11 +1,11 @@
 import bcrypt from 'bcrypt';
 
-import { db } from '../../../utils';
+// import { db } from '../../../utils';
 import { User } from '../../../models';
 import { signToken } from '../../../utils/auth';
 
 export default async function handler(req, res) {
-    await db.connect();
+    // await db.connect();
 
     if (req.method === 'POST') {
         try {

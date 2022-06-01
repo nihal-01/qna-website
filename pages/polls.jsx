@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { SidebarLayout } from '../components';
 
 export default function Polls() {

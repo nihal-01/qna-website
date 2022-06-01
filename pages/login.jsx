@@ -1,6 +1,5 @@
-import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react';
+
 import { Breadcrumbs, LoginForm, SidebarLayout } from '../components';
 
 const styles = {
@@ -10,15 +9,6 @@ const styles = {
 };
 
 export default function Login() {
-    const { user } = useSelector((state) => state.user);
-
-    // const router = useRouter();
-
-    // useEffect(() => {
-    //     if (user) {
-    //         router.push('/');
-    //     }
-    // }, [user, router]);
     return (
         <div className={styles.container}>
             <div className={styles.header}>

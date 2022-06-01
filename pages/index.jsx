@@ -1,6 +1,5 @@
 import { useDispatch } from 'react-redux';
 
-import axios from '../axios';
 import {
     HomeHero,
     PagesTopNavbar,
@@ -10,12 +9,13 @@ import {
 import { updateQuestions } from '../redux/slices/questionSlice';
 import { useEnhancedEffect } from '../utils';
 import { qstnPageLinks } from '../utils/constants';
+import { getAllQuestions } from '../helpers/questionsHelpers';
 
 export default function Home({ questions }) {
     const dispatch = useDispatch();
 
     useEnhancedEffect(() => {
-        dispatch(updateQuestions(questions));
+        dispatch(updateQuestions(JSON.parse(questions)));
     }, [dispatch, questions]);
 
     return (
@@ -36,11 +36,11 @@ Home.getLayout = function getLayout(page) {
 };
 
 export async function getServerSideProps() {
-    const res = await axios.get(`questions?sort=${'createdAt:desc'}`);
+    const res = await getAllQuestions({ sort: 'createdAt:desc' });
 
     return {
         props: {
-            questions: res.data,
+            questions: JSON.stringify(res),
         },
     };
 }

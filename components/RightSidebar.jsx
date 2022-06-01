@@ -197,8 +197,12 @@ export default function RightSidebar() {
                                                 />
                                             </div>
                                             <div>
-                                                <Link href={'/about-us'}>
-                                                    <a href='/about'>
+                                                <Link
+                                                    href={`/questions/${_id}`}
+                                                >
+                                                    <a
+                                                        href={`/questions/${_id}`}
+                                                    >
                                                         <h3
                                                             className={
                                                                 styles.qstnTitle
@@ -263,8 +267,12 @@ export default function RightSidebar() {
                                                             styles.answerUsername
                                                         }
                                                     >
-                                                        {author?.username ||
-                                                            'Anonymous'}
+                                                        <Link
+                                                            href={`/profile/${author.username}`}
+                                                        >
+                                                            {author?.username ||
+                                                                'Anonymous'}
+                                                        </Link>
                                                     </span>{' '}
                                                     added an answer{' '}
                                                     <span
@@ -315,7 +323,7 @@ export default function RightSidebar() {
                 <>
                     <div className={styles.topUsersWrapper}>
                         <h3 className={styles.topUsersTitle}>
-                            <HiUsers /> Top Members
+                            <HiUsers /> New Members
                         </h3>
                         <div>
                             {sidebarData?.topMembers?.map((user) => {
@@ -334,8 +342,12 @@ export default function RightSidebar() {
                                             className={styles.topUserImgWrapper}
                                         >
                                             <div className={styles.topUserImg}>
-                                                <Link href={'/'}>
-                                                    <a href=''>
+                                                <Link
+                                                    href={`/profile/${username}`}
+                                                >
+                                                    <a
+                                                        href={`/profile/${username}`}
+                                                    >
                                                         <Image
                                                             src={
                                                                 avatar ||
@@ -350,9 +362,9 @@ export default function RightSidebar() {
                                             </div>
                                         </div>
                                         <div>
-                                            <Link href={'/'}>
+                                            <Link href={`/profile/${username}`}>
                                                 <a
-                                                    href={'/'}
+                                                    href={`/profile/${username}`}
                                                     className={
                                                         styles.topUserName
                                                     }
@@ -390,9 +402,12 @@ export default function RightSidebar() {
                         <div className={styles.tagsList}>
                             {sidebarData?.trendingTags?.map((tag, index) => {
                                 return (
-                                    <Link key={index} href={'/'}>
+                                    <Link
+                                        key={index}
+                                        href={`/search/${tag.tag}/tags`}
+                                    >
                                         <a
-                                            href=''
+                                            href={`/search/${tag.tag}/tags`}
                                             className={styles.tagsListItem}
                                         >
                                             {tag.tag}

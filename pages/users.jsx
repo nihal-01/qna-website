@@ -2,17 +2,14 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { BsSearch } from 'react-icons/bs';
 import { useDispatch, useSelector } from 'react-redux';
 import * as cookie from 'cookie';
-import axios from '../axios';
 
+import axios from '../axios';
 import { Breadcrumbs, SidebarLayout } from '../components';
 import { UserCard } from '../components';
 import { updateUsers } from '../redux/slices/userSlice';
-import { useLayoutEffect } from 'react';
-import { useRouter } from 'next/router';
 import { useRef } from 'react';
 import { useEnhancedEffect } from '../utils';
-import { getAllUsers, getMyUsers } from '../helpers/userHelpers';
-import { User } from '../models';
+import { getAllUsers, getMyUsers, getSingleUser } from '../helpers/userHelpers';
 
 const styles = {
     container: `h-[100%] w-[100%]`,
@@ -27,19 +24,12 @@ const styles = {
 
 export default function Users({ data }) {
     const { user, users } = useSelector((state) => state.user);
+
     const dispatch = useDispatch();
-    const router = useRouter();
-
     const firstTimeRef = useRef(true);
-
-    console.log(firstTimeRef);
-
-    // console.log(parsedCookies);
 
     const fetchData = useCallback(async () => {
         try {
-            console.log('users fetching...');
-
             if (user) {
                 const response = await axios.get(`/users`, {
                     headers: { Authorization: `Bearer ${user?.token}` },
@@ -71,7 +61,9 @@ export default function Users({ data }) {
         <div className={styles.container}>
             <div className={styles.header}>
                 <Breadcrumbs crumbs={[{ name: 'users' }]} />
-                <div className={styles.headerRight}>
+
+                {/* USERS SORTING */}
+                {/* <div className={styles.headerRight}>
                     <select name='' id='' className={styles.selectOption}>
                         <option value=''>Popular</option>
                         <option value=''>Followers</option>
@@ -87,7 +79,7 @@ export default function Users({ data }) {
                             <BsSearch />
                         </button>
                     </form>
-                </div>
+                </div> */}
             </div>
             <div className={styles.contentWrapper}>
                 {users.map((user) => {
@@ -104,12 +96,14 @@ Users.getLayout = function getLayout(page) {
 
 export async function getServerSideProps(context) {
     let response = [];
-    const parsedCookies = cookie.parse(context.req.headers.cookie);
+    const parsedCookies = context.req.headers.cookie
+        ? cookie.parse(context.req.headers.cookie)
+        : '';
     if (!parsedCookies['user-info'] || parsedCookies['user-info'] === '') {
         response = await getAllUsers();
     } else {
-        const userInfo = JSON.parse(parsedCookies['user-info']);
-        const user = await User.findOne({ _id: userInfo._id });
+        const userInfo = await JSON.parse(parsedCookies['user-info']);
+        const user = await getSingleUser(userInfo._id);
         response = await getMyUsers(user);
     }
 

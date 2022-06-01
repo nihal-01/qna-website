@@ -12,6 +12,8 @@ import {
     SingleAnswer,
     SingleQuestion,
 } from '../../components';
+import { getNumberOfAnswers } from '../../helpers/answerHelpers';
+import { getSingleQuestion, updateViews } from '../../helpers/questionsHelpers';
 import { updateSigninBox } from '../../redux/slices/layoutSlice';
 import { updateSingleQuestion } from '../../redux/slices/questionSlice';
 import { logout } from '../../redux/slices/userSlice';
@@ -32,7 +34,7 @@ const styles = {
     formTextarea: `w-[100%] border border-borderColor outline-none rounded-sm mt-[2em] resize-none p-[10px] mb-[1.2em]`,
 };
 
-export default function SingleQuestionPage({ question }) {
+export default function SingleQuestionPage({ question, numOfAnswers }) {
     const [answerTxt, setAnswerTxt] = useState('');
     const [answers, setAnswers] = useState([]);
     const [sort, setSort] = useState('');
@@ -72,7 +74,7 @@ export default function SingleQuestionPage({ question }) {
     }, [sort, id]);
 
     useEnhancedEffect(() => {
-        dispatch(updateSingleQuestion(question));
+        dispatch(updateSingleQuestion(JSON.parse(question)));
     }, [question, dispatch]);
 
     useEffect(() => {
@@ -84,13 +86,17 @@ export default function SingleQuestionPage({ question }) {
             <div className={styles.header}>
                 <Breadcrumbs
                     crumbs={[
-                        { name: 'Questions', url: '/questions' },
+                        { name: 'Questions', url: '/questions/most-answered' },
                         { name: singleQuestion?._id?.slice(0, 5) },
                     ]}
                 />
             </div>
             <div>
-                <SingleQuestion {...singleQuestion} isFullVisible={true} />
+                <SingleQuestion
+                    {...singleQuestion}
+                    numOfAnswers={JSON.parse(numOfAnswers)}
+                    isFullVisible={true}
+                />
                 <div className={styles.formWrapper} id='answer'>
                     {user ? (
                         <form>
@@ -207,13 +213,14 @@ SingleQuestionPage.getLayout = function getLayout(page) {
 };
 
 export const getServerSideProps = async ({ params }) => {
-    const questionRes = await axios.get(
-        `http://localhost:3000/api/questions/single/${params.id}`
-    );
+    updateViews(params.id);
+    const question = await getSingleQuestion(params.id);
+    const numOfAnswers = await getNumberOfAnswers(params.id);
 
     return {
         props: {
-            question: questionRes.data,
+            question: JSON.stringify(question),
+            numOfAnswers: JSON.stringify(numOfAnswers),
         },
     };
 };

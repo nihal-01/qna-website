@@ -34,10 +34,10 @@ handler.get(async (req, res) => {
         .select('_id answer author createdAt')
         .limit(3);
 
-    const topMembers = await User.find()
+    const topMembers = await User.find({})
         .populate('numOfQuestions')
         .populate('numOfAnswers')
-        .sort({ numOfAnswers: -1 })
+        .sort({ createdAt: -1 })
         .limit(3)
         .select(
             '_id username avatar numOfQuestions numOfAnswers badge isVerified'

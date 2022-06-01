@@ -21,7 +21,7 @@ const styles = {
     checkboxWrapper: `flex items-center gap-[10px]`,
     checkbox: `w-[16px] h-[16px] text-[#0f0]`,
     forgotTxt: `text-[14px] lg:text-[15px] text-priamryColor transition-all hover:text-secondaryColor cursor-pointer`,
-    errorMsg: `text-[red] text-[15px] lg:text-base overflow-scroll`,
+    errorMsg: `text-[red] text-[15px] lg:text-base `,
 };
 
 export default function LoginForm() {

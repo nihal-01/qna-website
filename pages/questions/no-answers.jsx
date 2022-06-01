@@ -1,17 +1,17 @@
-import React, { useLayoutEffect } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 
-import axios from '../../axios';
 import { PagesTopNavbar, QuestionsList, SidebarLayout } from '../../components';
 import { updateQuestions } from '../../redux/slices/questionSlice';
 import { useEnhancedEffect } from '../../utils';
 import { qstnPageLinks } from '../../utils/constants';
+import { getAllQuestions } from '../../helpers/questionsHelpers';
 
 export default function NoAnswers({ questions }) {
     const dispatch = useDispatch();
 
     useEnhancedEffect(() => {
-        dispatch(updateQuestions(questions));
+        dispatch(updateQuestions(JSON.parse(questions)));
     }, [dispatch, questions]);
 
     return (
@@ -27,11 +27,11 @@ NoAnswers.getLayout = function (page) {
 };
 
 export async function getServerSideProps() {
-    const res = await axios.get(`questions?noAnswers=true`);
+    const res = await getAllQuestions({ noAnswers: 'true' });
 
     return {
         props: {
-            questions: res.data,
+            questions: JSON.stringify(res),
         },
     };
 }
