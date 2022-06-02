@@ -168,3 +168,12 @@ export const getMyFeed = async (id) => {
         throw new Error(err);
     }
 };
+
+export const checkIsFavourited = async (userId, questionId) => {
+    const user = await User.findById(userId);
+    if (!user || !user.favourites) {
+        return false;
+    }
+
+    return user.favourites.includes(questionId);
+};

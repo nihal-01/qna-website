@@ -26,6 +26,7 @@ handler.post(async (req, res) => {
         answer,
         questionId,
         author: req.user._id,
+        isReply: true,
     });
     await newReplay.save();
 

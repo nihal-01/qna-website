@@ -25,3 +25,13 @@ export const getNumberOfAnswers = async (questionId) => {
         throw new Error(err);
     }
 };
+
+export const getSingleAnswer = async (answerId) => {
+    try {
+        await db.connect();
+        const answer = await Answer.findById(answerId);
+        return answer;
+    } catch (err) {
+        throw new Error(err);
+    }
+};

@@ -8,6 +8,7 @@ import {
     BsCheck,
     BsPlus,
     BsStar,
+    BsStarFill,
     BsExclamationTriangle,
     BsShareFill,
 } from 'react-icons/bs';
@@ -22,6 +23,7 @@ import axios from '../axios';
 
 import { avatarImg } from '../public/images';
 import {
+    updateQuestionFavourite,
     updateSingleQstnVotes,
     updateVotesCount,
 } from '../redux/slices/questionSlice';
@@ -53,7 +55,7 @@ const styles = {
     singleTag: `border border-borderColor rounded-sm text-grayColor text-sm py-[2px] px-[10px] cursor-pointer transition-all hover:bg-secondaryColor hover:text-white rounded-sm lg:text-[15px]`,
     articleFooter: `bg-[#f5f5f5] p-[10px] flex items-center gap-[12px] flex-wrap lg:p-[20px]`,
     answersBox: `inline-block text-[#26aa6c] border border-[#26aa6c] bg-white py-[5px] px-[10px] flex items-center gap-[8px] rounded-sm text-sm lg:text-base`,
-    footerBtn: `inline-block text-grayColor border border-[#d9dadb] bg-white py-[5px] px-[10px] flex items-center gap-[8px] rounded-sm text-sm lg:text-base cursor-default`,
+    footerBtn: `inline-block text-grayColor border border-[#d9dadb] bg-white py-[5px] px-[10px] flex items-center gap-[8px] rounded-sm text-sm lg:text-base`,
     answerBtn: `inline-block bg-primaryColor text-white py-[6px] px-[15px] font-semibold text-sm rounded-sm transition-all hover:bg-secondaryColor lg:text-base`,
     verified: `inline-block bg-secondaryColor rounded-full text-white ml-[5px] text-base w-[15px] h-[15px] lg:w-[18px] lg:h-[18px] lg:text-[16px]`,
     socialWrapper: `pt-[15px] lg:pt-[30px] flex items-center justify-between flex-wrap gap-[1em]`,
@@ -78,9 +80,12 @@ export default function SingleQuestion({
     numOfAnswers,
     views,
     isFullVisible,
+    favouritesCount,
+    isFavourited,
 }) {
     const [error, setError] = useState('');
     const [voteLoading, setVoteLoading] = useState(false);
+    const [favouriteLoading, setFavouriteLoading] = useState(false);
 
     const myDate = new Date(createdAt);
 
@@ -120,6 +125,34 @@ export default function SingleQuestion({
                 dispatch(logout());
                 return setError('Please Login to vote');
             }
+            setError(
+                err.response?.data?.error || 'Something went wrong, Try again'
+            );
+        }
+    };
+
+    const addToFavourite = async () => {
+        try {
+            if (!user) {
+                return setError('You should Login first.');
+            }
+
+            setFavouriteLoading(true);
+
+            const response = await axios.patch(
+                '/questions/favourite',
+                {
+                    questionId: _id,
+                },
+                {
+                    headers: { Authorization: `Bearer ${user?.token}` },
+                }
+            );
+
+            setFavouriteLoading(false);
+            dispatch(updateQuestionFavourite({ ...response.data }));
+        } catch (err) {
+            setFavouriteLoading(false);
             setError(
                 err.response?.data?.error || 'Something went wrong, Try again'
             );
@@ -339,7 +372,9 @@ export default function SingleQuestion({
                             </a>
                         </Link>
                         <div className={`${!isFullVisible && ' lg:grow'}`}>
-                            <button className={styles.footerBtn}>
+                            <button
+                                className={styles.footerBtn + ' cursor-text'}
+                            >
                                 <BsEyeFill />{' '}
                                 {views ? convertViewsCount(views) : 0} views
                             </button>
@@ -356,13 +391,33 @@ export default function SingleQuestion({
                         )}
                         {isFullVisible && (
                             <>
-                                <button className={styles.footerBtn}>
+                                <button
+                                    className={
+                                        styles.footerBtn + ' cursor-text'
+                                    }
+                                >
                                     <BsPlus /> {author?.followers?.length || 0}{' '}
                                     Followers
                                 </button>
-                                <button className={styles.footerBtn}>
-                                    <BsStar /> 3
-                                </button>
+                                {user && (
+                                    <button
+                                        className={
+                                            styles.footerBtn +
+                                            (isFavourited
+                                                ? ' text-[#d9a34a]'
+                                                : ' text-grayColor')
+                                        }
+                                        onClick={addToFavourite}
+                                        disabled={favouriteLoading}
+                                    >
+                                        {isFavourited ? (
+                                            <BsStarFill />
+                                        ) : (
+                                            <BsStar />
+                                        )}{' '}
+                                        {favouritesCount || 0}
+                                    </button>
+                                )}
                             </>
                         )}
                     </div>
@@ -379,22 +434,34 @@ export default function SingleQuestion({
                         </span>
                         <ul className={styles.socilaIconsList}>
                             <li className={styles.socialIcon + ' bg-[#4267B2]'}>
-                                <a href='https://google.com' target='blank'>
+                                <a
+                                    href={`http://www.facebook.com/share.php?u=${process.env.BASE_URL}/questions/${_id}`}
+                                    target='blank'
+                                >
                                     <FaFacebookF />
                                 </a>
                             </li>
                             <li className={styles.socialIcon + ' bg-[#00acee]'}>
-                                <a href='https://google.com' target='blank'>
+                                <a
+                                    href={`http://twitter.com/share?url=${process.env.BASE_URL}/questions/${_id}&hashtags=qna,nihal`}
+                                    target='blank'
+                                >
                                     <FaTwitter />
                                 </a>
                             </li>
                             <li className={styles.socialIcon + ' bg-[#0e76a8]'}>
-                                <a href='https://google.com' target='blank'>
+                                <a
+                                    href={`https://www.linkedin.com/sharing/share-offsite/?url=${process.env.BASE_URL}/questions/${_id}`}
+                                    target='blank'
+                                >
                                     <FaLinkedinIn />
                                 </a>
                             </li>
                             <li className={styles.socialIcon + ' bg-[#25D366]'}>
-                                <a href='https://google.com' target='blank'>
+                                <a
+                                    href={`whatsapp://send?text=${process.env.BASE_URL}/questions/${_id}`}
+                                    target='blank'
+                                >
                                     <FaWhatsapp />
                                 </a>
                             </li>

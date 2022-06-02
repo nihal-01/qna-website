@@ -1,7 +1,8 @@
 import nc from 'next-connect';
 
-import { Answer } from '../../../models';
+import { Answer, Question } from '../../../models';
 import { connectDb, isAuth } from '../../../middlewares';
+import { getAllQuestions } from '../../../helpers/questionsHelpers';
 
 const handler = nc({
     onError: (err, req, res, next) => {
@@ -13,18 +14,5 @@ const handler = nc({
 });
 
 handler.use(connectDb, isAuth);
-
-handler.post(async (req, res) => {
-    const { answer, questionId } = req.body;
-    const newAnswer = await Answer({
-        answer,
-        questionId,
-        author: req.user._id,
-    });
-
-    await newAnswer.save();
-    res.status(201).json(newAnswer);
-});
-
 
 export default handler;

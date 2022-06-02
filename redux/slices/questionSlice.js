@@ -27,6 +27,7 @@ const initialState = {
     questions: [],
     singleQuestion: {},
     categories: [],
+    answers: [],
     isLoading: false,
     filters: {
         polls: false,
@@ -82,6 +83,41 @@ const questionSlice = createSlice({
         updateSingleQstnVotes: (state, action) => {
             state.singleQuestion.votes = action.payload;
         },
+        updateQuestionFavourite: (state, action) => {
+            state.singleQuestion.isFavourited = action.payload.isFavourited;
+            state.singleQuestion.favouritesCount =
+                action.payload.favouritesCount;
+        },
+        updateAnswers: (state, action) => {
+            state.answers = action.payload;
+        },
+        updateAnswersVotesCount: (state, action) => {
+            state.answers = state.answers.map((answer) => {
+                if (answer._id === action.payload.answerId) {
+                    answer.votes = action.payload.votes;
+                }
+                if (answer?.replies?.length > 0) {
+                    answer.replies.map((reply) => {
+                        if (reply._id === action.payload.answerId) {
+                            reply.votes = action.payload.votes;
+                        }
+
+                        return reply;
+                    });
+                }
+                return answer;
+            });
+        },
+        removeAnswer: (state, action) => {
+            state.answers = state.answers.filter((answer) => {
+                if (answer?.replies?.length > 0) {
+                    answer.replies = answer.replies.filter((ans) => {
+                        return ans._id !== action.payload;
+                    });
+                }
+                return answer._id !== action.payload;
+            });
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(fetchCategories.fulfilled, (state, action) => {
@@ -107,6 +143,10 @@ export const {
     updateQuestions,
     updateSingleQstnVotes,
     updateSingleQuestion,
+    updateQuestionFavourite,
+    updateAnswers,
+    updateAnswersVotesCount,
+    removeAnswer,
 } = questionSlice.actions;
 
 export default questionSlice.reducer;

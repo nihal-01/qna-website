@@ -360,6 +360,14 @@ const userSchema = new Schema(
             type: Boolean,
             default: false,
         },
+        favourites: {
+            type: [
+                {
+                    type: mongoose.Types.ObjectId,
+                    ref: 'Question',
+                },
+            ],
+        },
     },
     { timestamps: true }
 );

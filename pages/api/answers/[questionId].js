@@ -25,7 +25,7 @@ handler.get(async (req, res) => {
         sort.createdAt = -1;
     }
 
-    const answers = await Answer.find({ questionId })
+    const answers = await Answer.find({ questionId, isReply: { $ne: true } })
         .populate('author', '_id username avatar isVerified badge')
         .populate([
             {

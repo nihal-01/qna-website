@@ -23,7 +23,6 @@ import AskQuestionPopup from './AskQuestionPopup';
 import ProfileHero from './ProfileHero';
 import ProfileLayout from './ProfileLayout';
 import PollForm from './PollForm';
-import QuestionSkeleton from './QuestionSkeleton';
 import EditProfileLayout from './EditProfileLayout';
 import GroupCard from './GroupCard';
 import SingleGroupHero from './SingleGroupHero';
@@ -57,7 +56,6 @@ export {
     ProfileHero,
     ProfileLayout,
     PollForm,
-    QuestionSkeleton,
     EditProfileLayout,
     GroupCard,
     SingleGroupHero,

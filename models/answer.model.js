@@ -41,6 +41,10 @@ const answerSchema = new mongoose.Schema(
             ],
         },
         replies: [{ type: mongoose.Types.ObjectId, ref: 'Answer' }],
+        isReply: {
+            type: Boolean,
+            default: false,
+        },
     },
     { timestamps: true }
 );

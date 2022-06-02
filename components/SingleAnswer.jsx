@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BiLogOut } from 'react-icons/bi';
 import {
     BsCheck,
@@ -8,14 +8,22 @@ import {
     BsFillTriangleFill,
     BsShareFill,
     BsPersonFill,
+    BsPencil,
+    BsExclamationTriangle,
 } from 'react-icons/bs';
+import { HiOutlineTrash } from 'react-icons/hi';
 import { IoMdShareAlt } from 'react-icons/io';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from '../axios';
 
 import { avatarImg } from '../public/images';
+import {
+    removeAnswer,
+    updateAnswersVotesCount,
+} from '../redux/slices/questionSlice';
 import { logout } from '../redux/slices/userSlice';
 import { monthNames } from '../utils/constants';
+import BtnLoader from './BtnLoader';
 
 const styles = {
     container: `py-[15px] lg:py-[30px] border-b border-borderColor last:border-b-0 grid grid-cols-[65px_auto] lg:grid-cols-[75px_auto]`,
@@ -29,7 +37,7 @@ const styles = {
     desc: `text-primaryColor text-base leading-[28px] lg:text-[18px] lg:leading-loose mt-[0.8em] mb-[1.2em]`,
     answerFooter: `flex items-center lg:justify-between`,
     answerFooterLeft: `flex items-center`,
-    voteWrapper: `flex items-center gap-[10px] mr-[15px] pr-[15px] border-r border-borderColor`,
+    voteWrapper: `flex items-center gap-[14px] mr-[15px] pr-[15px] border-r border-borderColor`,
     voteIcon: `block text-[#677075] cursor-pointer transition-all hover:text-primaryColor text-[15px] lg:text-[16px]`,
     voteTxt: `text-base lg:text-lg font-bold text-[#677075]`,
     replyBtnWrapper: `relative mr-[15px] pr-[15px] border-r border-borderColor`,
@@ -43,6 +51,10 @@ const styles = {
     formWrapper: `col-span-2 w-[100%] bg-[#f7f7f7] mt-[2em] border border-[#e4e6e6] rounded-sm p-[30px]`,
     formTextarea: `w-[100%] border border-borderColor outline-none rounded-sm mt-[2em] resize-none p-[10px] mb-[1.2em]`,
     formSubmitBtn: `h-[45px] lg:h-[47px] bg-secondaryColor w-[100%] text-white font-bold rounded-sm lg:text-[17px] transition-all hover:bg-grayColor`,
+    dropdownWrapper: `relative`,
+    dotsBtn: `text-[#464e7b] transition-all hover:text-primaryColor`,
+    dropDown: `absolute right-0 bg-white shadow-[0_1px_5px_#d0d2d3] rounded-sm overflow-hidden`,
+    dropDownItem: `whitespace-nowrap flex items-center gap-[8px] py-[8px] px-[10px] max-w-[100%] min-w-[140px] text-primaryColor cursor-pointer transition-all hover:text-secondaryColor text-[15px] border-b last:border-b-0`,
 };
 
 export default function SingleAnswer({
@@ -59,13 +71,23 @@ export default function SingleAnswer({
     const [error, setError] = useState('');
     const [replayFormOpen, setReplayFormOpen] = useState(false);
     const [replayTxt, setReplayTxt] = useState('');
+    const [voteLoading, setVoteLoading] = useState(false);
+    const [replyBtn, setReplyBtn] = useState({
+        error: '',
+        loading: '',
+        isAdded: false,
+    });
+    const [editDropDownOpen, setEditDropDownOpen] = useState(false);
 
     const myDate = new Date(createdAt);
     const { user } = useSelector((state) => state.user);
+    const dispatch = useDispatch();
 
     const handleVote = async (isUpvote) => {
         try {
             setError('');
+            setVoteLoading(true);
+
             const response = await axios.patch(
                 '/answers/vote',
                 {
@@ -76,15 +98,23 @@ export default function SingleAnswer({
                     headers: { Authorization: `Bearer ${user?.token}` },
                 }
             );
-            console.log(response.data);
+            dispatch(
+                updateAnswersVotesCount({
+                    answerId: _id,
+                    votes: response.data.votes,
+                })
+            );
+
+            setVoteLoading(false);
         } catch (err) {
-            // if (err.response.status === 401) {
-            //     dispatch(logout());
-            //     return setError('Please Login to vote');
-            // }
-            // setError(
-            //     err.response?.data?.error || 'Something went wrong, Try again'
-            // );
+            if (err.response.status === 401) {
+                dispatch(logout());
+                return setError('Please Login to vote');
+            }
+            setError(
+                err.response?.data?.error || 'Something went wrong, Try again'
+            );
+            setVoteLoading(false);
             console.log(err?.response?.data);
         }
     };
@@ -92,6 +122,16 @@ export default function SingleAnswer({
     const handleSubmit = async (e) => {
         try {
             e.preventDefault();
+
+            if (!replayTxt) {
+                return setReplyBtn((prev) => {
+                    return { ...prev, error: 'The Answer field is empty..!' };
+                });
+            }
+
+            setReplyBtn((prev) => {
+                return { ...prev, loading: true, error: '' };
+            });
 
             const response = await axios.post(
                 '/answers/replay',
@@ -105,17 +145,69 @@ export default function SingleAnswer({
                 }
             );
 
-            console.log(response);
+            setReplayTxt('');
+            setReplyBtn((prev) => {
+                return { ...prev, loading: false, isAdded: true };
+            });
         } catch (err) {
-            console.log(err);
+            setReplyBtn((prev) => {
+                return {
+                    ...prev,
+                    loading: false,
+                    error:
+                        err.response?.data?.error ||
+                        'Something went wrong, Try again',
+                };
+            });
         }
     };
+
+    const handleDelete = async () => {
+        try {
+            const isConfirm = confirm('Are you sure to delete ?');
+            if (isConfirm) {
+                await axios.delete(`/answers/single/${_id}`, {
+                    headers: { Authorization: `Bearer ${user?.token}` },
+                });
+                dispatch(removeAnswer(_id));
+            }
+        } catch (err) {
+            console.log(err?.response?.data);
+        }
+    };
+
+    const handleReport = () => {
+        alert('You Report Submited Successfully');
+    };
+
+    useEffect(() => {
+        console.log('replay timeout');
+        const timeout = setTimeout(() => {
+            setReplyBtn((prev) => {
+                return { ...prev, isAdded: false };
+            });
+        }, [3000]);
+
+        return () => clearTimeout(timeout);
+    }, [replyBtn.isAdded]);
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setError('');
+        }, [3000]);
+
+        return () => clearTimeout(timeout);
+    }, [error]);
 
     return (
         <div
             className={
                 styles.container +
-                ` ${isReply ? 'px-0 first:border-t first:mt-[1.5em]' : 'px-[15px] lg:px-[30px]'}`
+                ` ${
+                    isReply
+                        ? 'px-0 first:border-t first:mt-[1.5em]'
+                        : 'px-[15px] lg:px-[30px]'
+                }`
             }
         >
             <div className={styles.avatarWrapper}>
@@ -185,7 +277,13 @@ export default function SingleAnswer({
                             >
                                 <BsFillTriangleFill />
                             </span>
-                            <span className={styles.voteTxt}>{votes}</span>
+                            <span className={styles.voteTxt}>
+                                {voteLoading ? (
+                                    <BtnLoader color='secondaryColor' />
+                                ) : (
+                                    votes
+                                )}
+                            </span>
                             <span
                                 className={styles.voteIcon + ' rotate-180'}
                                 onClick={() => {
@@ -257,12 +355,60 @@ export default function SingleAnswer({
                             </ul>
                         </div>
                     </div>
-                    <div>
-                        <button>
+
+                    {/* EDIT DROPDOWN */}
+                    <div className={styles.dropdownWrapper}>
+                        <button
+                            onClick={() => {
+                                setEditDropDownOpen(!editDropDownOpen);
+                            }}
+                            className={styles.dotsBtn}
+                        >
                             <BsThreeDotsVertical />
                         </button>
+                        {editDropDownOpen && (
+                            <ul className={styles.dropDown}>
+                                {author._id === user._id ? (
+                                    <>
+                                        <li className='border-b'>
+                                            <Link
+                                                href={`/questions/answers/edit/${_id}`}
+                                            >
+                                                <a
+                                                    href={`/questions/answers/edit/${_id}`}
+                                                    className={
+                                                        styles.dropDownItem
+                                                    }
+                                                >
+                                                    <BsPencil /> Edit
+                                                </a>
+                                            </Link>
+                                        </li>
+                                        <li
+                                            className={styles.dropDownItem}
+                                            onClick={handleDelete}
+                                        >
+                                            <HiOutlineTrash /> Delete
+                                        </li>
+                                    </>
+                                ) : (
+                                    <li
+                                        className={styles.dropDownItem}
+                                        onClick={handleReport}
+                                    >
+                                        <BsExclamationTriangle /> Report
+                                    </li>
+                                )}
+                            </ul>
+                        )}
                     </div>
                 </div>
+
+                {error && (
+                    <p className='text-[red] mt-[10px] bg-[lightred] bg-[#fbcccc] text-[15px] px-[10px] py-[7px] rounded-sm'>
+                        {error}
+                    </p>
+                )}
 
                 {replies && (
                     <div>
@@ -282,47 +428,69 @@ export default function SingleAnswer({
             {/* REPLAY FORM */}
             {replayFormOpen && (
                 <div className={styles.formWrapper}>
-                    <p className={styles.formReplayTxt}>
-                        Replay to {author.username}
-                    </p>
-                    <p className={styles.formMeta}>
-                        Logged in as{' '}
-                        <Link href={`/profile/${user.username}`}>
-                            <a
-                                href={`/profile/${user.username}`}
-                                className={styles.formLink}
-                            >
-                                <i>
-                                    <BsPersonFill />
-                                </i>
-                                {user?.username}
-                            </a>
-                        </Link>
-                        <button
-                            className={styles.formLink}
-                            onClick={() => {
-                                dispatch(logout());
-                            }}
-                        >
-                            <i>
-                                <BiLogOut />
-                            </i>
-                            Logout
-                        </button>
-                    </p>
-                    <form action='' onSubmit={handleSubmit}>
-                        <textarea
-                            name=''
-                            id=''
-                            cols='30'
-                            rows='10'
-                            className={styles.formTextarea}
-                            onChange={(e) => {
-                                setReplayTxt(e.target.value);
-                            }}
-                        ></textarea>
-                        <button className={styles.formSubmitBtn}>submit</button>
-                    </form>
+                    {user ? (
+                        <>
+                            <p className={styles.formReplayTxt}>
+                                Replay to {author.username}
+                            </p>
+                            <p className={styles.formMeta}>
+                                Logged in as{' '}
+                                <Link href={`/profile/${user.username}`}>
+                                    <a
+                                        href={`/profile/${user.username}`}
+                                        className={styles.formLink}
+                                    >
+                                        <i>
+                                            <BsPersonFill />
+                                        </i>
+                                        {user?.username}
+                                    </a>
+                                </Link>
+                                <button
+                                    className={styles.formLink}
+                                    onClick={() => {
+                                        dispatch(logout());
+                                    }}
+                                >
+                                    <i>
+                                        <BiLogOut />
+                                    </i>
+                                    Logout
+                                </button>
+                            </p>
+                            <form action='' onSubmit={handleSubmit}>
+                                <textarea
+                                    name=''
+                                    id=''
+                                    cols='30'
+                                    rows='10'
+                                    className={styles.formTextarea}
+                                    onChange={(e) => {
+                                        setReplayTxt(e.target.value);
+                                    }}
+                                    value={replayTxt || ''}
+                                ></textarea>
+                                {replyBtn.error && (
+                                    <p className='text-[red] mb-[1em] text-[15px] lg:text-base'>
+                                        {replyBtn.error}
+                                    </p>
+                                )}
+                                <button className={styles.formSubmitBtn}>
+                                    {replyBtn.loading ? (
+                                        <BtnLoader />
+                                    ) : replyBtn.isAdded ? (
+                                        'Answer Succesfully Added'
+                                    ) : (
+                                        'submit'
+                                    )}
+                                </button>
+                            </form>
+                        </>
+                    ) : (
+                        <p className={styles.formReplayTxt}>
+                            Please Login to Replay this Answer
+                        </p>
+                    )}
                 </div>
             )}
         </div>

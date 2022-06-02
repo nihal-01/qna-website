@@ -39,4 +39,10 @@ handler.post(async (req, res) => {
     res.status(201).json(newQuestion);
 });
 
+handler.delete(async (req, res) => {
+    const { questionId } = req.body;
+    await Question.findByIdAndDelete(questionId);
+    res.status(200).json({ message: 'deleted successfully' });
+});
+
 export default handler;
