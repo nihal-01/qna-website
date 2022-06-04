@@ -3,49 +3,7 @@ import { AiFillTag } from 'react-icons/ai';
 import { BsSearch } from 'react-icons/bs';
 
 import { Breadcrumbs, SidebarLayout, TagCard } from '../components';
-
-const tags = [
-    {
-        _id: '1',
-        name: 'Car',
-        followers: 100,
-    },
-    {
-        _id: '2',
-        name: 'Jeep',
-        followers: 1345,
-    },
-    {
-        _id: '3',
-        name: 'Bus',
-        followers: 487,
-    },
-    {
-        _id: '4',
-        name: 'Truck',
-        followers: 765,
-    },
-    {
-        _id: '5',
-        name: 'Bike',
-        followers: 2087,
-    },
-    {
-        _id: '6',
-        name: 'Train',
-        followers: 60,
-    },
-    {
-        _id: '7',
-        name: 'Plane',
-        followers: 3404,
-    },
-    {
-        _id: '8',
-        name: 'Ship',
-        followers: 2600,
-    },
-];
+import { getAllTags } from '../helpers/questionsHelpers';
 
 const styles = {
     container: `h-[100%] w-[100%]`,
@@ -58,37 +16,17 @@ const styles = {
     contentWrapper: `px-[15px] py-[30px] grid gap-[1.5em] lg:p-[30px] lg:grid-cols-2`,
 };
 
-export default function Tags() {
+export default function Tags({ data }) {
+    const tags = JSON.parse(data);
+
     return (
         <div className={styles.container}>
             <div className={styles.header}>
                 <Breadcrumbs crumbs={[{ name: 'tags' }]} />
-                <div className={styles.headerRight}>
-                    <select name='' id='' className={styles.selectOption}>
-                        <option value=''>Popular</option>
-                        <option value=''>Followers</option>
-                        <option value=''>Name</option>
-                    </select>
-                    <form className={styles.searchInputWrapper}>
-                        <input
-                            type='text'
-                            placeholder='Search Tags...'
-                            className={styles.searchInput}
-                        />
-                        <button type='submit' className={styles.searchIcons}>
-                            <BsSearch />
-                        </button>
-                    </form>
-                </div>
             </div>
             <div className={styles.contentWrapper}>
-                {tags.map((tag) => {
-                    return (
-                        <TagCard
-                            key={tag._id}
-                            data={{ ...tag, icon: <AiFillTag /> }}
-                        />
-                    );
+                {tags.map((tag, index) => {
+                    return <TagCard key={index} tag={tag} />;
                 })}
             </div>
         </div>
@@ -98,3 +36,13 @@ export default function Tags() {
 Tags.getLayout = function getLayout(page) {
     return <SidebarLayout>{page}</SidebarLayout>;
 };
+
+export async function getServerSideProps(context) {
+    const tags = await getAllTags();
+
+    return {
+        props: {
+            data: JSON.stringify(tags),
+        },
+    };
+}

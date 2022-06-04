@@ -8,7 +8,7 @@ import {
     QuestionsList,
     SidebarLayout,
 } from '../../../components';
-import { getUserPolls } from '../../../helpers/questionsHelpers';
+import { getUserQuestions } from '../../../helpers/questionsHelpers';
 import { getUserWithInfo } from '../../../helpers/userHelpers';
 import { updateQuestions } from '../../../redux/slices/questionSlice';
 import { useEnhancedEffect } from '../../../utils';
@@ -18,13 +18,13 @@ const styles = {
     notFound: `flex items-center gap-[1em] bg-[#fffcdd] text-[#ebc035] font-bold text-[17px] p-[15px] rounded-sm`,
 };
 
-export default function SingleUserPolls({ userData, pollsData }) {
+export default function SingleUserQuestions({ userData, questionData }) {
     const dispatch = useDispatch();
     const { questions } = useSelector((state) => state.question);
 
     useEnhancedEffect(() => {
-        dispatch(updateQuestions(JSON.parse(pollsData)));
-    }, [dispatch, pollsData]);
+        dispatch(updateQuestions(JSON.parse(questionData)));
+    }, [dispatch, questionData]);
 
     return (
         <div>
@@ -34,7 +34,7 @@ export default function SingleUserPolls({ userData, pollsData }) {
                         <i>
                             <BsFlagFill />
                         </i>
-                        There are no polls yet
+                        There are no questions yet
                     </div>
                 </div>
             ) : (
@@ -44,7 +44,7 @@ export default function SingleUserPolls({ userData, pollsData }) {
     );
 }
 
-SingleUserPolls.getLayout = function getLayout(page) {
+SingleUserQuestions.getLayout = function getLayout(page) {
     return (
         <>
             <ProfileHero user={JSON.parse(page.props.userData)} />
@@ -61,9 +61,8 @@ SingleUserPolls.getLayout = function getLayout(page) {
 
 export async function getServerSideProps({ params }) {
     const user = await getUserWithInfo(params.username);
-    const polls = await getUserPolls(params.username);
 
-    if (!user || !polls) {
+    if (!user) {
         return {
             redirect: {
                 permanent: false,
@@ -72,10 +71,12 @@ export async function getServerSideProps({ params }) {
         };
     }
 
+    const questions = await getUserQuestions(user._id);
+
     return {
         props: {
             userData: JSON.stringify(user),
-            pollsData: JSON.stringify(polls),
+            questionData: JSON.stringify(questions),
         },
     };
 }

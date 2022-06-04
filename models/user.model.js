@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import validator from 'validator';
 
+import { Answer, Comment, Group, Post, Question } from '.';
+
 const { Schema } = mongoose;
 
 const userSchema = new Schema(
@@ -27,7 +29,6 @@ const userSchema = new Schema(
         },
         country: {
             type: String,
-            lowercase: true,
             enum: [
                 'Afghanistan',
                 'Albania',
@@ -367,6 +368,12 @@ const userSchema = new Schema(
                     ref: 'Question',
                 },
             ],
+        },
+        website: {
+            type: String,
+        },
+        description: {
+            type: String,
         },
     },
     { timestamps: true }

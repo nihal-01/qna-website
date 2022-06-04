@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 
 import axios from '../axios';
 import { updateSigninBox } from '../redux/slices/layoutSlice';
-import { signUser } from '../redux/slices/userSlice';
+import { updateUser } from '../redux/slices/userSlice';
 import { BtnLoader } from './';
 
 const styles = {
@@ -56,8 +56,7 @@ export default function LoginForm() {
 
             setLoading(false);
 
-            Cookies.set('user-info', JSON.stringify(response.data));
-            dispacth(signUser(response.data));
+            dispacth(updateUser(response.data));
             dispacth(updateSigninBox(false));
         } catch (err) {
             setError(

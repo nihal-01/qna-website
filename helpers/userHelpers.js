@@ -54,3 +54,29 @@ export const getSingleUser = async (id) => {
         throw new Error(err);
     }
 };
+
+export const getSingleUserByUsername = async (username) => {
+    try {
+        await db.connect();
+        return User.findOne({ username });
+    } catch (err) {
+        throw new Error(err);
+    }
+};
+
+export const getUserWithInfo = async (username) => {
+    try {
+        await db.connect();
+        return User.findOne({ username })
+            .populate('numOfQuestions')
+            .populate('numOfAnswers')
+            .populate('following', 'username avatar')
+            .populate('followers', 'username avatar')
+            .select(
+                'username following followers avatar coverPhoto badge isVerified numOfQuestions numOfAnswers gender website description age phone city country fname lname'
+            )
+            .lean();
+    } catch (err) {
+        throw new Error(err);
+    }
+};

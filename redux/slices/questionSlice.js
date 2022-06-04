@@ -29,6 +29,8 @@ const initialState = {
     categories: [],
     answers: [],
     isLoading: false,
+    isEdit: false,
+    answersCount: 0,
     filters: {
         polls: false,
         noAnswers: false,
@@ -117,6 +119,30 @@ const questionSlice = createSlice({
                 }
                 return answer._id !== action.payload;
             });
+            state.answersCount -= 1;
+        },
+        updateIsEdit: (state, action) => {
+            state.isEdit = action.payload;
+        },
+        updateAnswersCount: (state, action) => {
+            state.answersCount = action.payload;
+        },
+        incrementAnswersCount: (state, action) => {
+            state.answersCount += 1;
+        },
+        updatePoll: (state, action) => {
+            state.singleQuestion.poll.map((myPoll) => {
+                if (myPoll.option === action.payload.option) {
+                    myPoll.votes += 1;
+                }
+                return myPoll;
+            });
+
+            state.singleQuestion.polledUsers
+                ? state.singleQuestion.polledUsers.push(action.payload._id)
+                : (state.singleQuestion.polledUsers = [action.payload._id]);
+
+            console.log(state.singleQuestion);
         },
     },
     extraReducers: (builder) => {
@@ -147,6 +173,10 @@ export const {
     updateAnswers,
     updateAnswersVotesCount,
     removeAnswer,
+    updateIsEdit,
+    updateAnswersCount,
+    incrementAnswersCount,
+    updatePoll,
 } = questionSlice.actions;
 
 export default questionSlice.reducer;

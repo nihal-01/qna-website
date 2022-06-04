@@ -11,9 +11,7 @@ const userSlice = createSlice({
     initialState,
     reducers: {
         updateUser: (state, action) => {
-            state.user = action.payload;
-        },
-        signUser: (state, action) => {
+            Cookies.set('user-info', JSON.stringify(action.payload));
             state.user = action.payload;
         },
         logout: (state, action) => {
@@ -39,7 +37,7 @@ const userSlice = createSlice({
     },
 });
 
-export const { signUser, logout, updateIsFollowing, updateUsers, updateUser } =
+export const { logout, updateIsFollowing, updateUsers, updateUser } =
     userSlice.actions;
 
 export default userSlice.reducer;

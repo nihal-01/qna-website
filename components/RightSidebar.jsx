@@ -268,7 +268,11 @@ export default function RightSidebar() {
                                                         }
                                                     >
                                                         <Link
-                                                            href={`/profile/${author.username}`}
+                                                            href={`${
+                                                                author?.username
+                                                                    ? `/profile/${author?.username}`
+                                                                    : '#'
+                                                            }`}
                                                         >
                                                             {author?.username ||
                                                                 'Anonymous'}

@@ -87,7 +87,7 @@ export default function Header() {
                 isSidebarOpen={isSidebarOpen}
                 setIsSIdebarOpen={setIsSIdebarOpen}
             />
-            <AskQuestionPopup />
+            {questionBox && <AskQuestionPopup />}
 
             <div className={styles.container}>
                 <div className={styles.headerLeft}>
@@ -252,7 +252,7 @@ export default function Header() {
                                     >
                                         <div className={styles.avatarImg}>
                                             <Image
-                                                src={avatarImg}
+                                                src={user?.avatar || avatarImg}
                                                 alt=''
                                                 objectFit='cover'
                                                 layout='fill'

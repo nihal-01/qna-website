@@ -177,3 +177,52 @@ export const checkIsFavourited = async (userId, questionId) => {
 
     return user.favourites.includes(questionId);
 };
+
+export const getUserQuestions = async (userId) => {
+    try {
+        await db.connect();
+
+        const questions = await Question.find({ author: userId })
+            .populate(
+                'author',
+                '_id username badge isVerified followers avatar'
+            )
+            .populate('category', '_id name')
+            .lean();
+
+        return questions;
+    } catch (err) {
+        throw new Error(err);
+    }
+};
+
+export const getUserPolls = async (userId) => {
+    try {
+        await db.connect();
+
+        const polls = await Question.find({
+            author: userId,
+            isPoll: true,
+        })
+            .populate(
+                'author',
+                '_id username badge isVerified followers avatar'
+            )
+            .populate('category', '_id name')
+            .lean();
+
+        return polls;
+    } catch (err) {
+        throw new Error(err);
+    }
+};
+
+export const getAllTags = async () => {
+    try {
+        await db.connect();
+
+        return await Question.distinct('tags');
+    } catch (err) {
+        throw new Error(err);
+    }
+};

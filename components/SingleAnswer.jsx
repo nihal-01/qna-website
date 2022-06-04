@@ -18,6 +18,7 @@ import axios from '../axios';
 
 import { avatarImg } from '../public/images';
 import {
+    incrementAnswersCount,
     removeAnswer,
     updateAnswersVotesCount,
 } from '../redux/slices/questionSlice';
@@ -60,13 +61,13 @@ const styles = {
 export default function SingleAnswer({
     _id,
     answer,
-    avatar,
     author,
     votes,
     createdAt,
     questionId,
     replies,
     isReply = false,
+    showReplies = true,
 }) {
     const [error, setError] = useState('');
     const [replayFormOpen, setReplayFormOpen] = useState(false);
@@ -145,6 +146,7 @@ export default function SingleAnswer({
                 }
             );
 
+            dispatch(incrementAnswersCount());
             setReplayTxt('');
             setReplyBtn((prev) => {
                 return { ...prev, loading: false, isAdded: true };
@@ -177,7 +179,7 @@ export default function SingleAnswer({
     };
 
     const handleReport = () => {
-        alert('You Report Submited Successfully');
+        alert('Your Report Submitted Successfully');
     };
 
     useEffect(() => {
@@ -204,7 +206,7 @@ export default function SingleAnswer({
             className={
                 styles.container +
                 ` ${
-                    isReply
+                    isReply && showReplies
                         ? 'px-0 first:border-t first:mt-[1.5em]'
                         : 'px-[15px] lg:px-[30px]'
                 }`
@@ -214,7 +216,7 @@ export default function SingleAnswer({
                 <Link href={'/'}>
                     <a href='' className={styles.avatarImg}>
                         <Image
-                            src={avatar || avatarImg}
+                            src={author?.avatar || avatarImg}
                             alt=''
                             layout='fill'
                             objectFit='cover'
@@ -368,7 +370,7 @@ export default function SingleAnswer({
                         </button>
                         {editDropDownOpen && (
                             <ul className={styles.dropDown}>
-                                {author._id === user._id ? (
+                                {author?._id === user?._id ? (
                                     <>
                                         <li className='border-b'>
                                             <Link
@@ -405,12 +407,12 @@ export default function SingleAnswer({
                 </div>
 
                 {error && (
-                    <p className='text-[red] mt-[10px] bg-[lightred] bg-[#fbcccc] text-[15px] px-[10px] py-[7px] rounded-sm'>
+                    <p className='text-[red] mt-[10px] bg-[lightred] bg-[#fbcccc] text-[15px] px-[10px] py-[10px] rounded-sm'>
                         {error}
                     </p>
                 )}
 
-                {replies && (
+                {showReplies && replies && (
                     <div>
                         {replies.map((reply, index) => {
                             return (

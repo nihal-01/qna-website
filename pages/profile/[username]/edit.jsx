@@ -1,13 +1,20 @@
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { AiOutlineIdcard } from 'react-icons/ai';
 import { BiLink } from 'react-icons/bi';
-import { BsCameraFill } from 'react-icons/bs';
+import { BsCameraFill, BsGlobe2 } from 'react-icons/bs';
 import { FaCity } from 'react-icons/fa';
 import { FiPhoneCall } from 'react-icons/fi';
 import { HiLocationMarker, HiMail, HiUser, HiUserCircle } from 'react-icons/hi';
-import { EditProfileLayout } from '../../../components';
+import { useDispatch, useSelector } from 'react-redux';
+import axios from '../../../axios';
+
+import { BtnLoader, EditProfileLayout } from '../../../components';
+import { getSingleUserByUsername } from '../../../helpers/userHelpers';
 import { avatarImg } from '../../../public/images';
+import { updateUser } from '../../../redux/slices/userSlice';
+import { cleanObject } from '../../../utils';
 import { countryList } from '../../../utils/constants';
 
 const styles = {
@@ -19,10 +26,10 @@ const styles = {
     inputWrapper: `flex items-center border border-borderColor rounded-sm h-[45px] mb-[10px] mt-[5px] lg:mb-[20px]`,
     inputIcon: `text-lg text-grayColor mx-[10px]`,
     input: `w-[100%] h-[100%] outline-none`,
-    submitBtn: `w-[100%] h-[40px] lg:h-[45px] bg-secondaryColor text-white font-semibold hover:bg-grayColor transition-all cursor-pointer rounded-sm mt-[20px]`,
+    submitBtn: `w-[100%] h-[40px] lg:h-[45px] bg-secondaryColor text-white font-semibold hover:bg-grayColor transition-all cursor-pointer rounded-sm mt-[20px] disabled:cursor-not-allowed`,
     imageWrapper: `w-[120px] min-w-[120px] h-[120px] min-h-[120px] rounded-full border-2 border-secondaryColor p-[4px] transition-all hover:border-primaryColor mx-auto mb-[10px] lg:mb-[20px] `,
     image: `w-[100%] h-[100%] relative rounded-full overflow-hidden`,
-    fileInputWrapper: `relative group w-[100%] h-[45px] border border-borderColor rounded-sm flex items-center mt-[5px] mb-[10px] lg:mb-[20px] `,
+    fileInputWrapper: `relative group w-[100%] h-[45px] border border-borderColor rounded-sm flex items-center `,
     fileInput: `file:hidden cursor-pointer w-full h-[100%] py-[8px] pr-[8px] pl-[40px] z-10 text-grayColor`,
     cameraIcon: `text-grayColor absolute top-[10px] left-[10px] text-xl`,
     fileInputBrowseBtn: `absolute top-[7px] right-[10px] bg-primaryColor rounded-sm py-[2px] px-[10px] text-white transition-all group-hover:bg-secondaryColor text-[15px] font-semibold`,
@@ -32,16 +39,151 @@ const styles = {
     radioInputWrapper: `flex items-center gap-[0.7em]`,
     radioInput: `w-[17px] min-w-[17px] h-[17px] min-h-[17px]`,
     textarea: `w-[100%] h-[200px] border border-borderColor resize-none mt-[5px] rounded-sm outline-none px-[20px] py-[15px] `,
+    uploadingTxt: `text-right text-grayColor mt-[6px]`,
+    uploadedTxt: `text-right text-[green] mt-[6px]`,
+    errorTxt: `text-[red] text-right mt-[6px]`,
 };
 
-export default function EditProfile() {
-    const [user, setUser] = useState({});
+export default function EditProfile({ userRes }) {
+    const myUser = JSON.parse(userRes);
 
-    const handleChange = (e) => {};
+    const [data, setData] = useState({
+        username: myUser.username || '',
+        fname: myUser.fname || '',
+        lname: myUser.lname || '',
+        avatar: myUser.avatar || '',
+        coverPhoto: myUser.coverPhoto || '',
+        country: myUser.country || '',
+        city: myUser.city || '',
+        phone: myUser.phone || '',
+        gender: myUser.gender || '',
+        age: myUser.age || '',
+        email: myUser.email || '',
+        website: myUser.website || '',
+        description: myUser.description || '',
+    });
+    const [coverPhoto, setCoverPhoto] = useState({ uploading: '', error: '' });
+    const [avatar, setAvatar] = useState({ uploading: '', error: '' });
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+
+    const { user } = useSelector((state) => state.user);
+    const dispatch = useDispatch();
+    const router = useRouter();
+
+    const handleChange = (e) => {
+        setData({ ...data, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        try {
+            e.preventDefault();
+
+            if (!data.username || !data.email) {
+                return setError('* Fill required fields');
+            }
+
+            setError('');
+            setLoading(true);
+
+            const obj = cleanObject(data);
+            const response = await axios.patch(
+                '/users/update-profile',
+                {
+                    ...obj,
+                },
+                {
+                    headers: { Authorization: `Bearer ${user?.token}` },
+                }
+            );
+            dispatch(updateUser(response.data));
+            router.push(`/profile/${data.username}`);
+            setLoading(false);
+        } catch (err) {
+            setError(
+                err?.response?.data?.error || 'Something went wrong, Try again'
+            );
+            setLoading(false);
+        }
+    };
+
+    const uploadImage = async (file, name) => {
+        try {
+            if (!file.type.match(/image\/(png|jpg|jpeg)/gm)) {
+                if (name == 'avatar') {
+                    return setAvatar((prev) => {
+                        return {
+                            ...prev,
+                            uploading: '',
+                            error: 'only png, jpg or jpeg images are supported',
+                        };
+                    });
+                } else if (name === 'coverPhoto') {
+                    return setCoverPhoto((prev) => {
+                        return {
+                            ...prev,
+                            uploading: '',
+                            error: 'only png, jpg or jpeg images are supported',
+                        };
+                    });
+                }
+            }
+
+            if (name == 'avatar') {
+                setAvatar((prev) => {
+                    return { ...prev, error: '', uploading: true };
+                });
+            } else if (name === 'coverPhoto') {
+                setCoverPhoto((prev) => {
+                    return { ...prev, error: '', uploading: true };
+                });
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', 'vc4xbhed');
+
+            const response = await axios.post(
+                'https://api.cloudinary.com/v1_1/djjgnoyg4/image/upload',
+                formData
+            );
+
+            if (name == 'avatar') {
+                setAvatar((prev) => {
+                    return { ...prev, uploading: false };
+                });
+            } else if (name === 'coverPhoto') {
+                setCoverPhoto((prev) => {
+                    return { ...prev, uploading: false };
+                });
+            }
+
+            setData({ ...data, [name]: response.data.url });
+        } catch (err) {
+            console.log(err);
+            if (name == 'avatar') {
+                setAvatar((prev) => {
+                    return {
+                        ...prev,
+                        uploading: '',
+                        error: 'Something went wrong, Try again',
+                    };
+                });
+            } else if (name === 'coverPhoto') {
+                setCoverPhoto((prev) => {
+                    return {
+                        ...prev,
+                        uploading: '',
+                        error: 'Something went wrong, Try again',
+                    };
+                });
+            }
+        }
+    };
 
     return (
         <div className={styles.container}>
-            <form action=''>
+            <form action='' onSubmit={handleSubmit}>
                 <div className={styles.section}>
                     <h2 className={styles.title}>
                         <i className={styles.titleIcon}>
@@ -62,7 +204,7 @@ export default function EditProfile() {
                             id='edit-username'
                             className={styles.input}
                             name='username'
-                            value={user.username || ''}
+                            value={data.username || ''}
                             onChange={handleChange}
                         />
                     </div>
@@ -79,7 +221,7 @@ export default function EditProfile() {
                             id='edit-fname'
                             className={styles.input}
                             name='fname'
-                            value={user.fname || ''}
+                            value={data.fname || ''}
                             onChange={handleChange}
                         />
                     </div>
@@ -96,7 +238,7 @@ export default function EditProfile() {
                             id='edit-lname'
                             className={styles.input}
                             name='lname'
-                            value={user.lname || ''}
+                            value={data.lname || ''}
                             onChange={handleChange}
                         />
                     </div>
@@ -104,7 +246,7 @@ export default function EditProfile() {
                     <div className={styles.imageWrapper}>
                         <div className={styles.image}>
                             <Image
-                                src={avatarImg}
+                                src={data.avatar || avatarImg}
                                 alt=''
                                 objectFit='cover'
                                 layout='fill'
@@ -112,45 +254,90 @@ export default function EditProfile() {
                         </div>
                     </div>
 
-                    <label htmlFor='edit-profilepic' className={styles.label}>
-                        Profile Picture
-                    </label>
-                    <div className={styles.fileInputWrapper}>
-                        <input
-                            type='file'
-                            id='edit-profilepic'
-                            className={styles.fileInput}
-                        />
-                        <i className={styles.cameraIcon}>
-                            <BsCameraFill />
-                        </i>
-                        <button
-                            type='button'
-                            className={styles.fileInputBrowseBtn}
+                    <div className='mt-[5px] mb-[10px] lg:mb-[20px]'>
+                        <label
+                            htmlFor='edit-profilepic'
+                            className={styles.label}
                         >
-                            Browse
-                        </button>
+                            Profile Picture
+                        </label>
+                        <div className={styles.fileInputWrapper}>
+                            <input
+                                type='file'
+                                id='edit-profilepic'
+                                className={styles.fileInput}
+                                onChange={(e) => {
+                                    if (e.target.files.length > 0) {
+                                        uploadImage(
+                                            e.target.files[0],
+                                            'avatar'
+                                        );
+                                    }
+                                }}
+                            />
+                            <i className={styles.cameraIcon}>
+                                <BsCameraFill />
+                            </i>
+                            <button
+                                type='button'
+                                className={styles.fileInputBrowseBtn}
+                            >
+                                Browse
+                            </button>
+                        </div>
+
+                        {avatar.uploading === true && (
+                            <p className={styles.uploadingTxt}>uploading...</p>
+                        )}
+                        {avatar.uploading === false && (
+                            <p className={styles.uploadedTxt}>
+                                &#10004; uploaded
+                            </p>
+                        )}
+                        {avatar.error && (
+                            <p className={styles.errorTxt}>{avatar.error}</p>
+                        )}
                     </div>
 
-                    <label htmlFor='edit-coverpic' className={styles.label}>
-                        Cover Picture
-                    </label>
-                    <div className={styles.fileInputWrapper}>
-                        <input
-                            type='file'
-                            id='edit-coverpic'
-                            className={styles.fileInput}
-                        />
-                        <i className={styles.cameraIcon}>
-                            <BsCameraFill />
-                        </i>
-                        <button
-                            type='button'
-                            className={styles.fileInputBrowseBtn}
-                        >
-                            Browse
-                        </button>
+                    <div className='mt-[5px] mb-[10px] lg:mb-[20px]'>
+                        <label htmlFor='edit-coverpic' className={styles.label}>
+                            Cover Picture
+                        </label>
+                        <div className={styles.fileInputWrapper}>
+                            <input
+                                type='file'
+                                id='edit-coverpic'
+                                className={styles.fileInput}
+                                onChange={(e) => {
+                                    if (e.target.files.length > 0) {
+                                        uploadImage(
+                                            e.target.files[0],
+                                            'coverPhoto'
+                                        );
+                                    }
+                                }}
+                            />
+                            <i className={styles.cameraIcon}>
+                                <BsCameraFill />
+                            </i>
+                            <button
+                                type='button'
+                                className={styles.fileInputBrowseBtn}
+                            >
+                                Browse
+                            </button>
+                        </div>
                     </div>
+
+                    {coverPhoto.uploading === true && (
+                        <p className={styles.uploadingTxt}>uploading...</p>
+                    )}
+                    {coverPhoto.uploading === false && (
+                        <p className={styles.uploadedTxt}>&#10004; uploaded</p>
+                    )}
+                    {coverPhoto.error && (
+                        <p className={styles.errorTxt}>{coverPhoto.error}</p>
+                    )}
 
                     <label htmlFor='edit-country' className={styles.label}>
                         Country
@@ -160,10 +347,10 @@ export default function EditProfile() {
                             <HiLocationMarker />
                         </i>
                         <select
-                            name='category'
+                            name='country'
                             id='edit-country'
                             className={styles.select}
-                            value={user.category || ''}
+                            value={data.country || ''}
                             onChange={handleChange}
                         >
                             <option value='' hidden>
@@ -171,10 +358,7 @@ export default function EditProfile() {
                             </option>
                             {countryList.map((country, index) => {
                                 return (
-                                    <option
-                                        value={country.toLowerCase()}
-                                        key={index}
-                                    >
+                                    <option value={country} key={index}>
                                         {country}
                                     </option>
                                 );
@@ -194,7 +378,7 @@ export default function EditProfile() {
                             id='edit-city'
                             className={styles.input}
                             name='city'
-                            value={user.city || ''}
+                            value={data.city || ''}
                             onChange={handleChange}
                         />
                     </div>
@@ -211,7 +395,7 @@ export default function EditProfile() {
                             id='edit-phone'
                             className={styles.input}
                             name='phone'
-                            value={user.phone || ''}
+                            value={data.phone || ''}
                             onChange={handleChange}
                         />
                     </div>
@@ -224,6 +408,14 @@ export default function EditProfile() {
                                 name='gender'
                                 id='gender-male'
                                 className={styles.radioInput}
+                                onChange={(e) => {
+                                    if (e.target.checked) {
+                                        setData({ ...data, gender: 'male' });
+                                    }
+                                }}
+                                defaultChecked={
+                                    data.gender === 'male' ? true : false
+                                }
                             />
                             <label
                                 htmlFor='gender-male'
@@ -238,6 +430,14 @@ export default function EditProfile() {
                                 name='gender'
                                 id='gender-femail'
                                 className={styles.radioInput}
+                                onChange={(e) => {
+                                    if (e.target.checked) {
+                                        setData({ ...data, gender: 'female' });
+                                    }
+                                }}
+                                defaultChecked={
+                                    data.gender === 'female' ? true : false
+                                }
                             />
                             <label
                                 htmlFor='gender-femail'
@@ -252,6 +452,14 @@ export default function EditProfile() {
                                 name='gender'
                                 id='gender-others'
                                 className={styles.radioInput}
+                                onChange={(e) => {
+                                    if (e.target.checked) {
+                                        setData({ ...data, gender: 'others' });
+                                    }
+                                }}
+                                defaultChecked={
+                                    data.gender === 'others' ? true : false
+                                }
                             />
                             <label
                                 htmlFor='gender-others'
@@ -267,17 +475,19 @@ export default function EditProfile() {
                     </label>
                     <div className={styles.inputWrapper}>
                         <i className={styles.inputIcon}>
-                            <FiPhoneCall />
+                            <BsGlobe2 />
                         </i>
                         <input
-                            type='date'
+                            type='number'
                             id='edit-age'
                             className={styles.input}
                             name='age'
+                            onChange={handleChange}
+                            value={data.age || ''}
                         />
                     </div>
 
-                    <label htmlFor='signup-email' className={styles.label}>
+                    <label htmlFor='edit-email' className={styles.label}>
                         Email <span className='text-[#f00]'>*</span>
                     </label>
                     <div className={styles.inputWrapper}>
@@ -286,10 +496,10 @@ export default function EditProfile() {
                         </i>
                         <input
                             type='email'
-                            id='signup-email'
+                            id='edit-email'
                             className={styles.input}
                             name='email'
-                            value={user.email || ''}
+                            value={data.email || ''}
                             onChange={handleChange}
                         />
                     </div>
@@ -315,7 +525,7 @@ export default function EditProfile() {
                             id='edit-website'
                             className={styles.input}
                             name='website'
-                            value={user.website || ''}
+                            value={data.website || ''}
                             onChange={handleChange}
                         />
                     </div>
@@ -324,18 +534,28 @@ export default function EditProfile() {
                         Description
                     </label>
                     <textarea
-                        name=''
+                        name='description'
                         id='edit-description'
                         cols='30'
                         rows='10'
                         className={styles.textarea}
+                        onChange={handleChange}
+                        value={data.description || ''}
                     ></textarea>
 
-                    <input
-                        type='submit'
-                        value='Save'
+                    {error && (
+                        <p className='text-[red] text-[15px] lg:text-base mt-[8px]'>
+                            {error}
+                        </p>
+                    )}
+
+                    <button
                         className={styles.submitBtn}
-                    />
+                        type='submit'
+                        disabled={loading}
+                    >
+                        {loading ? <BtnLoader /> : 'Edit Profile'}
+                    </button>
                 </div>
             </form>
         </div>
@@ -347,3 +567,22 @@ EditProfile.getLayout = function getLayout(page) {
         <EditProfileLayout crumbName={'Edit Profile'}>{page}</EditProfileLayout>
     );
 };
+
+export async function getServerSideProps(context) {
+    const user = await getSingleUserByUsername(context?.query?.username);
+
+    if (!user) {
+        return {
+            redirect: {
+                permanent: false,
+                destination: '/404',
+            },
+        };
+    }
+
+    return {
+        props: {
+            userRes: JSON.stringify(user),
+        },
+    };
+}

@@ -8,6 +8,12 @@ import { updateQuestionBox } from '../redux/slices/layoutSlice';
 
 import { PollForm, BtnLoader } from '.';
 import axios from '../axios';
+import { useEffect } from 'react';
+import {
+    updateIsEdit,
+    updateSingleQuestion,
+} from '../redux/slices/questionSlice';
+import { useRouter } from 'next/router';
 
 const styles = {
     overlay: `fixed inset-0 bg-[#000b] z-20 transition-all`,
@@ -32,30 +38,34 @@ const styles = {
 };
 
 function AskQuestionPopup() {
-    const [tags, setTags] = useState([]);
-    const [isPollQuestion, setIsPollQuestion] = useState(false);
-    const [optionsList, setOptionsList] = useState([
-        { option: '' },
-        { option: '' },
-    ]);
+    const { questionBox } = useSelector((state) => state.layout);
+    const { categories, singleQuestion, isEdit } = useSelector(
+        (state) => state.question
+    );
+    const { user } = useSelector((state) => state.user);
+
+    const [tags, setTags] = useState(isEdit ? singleQuestion.tags : []);
+    const [isPollQuestion, setIsPollQuestion] = useState(
+        isEdit ? singleQuestion.isPoll : false
+    );
+    const [optionsList, setOptionsList] = useState(
+        isEdit ? singleQuestion.poll : [{ option: '' }, { option: '' }]
+    );
     const [question, setQuestion] = useState({
-        title: '',
-        category: '',
-        details: '',
+        title: isEdit ? singleQuestion.title : '',
+        category: isEdit ? singleQuestion?.category?._id : '',
+        details: isEdit ? singleQuestion.details : '',
     });
     const [checkBox, setCheckBox] = useState({
-        isAnonymous: false,
-        notifyEmail: true,
+        isAnonymous: isEdit ? singleQuestion.isAnonymous : false,
+        notifyEmail: isEdit ? singleQuestion.notifyEmail : true,
         policy: true,
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const { questionBox } = useSelector((state) => state.layout);
-    const { categories } = useSelector((state) => state.question);
-    const { user } = useSelector((state) => state.user);
-
     const dispatch = useDispatch();
+    const router = useRouter();
 
     const addTag = (tag) => {
         if (tags.includes(tag.toLowerCase())) {
@@ -109,27 +119,51 @@ function AskQuestionPopup() {
                 return singleOption.option !== '';
             });
 
-            const response = await axios.post(
-                '/questions',
-                {
-                    ...question,
-                    tags,
-                    poll: filteredOptionsList,
-                    ...checkBox,
-                },
-                {
-                    headers: { Authorization: `Bearer ${user?.token}` },
-                }
-            );
-
-            setLoading(false);
-            console.log(response.data);
+            if (!isEdit) {
+                await axios.post(
+                    '/questions',
+                    {
+                        ...question,
+                        tags,
+                        poll: filteredOptionsList,
+                        ...checkBox,
+                    },
+                    {
+                        headers: { Authorization: `Bearer ${user?.token}` },
+                    }
+                );
+                closePopup();
+                router.push('/');
+            } else {
+                const response = await axios.patch(
+                    `/questions/${singleQuestion._id}`,
+                    {
+                        ...question,
+                        tags,
+                        poll: filteredOptionsList,
+                        ...checkBox,
+                    },
+                    {
+                        headers: { Authorization: `Bearer ${user?.token}` },
+                    }
+                );
+                dispatch(updateSingleQuestion(response.data));
+                closePopup();
+            }
         } catch (err) {
+            console.log(err);
             setError(
                 err.response?.data?.error || 'Something went wrong, Try again'
             );
             setLoading(false);
         }
+    };
+
+    const closePopup = () => {
+        if (isEdit) {
+            dispatch(updateIsEdit(false));
+        }
+        dispatch(updateQuestionBox(false));
     };
 
     return (
@@ -143,9 +177,7 @@ function AskQuestionPopup() {
                             : 'opacity-0 invisible'
                     }`
                 }
-                onClick={() => {
-                    dispatch(updateQuestionBox(false));
-                }}
+                onClick={closePopup}
             ></div>
             <div
                 className={
@@ -166,6 +198,9 @@ function AskQuestionPopup() {
                         className={styles.closeBtn}
                         onClick={() => {
                             dispatch(updateQuestionBox(false));
+                            if (isEdit) {
+                                dispatch(updateIsEdit(false));
+                            }
                         }}
                         type='button'
                     >
@@ -297,6 +332,7 @@ function AskQuestionPopup() {
                                     setIsPollQuestion(!isPollQuestion);
                                 }}
                                 className='w-[16px] h-[16px]'
+                                defaultChecked={isPollQuestion}
                             />
                             <label
                                 htmlFor='isPollQstn'
@@ -383,7 +419,13 @@ function AskQuestionPopup() {
                         className={styles.submitBtn}
                         disabled={loading}
                     >
-                        {loading ? <BtnLoader /> : 'Publish Your Question'}
+                        {loading ? (
+                            <BtnLoader />
+                        ) : isEdit ? (
+                            'Edit Your Question'
+                        ) : (
+                            'Publish Your Question'
+                        )}
                     </button>
                 </form>
             </div>

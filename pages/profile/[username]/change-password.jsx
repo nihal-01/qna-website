@@ -1,7 +1,10 @@
+import { useRouter } from 'next/router';
 import React from 'react';
 import { useState } from 'react';
 import { HiLockClosed, HiLockOpen } from 'react-icons/hi';
-import { EditProfileLayout } from '../../../components';
+import { useSelector } from 'react-redux';
+import axios from '../../../axios';
+import { BtnLoader, EditProfileLayout } from '../../../components';
 
 const styles = {
     container: `py-[2.5em] max-w-[750px] w-[100%] mx-auto`,
@@ -11,12 +14,51 @@ const styles = {
     inputWrapper: `flex items-center border border-borderColor rounded-sm h-[45px] mb-[10px] mt-[5px] lg:mb-[20px]`,
     inputIcon: `text-lg text-grayColor mx-[10px]`,
     input: `w-[100%] h-[100%] outline-none`,
-    submitBtn: `w-[100%] h-[40px] lg:h-[45px] bg-secondaryColor text-white font-semibold hover:bg-grayColor transition-all cursor-pointer rounded-sm mt-[20px]`,
+    submitBtn: `w-[100%] h-[40px] lg:h-[45px] bg-secondaryColor text-white font-semibold hover:bg-grayColor transition-all cursor-pointer rounded-sm mt-[20px] disabled:cursor-not-allowed`,
 };
 
 export default function ChangePasswordPage() {
     const [password, setPassword] = useState('');
     const [confirmPass, setConfirmPass] = useState('');
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const { user } = useSelector((state) => state.user);
+    const router = useRouter();
+    const { username } = router.query;
+
+    const handleSubmit = async (e) => {
+        try {
+            e.preventDefault();
+
+            if (!password) {
+                return setError('* Fill all required fields');
+            }
+
+            if (password !== confirmPass) {
+                return setError('Password and Confirm Password are not same');
+            }
+
+            setError('');
+            setLoading(true);
+
+            const response = await axios.patch(
+                '/users/update-password',
+                {
+                    password,
+                },
+                {
+                    headers: { Authorization: `Bearer ${user?.token}` },
+                }
+            );
+            router.push(`/profile/${username}`);
+        } catch (err) {
+            setError(
+                err?.response?.data?.error || 'Something went wrong, Try again'
+            );
+            setLoading(false);
+        }
+    };
 
     return (
         <div className={styles.container}>
@@ -26,7 +68,7 @@ export default function ChangePasswordPage() {
                 </i>
                 Change Password
             </h2>
-            <form action=''>
+            <form action='' onSubmit={handleSubmit}>
                 <label htmlFor='change-pass' className={styles.label}>
                     New Password <span className='text-[#f00]'>*</span>
                 </label>
@@ -65,11 +107,19 @@ export default function ChangePasswordPage() {
                     />
                 </div>
 
-                <input
+                {error && (
+                    <p className='text-[red] text-[15px] lg:text-base'>
+                        {error}
+                    </p>
+                )}
+
+                <button
                     type='submit'
-                    value='Save'
                     className={styles.submitBtn}
-                />
+                    disabled={loading}
+                >
+                    {loading ? <BtnLoader /> : 'submit'}
+                </button>
             </form>
         </div>
     );

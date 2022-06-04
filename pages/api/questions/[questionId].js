@@ -15,4 +15,42 @@ const handler = nc({
 
 handler.use(connectDb, isAuth);
 
+handler.patch(async (req, res) => {
+    const { questionId } = req.query;
+    const { title, category, tags, details, poll, isAnonymous, notifyEmail } =
+        req.body;
+
+    const question = await Question.findOneAndUpdate(
+        { _id: questionId, author: req.user._id },
+        {
+            title,
+            category,
+            tags,
+            details,
+            poll,
+            isPoll: poll ? (poll.length > 0 ? true : false) : false,
+            isAnonymous,
+            notifyEmail,
+        },
+        { new: true }
+    )
+        .populate('author', '_id username badge isVerified followers avatar')
+        .populate('category', '_id name')
+        .lean();
+
+    if (!question) {
+        return res
+            .status(400)
+            .json({ error: 'Something went wrong, Try again' });
+    }
+
+    res.status(201).json(question);
+});
+
+handler.delete(async (req, res) => {
+    const { questionId } = req.query;
+    await Question.findOneAndDelete({ _id: questionId, author: req.user._id });
+    res.status(200).json({ message: 'deleted successfully' });
+});
+
 export default handler;

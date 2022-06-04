@@ -27,7 +27,10 @@ Polls.getLayout = function (page) {
 };
 
 export async function getServerSideProps() {
-    const res = await getAllQuestions({ polls: 'true' });
+    const res = await getAllQuestions({
+        polls: 'true',
+        sort: 'createdAt:desc',
+    });
 
     return {
         props: {

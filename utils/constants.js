@@ -50,11 +50,6 @@ export const navLinks = [
         url: '/profile/[username]',
     },
     {
-        icon: <BsFolderFill />,
-        name: 'Communities',
-        url: '/communities',
-    },
-    {
         icon: <BsBookHalf />,
         name: 'Questions',
         url: '#',
@@ -80,7 +75,7 @@ export const navLinks = [
     {
         icon: <BiPoll />,
         name: 'Polls',
-        url: '/polls',
+        url: '/questions/polls',
     },
     {
         icon: <BsGlobe />,
@@ -226,8 +221,8 @@ export const profilePageLinks = [
         link: '/profile/[username]',
     },
     {
-        name: 'Questions',
-        link: '/profile/[username]/questions',
+        name: 'Asked Questions',
+        link: '/profile/[username]/asked-questions',
     },
     {
         name: 'Polls',
@@ -238,8 +233,16 @@ export const profilePageLinks = [
         link: '/profile/[username]/answers',
     },
     {
-        name: 'Best Answers',
-        link: '/profile/[username]/best-answers',
+        name: 'Joined Groups',
+        link: '/profile/[username]/answers',
+    },
+    {
+        name: 'Favourite Questions',
+        link: '/profile/[username]/answers',
+    },
+    {
+        name: 'Voted Question',
+        link: '/profile/[username]/answers',
     },
 ];
 

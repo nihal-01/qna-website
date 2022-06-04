@@ -5,8 +5,8 @@ import { BsCheck } from 'react-icons/bs';
 import { avatarImg } from '../public/images';
 
 const styles = {
-    container: `relative w-[100%] h-[300px] lg:h-[400px] max-h-max overflow-hidden`,
-    opacity: `absolute inset-0 bg-[#34373e]`,
+    container: `relative w-[100%] h-[300px] lg:h-[400px] max-h-max overflow-hidden bg-[#34373e]`,
+    opacity: `absolute inset-0 bg-[#34373e] opacity-60`,
     wrapper: `absolute inset-0`,
     contentWrapper: `max-w-[750px] mx-auto lg:max-w-[1500px] px-[15px] py-[20px] lg:p-[30px] h-[100%] flex items-end`,
     content: `lg:flex items-center w-[100%] justify-between`,
@@ -23,8 +23,17 @@ const styles = {
 export default function ProfileHero({ user }) {
     return (
         <div className={styles.container}>
-            {/* <Image src={heroImg} alt='' layout='fill' objectFit='cover' /> */}
-            <div className={styles.opacity}></div>
+            {user?.coverPhoto && (
+                <>
+                    <Image
+                        src={user.coverPhoto}
+                        alt=''
+                        layout='fill'
+                        objectFit='cover'
+                    />
+                    <div className={styles.opacity}></div>
+                </>
+            )}
             <div className={styles.wrapper}>
                 <div className={styles.contentWrapper}>
                     <div className={styles.content}>
@@ -32,7 +41,7 @@ export default function ProfileHero({ user }) {
                             <div className={styles.avatarWrapper}>
                                 <div className={styles.avatarImg}>
                                     <Image
-                                        src={avatarImg}
+                                        src={user?.avatar || avatarImg}
                                         alt=''
                                         layout='fill'
                                         objectFit='cover'
@@ -40,7 +49,9 @@ export default function ProfileHero({ user }) {
                                 </div>
                             </div>
                             <h3 className={styles.authorName}>
-                                {user?.username}
+                                {user?.fname && user?.lname
+                                    ? `${user.fname} ${user.lname}`
+                                    : user?.username}
                             </h3>
                             {user?.isVerified && (
                                 <span className={styles.verified}>

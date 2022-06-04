@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import {
     BsFillTriangleFill,
@@ -11,6 +12,7 @@ import {
     BsStarFill,
     BsExclamationTriangle,
     BsShareFill,
+    BsPencil,
 } from 'react-icons/bs';
 import {
     FaFacebookF,
@@ -18,17 +20,21 @@ import {
     FaTwitter,
     FaWhatsapp,
 } from 'react-icons/fa';
+import { HiOutlineTrash } from 'react-icons/hi';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from '../axios';
 
 import { avatarImg } from '../public/images';
+import { updateQuestionBox } from '../redux/slices/layoutSlice';
 import {
+    updateIsEdit,
+    updatePoll,
     updateQuestionFavourite,
     updateSingleQstnVotes,
     updateVotesCount,
 } from '../redux/slices/questionSlice';
 import { logout } from '../redux/slices/userSlice';
-import { convertViewsCount } from '../utils';
+import { convertViewsCount, percentageOfVotes } from '../utils';
 import { monthNames } from '../utils/constants';
 import BtnLoader from './BtnLoader';
 
@@ -59,12 +65,24 @@ const styles = {
     answerBtn: `inline-block bg-primaryColor text-white py-[6px] px-[15px] font-semibold text-sm rounded-sm transition-all hover:bg-secondaryColor lg:text-base`,
     verified: `inline-block bg-secondaryColor rounded-full text-white ml-[5px] text-base w-[15px] h-[15px] lg:w-[18px] lg:h-[18px] lg:text-[16px]`,
     socialWrapper: `pt-[15px] lg:pt-[30px] flex items-center justify-between flex-wrap gap-[1em]`,
-    report: `flex items-center gap-[7px] text-[#474e7b] text-sm transition-all hover:text-secondaryColor cursor-pointer lg:text-[15px]`,
     socialIconsWrapper: `flex items-center gap-[10px] flex-wrap lg:gap-[1em]`,
     shareIcon: `flex items-center gap-[8px] text-[#707885] text-sm lg:text-[15px]`,
     socilaIconsList: `flex items-center gap-[10px]`,
     socialIcon: `w-[30px] h-[30px] rounded-sm text-base flex items-center justify-center text-white lg:w-[35px] lg:h-[35px] lg:text-[20px] transition-all hover:bg-primaryColor cursor-pointer`,
     errorTxt: `w-[100%] text-[red] bg-[#fbcccc] p-[14px] text-[14px] mb-[1.5em] font-bold rounded-sm tracking-wider`,
+    actionBtnsWrapper: `flex items-center gap-[1.5em]`,
+    actionBtn: `flex items-center gap-[8px] text-[#474e7b] text-sm transition-all hover:text-secondaryColor cursor-pointer lg:text-[15px]`,
+    pollWrapper: `border rounded-sm bg-[#f9f9f9] p-[20px] mb-[1.5em]`,
+    pollHeading: `flex items-center gap-[12px] text-[17px] font-bold text-primaryColor mb-[1.5em]`,
+    pollHeadingIcon: `flex items-center justify-center bg-primaryColor text-white w-[30px] h-[30px] rounded-sm `,
+    singlePol: `flex items-center gap-[10px] mt-[10px]`,
+    pollRadioInput: `w-[17px] h-[17px]`,
+    pollLabel: `text-[17px] text-primaryColor`,
+    pollBtn: `bg-secondaryColor text-white font-bold rounded-sm h-[40px] w-[110px] mt-[1.5em] disabled:cursor-not-allowed`,
+    voteAnswerWrapper: `mb-[1em]`,
+    voteAnswerInfo: `flex items-center gap-[2em] text-secondaryColor font-bold text-[15px] mb-[5px]`,
+    voteAnswerProgressWrapper: `relative w-[100%] h-[7px] bg-[#f2f2f2]`,
+    voteAnswerProgress: `absolute top-0 left-0 h-[100%] bg-secondaryColor`,
 };
 
 export default function SingleQuestion({
@@ -73,6 +91,9 @@ export default function SingleQuestion({
     details,
     isAnonymous,
     author,
+    isPoll,
+    poll,
+    polledUsers,
     votes,
     createdAt,
     category,
@@ -86,11 +107,17 @@ export default function SingleQuestion({
     const [error, setError] = useState('');
     const [voteLoading, setVoteLoading] = useState(false);
     const [favouriteLoading, setFavouriteLoading] = useState(false);
+    const [selectedOption, setSelectedOption] = useState('');
+    const [pollError, setPollError] = useState('');
+    const [pollLoading, setPollLoading] = useState(false);
 
     const myDate = new Date(createdAt);
 
+    console.log(votes);
+
     const { user } = useSelector((state) => state.user);
     const dispatch = useDispatch();
+    const router = useRouter();
 
     const handleVote = async (isUpvote) => {
         try {
@@ -156,6 +183,61 @@ export default function SingleQuestion({
             setError(
                 err.response?.data?.error || 'Something went wrong, Try again'
             );
+        }
+    };
+
+    const handleReport = () => {
+        alert('Your Report Submitted Successfully');
+    };
+
+    const handleEdit = () => {
+        dispatch(updateIsEdit(true));
+        dispatch(updateQuestionBox(true));
+    };
+
+    const handleDelete = async () => {
+        try {
+            const isConfirm = confirm('Are you sure to Delete ?');
+            if (isConfirm) {
+                await axios.delete(`/questions/${_id}`, {
+                    headers: { Authorization: `Bearer ${user?.token}` },
+                });
+                router.back();
+            }
+        } catch (err) {
+            setError(
+                err?.response?.data?.error || 'Something went wrong, Try again'
+            );
+        }
+    };
+
+    const addPoll = async () => {
+        try {
+            if (!user) {
+                return setPollError('You should Login first, for voting');
+            }
+
+            if (!selectedOption) {
+                return setPollError('You should select an option');
+            }
+
+            setPollError('');
+            setPollLoading(true);
+
+            await axios.patch(
+                `/questions/poll/${_id}`,
+                { option: selectedOption },
+                {
+                    headers: { Authorization: `Bearer ${user?.token}` },
+                }
+            );
+
+            dispatch(updatePoll({ option: selectedOption, _id: user._id }));
+        } catch (err) {
+            setPollError(
+                err?.response?.data?.error || 'Something went wrong, Try again'
+            );
+            setPollLoading(false);
         }
     };
 
@@ -284,6 +366,7 @@ export default function SingleQuestion({
                     </h2>
                 </div>
             </div>
+
             <div
                 className={
                     styles.body +
@@ -326,6 +409,125 @@ export default function SingleQuestion({
                     </li>
                 </ul>
                 <div className='w-[100%]'>
+                    {/* QUESTION POLL */}
+                    {isFullVisible &&
+                        isPoll &&
+                        (!polledUsers?.includes(user?._id) ? (
+                            <div className={styles.pollWrapper}>
+                                <h3 className={styles.pollHeading}>
+                                    <span className={styles.pollHeadingIcon}>
+                                        ?
+                                    </span>{' '}
+                                    Participate in Poll, Choose Your Answer.
+                                </h3>
+
+                                {poll.map(({ _id, option, votes }, index) => {
+                                    return (
+                                        <div
+                                            key={index}
+                                            className={styles.singlePol}
+                                        >
+                                            <input
+                                                type='radio'
+                                                name='poll'
+                                                id={`poll-${_id.slice(4)}`}
+                                                className={
+                                                    styles.pollRadioInput
+                                                }
+                                                onChange={(e) => {
+                                                    if (e.target.checked) {
+                                                        setSelectedOption(
+                                                            option
+                                                        );
+                                                    }
+                                                }}
+                                            />
+                                            <label
+                                                htmlFor={`poll-${_id.slice(4)}`}
+                                                className={styles.pollLabel}
+                                            >
+                                                {option}
+                                            </label>
+                                        </div>
+                                    );
+                                })}
+
+                                {pollError && (
+                                    <p className='text-[red] text-[15px] mt-[12px]'>
+                                        {pollError}
+                                    </p>
+                                )}
+
+                                <button
+                                    className={styles.pollBtn}
+                                    onClick={addPoll}
+                                    disabled={pollLoading}
+                                >
+                                    {pollLoading ? <BtnLoader /> : 'Submit'}
+                                </button>
+                            </div>
+                        ) : (
+                            <div className={styles.pollWrapper}>
+                                <h3 className={styles.pollHeading}>
+                                    <span className={styles.pollHeadingIcon}>
+                                        ?
+                                    </span>{' '}
+                                    Poll Results
+                                </h3>
+
+                                {poll.map(({ _id, option, votes }, index) => {
+                                    return (
+                                        <div
+                                            key={index}
+                                            className={styles.voteAnswerWrapper}
+                                        >
+                                            <div
+                                                className={
+                                                    styles.voteAnswerInfo
+                                                }
+                                            >
+                                                <span>
+                                                    {percentageOfVotes(
+                                                        poll,
+                                                        votes
+                                                    )}
+                                                    %
+                                                </span>
+                                                <span>
+                                                    {option}({votes} votes)
+                                                </span>
+                                            </div>
+                                            <div
+                                                className={
+                                                    styles.voteAnswerProgressWrapper
+                                                }
+                                            >
+                                                <div
+                                                    className={
+                                                        styles.voteAnswerProgress +
+                                                        ` w-[${percentageOfVotes(
+                                                            poll,
+                                                            votes
+                                                        )}%]`
+                                                    }
+                                                ></div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+
+                                <p className='mt-[1.5em] font-bold text-primaryColor text-[15px]'>
+                                    Based on{' '}
+                                    <span className='text-secondaryColor'>
+                                        {poll.reduce((a, b) => {
+                                            return a + b.votes;
+                                        }, 0)}{' '}
+                                        votes
+                                    </span>
+                                </p>
+                            </div>
+                        ))}
+
                     <p
                         className={
                             styles.desc +
@@ -425,8 +627,30 @@ export default function SingleQuestion({
             </div>
             {isFullVisible && (
                 <div className={styles.socialWrapper}>
-                    <div className={styles.report}>
-                        <BsExclamationTriangle /> Report
+                    <div className={styles.actionBtnsWrapper}>
+                        {user?._id === author?._id ? (
+                            <>
+                                <button
+                                    className={styles.actionBtn}
+                                    onClick={handleEdit}
+                                >
+                                    <BsPencil /> Edit
+                                </button>
+                                <button
+                                    className={styles.actionBtn}
+                                    onClick={handleDelete}
+                                >
+                                    <HiOutlineTrash /> Delete
+                                </button>
+                            </>
+                        ) : (
+                            <button
+                                className={styles.actionBtn}
+                                onClick={handleReport}
+                            >
+                                <BsExclamationTriangle /> Report
+                            </button>
+                        )}
                     </div>
                     <div className={styles.socialIconsWrapper}>
                         <span className={styles.shareIcon}>

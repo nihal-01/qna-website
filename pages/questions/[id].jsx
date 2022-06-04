@@ -22,8 +22,9 @@ import {
 } from '../../helpers/questionsHelpers';
 import { updateSigninBox } from '../../redux/slices/layoutSlice';
 import {
-    addAnswerToAnswers,
+    incrementAnswersCount,
     updateAnswers,
+    updateAnswersCount,
     updateSingleQuestion,
 } from '../../redux/slices/questionSlice';
 import { logout } from '../../redux/slices/userSlice';
@@ -60,7 +61,9 @@ export default function SingleQuestionPage({ question, numOfAnswers }) {
     const dispatch = useDispatch();
     const { id } = router.query;
     const { user } = useSelector((state) => state.user);
-    const { singleQuestion, answers } = useSelector((state) => state.question);
+    const { singleQuestion, answers, answersCount } = useSelector(
+        (state) => state.question
+    );
 
     const addAnswer = async (e) => {
         try {
@@ -84,6 +87,7 @@ export default function SingleQuestionPage({ question, numOfAnswers }) {
                 }
             );
 
+            dispatch(incrementAnswersCount());
             setAnswerTxt('');
             setAnswer((prev) => {
                 return { ...prev, loading: false, isAdded: true };
@@ -117,7 +121,8 @@ export default function SingleQuestionPage({ question, numOfAnswers }) {
 
     useEnhancedEffect(() => {
         dispatch(updateSingleQuestion(JSON.parse(question)));
-    }, [question, dispatch]);
+        dispatch(updateAnswersCount(JSON.parse(numOfAnswers)));
+    }, [question, dispatch, numOfAnswers]);
 
     useEffect(() => {
         fetchAnswers();
@@ -148,7 +153,7 @@ export default function SingleQuestionPage({ question, numOfAnswers }) {
             <div>
                 <SingleQuestion
                     {...singleQuestion}
-                    numOfAnswers={JSON.parse(numOfAnswers)}
+                    numOfAnswers={answersCount}
                     isFullVisible={true}
                 />
                 <div className={styles.formWrapper} id='answer'>
@@ -225,7 +230,7 @@ export default function SingleQuestionPage({ question, numOfAnswers }) {
                 </div>
                 <div className={styles.answersHeader} id='answers'>
                     <h3 className={styles.answersHeaderTitle}>
-                        {JSON.parse(numOfAnswers)} Answers
+                        {answersCount} Answers
                     </h3>
                     <div>
                         <ul className={styles.answersTabsList}>
@@ -298,6 +303,15 @@ export const getServerSideProps = async ({ params, req }) => {
     updateViews(params.id);
     const question = await getSingleQuestion(params.id);
     const numOfAnswers = await getNumberOfAnswers(params.id);
+
+    if (!question) {
+        return {
+            redirect: {
+                permanent: false,
+                destination: '/404',
+            },
+        };
+    }
 
     const parsedCookies = req.headers.cookie
         ? cookie.parse(req.headers.cookie)

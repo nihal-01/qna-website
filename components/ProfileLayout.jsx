@@ -22,12 +22,12 @@ export default function ProfileLayout({ user, crumbName = undefined }) {
                     crumbs={[
                         {
                             name: user?.username,
-                            url: `/profile/${user.username}`,
+                            url: `/profile/${user?.username}`,
                         },
                         { name: crumbName },
                     ]}
                 />
-                {user.username === signedUser?.user?.username && (
+                {user?.username === signedUser?.user?.username && (
                     <div className={styles.headerRight}>
                         <Link href={`/profile/${user?.username}/edit`}>
                             <a href={`/profile/${user?.username}/edit`}>

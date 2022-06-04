@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
 
 import axios from '../axios';
 import { useDispatch } from 'react-redux';
-import { signUser } from '../redux/slices/userSlice';
+import { updateUser } from '../redux/slices/userSlice';
 import { updateSignupBox } from '../redux/slices/layoutSlice';
 import BtnLoader from './BtnLoader';
 
@@ -72,8 +72,7 @@ export default function SignupForm() {
 
             setLoading(false);
 
-            Cookies.set('user-info', JSON.stringify(response.data));
-            dispacth(signUser(response.data));
+            dispacth(updateUser(response.data));
             dispacth(updateSignupBox(false));
         } catch (err) {
             setError(

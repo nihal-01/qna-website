@@ -7,6 +7,7 @@ export const getAllAnswers = async () => {
 
         const answers = await Answer.find({})
             .populate('author', 'username avatar isVerified badge')
+            .populate('questionId', 'title')
             .sort({ createdAt: -1 });
 
         return answers;
@@ -30,6 +31,19 @@ export const getSingleAnswer = async (answerId) => {
     try {
         await db.connect();
         const answer = await Answer.findById(answerId);
+        return answer;
+    } catch (err) {
+        throw new Error(err);
+    }
+};
+
+export const getUserAnswers = async (userId) => {
+    try {
+        await db.connect();
+        const answer = await Answer.find({ author: userId })
+            .populate('author', 'username avatar isVerified badge')
+            .populate('questionId', 'title')
+            .sort({ createdAt: -1 });
         return answer;
     } catch (err) {
         throw new Error(err);

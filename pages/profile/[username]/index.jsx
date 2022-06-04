@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import Link from 'next/link';
 import React from 'react';
 import {
     BiCurrentLocation,
@@ -11,7 +10,7 @@ import {
 import { FaUsers } from 'react-icons/fa';
 
 import { ProfileHero, SidebarLayout, ProfileLayout } from '../../../components';
-import { User } from '../../../models';
+import { getUserWithInfo } from '../../../helpers/userHelpers';
 import { avatarImg } from '../../../public/images';
 
 const styles = {
@@ -32,52 +31,61 @@ export default function About({ data }) {
 
     return (
         <div className={styles.container}>
-            <p className={styles.desc}>
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quod
-                ab fuga quasi accusamus quam exercitationem corrupti nulla a vel
-                ipsam, inventore aperiam quidem, alias nihil nostrum blanditiis,
-                minus voluptate ullam?
-            </p>
+            {user.description && (
+                <p className={styles.desc}>{user.description}</p>
+            )}
             <ul className={styles.metaWrapper}>
-                <li className={styles.metaItem}>
-                    <i>
-                        <BiCurrentLocation />
-                    </i>
-                    <span>Kozhikode, India</span>
-                </li>
-                <li className={styles.metaItem}>
-                    <i>
-                        <BiPhoneCall />
-                    </i>
-                    <span>7994766524</span>
-                </li>
-                <li>
-                    <a
-                        href='https://google.com'
-                        target='blank'
-                        className={
-                            styles.metaItem +
-                            ' hover:text-secondaryColor transition-all'
-                        }
-                    >
+                {user.city && user.country && (
+                    <li className={styles.metaItem}>
                         <i>
-                            <BiLink />
+                            <BiCurrentLocation />
                         </i>
-                        <span>Visit Site</span>
-                    </a>
-                </li>
-                <li className={styles.metaItem}>
-                    <i>
-                        <BiHeart />
-                    </i>
-                    <span>Male</span>
-                </li>
-                <li className={styles.metaItem}>
-                    <i>
-                        <BiGlobe />
-                    </i>
-                    <span>20 years old</span>
-                </li>
+                        <span>
+                            {user.city}, {user.country}
+                        </span>
+                    </li>
+                )}
+                {user.phone && (
+                    <li className={styles.metaItem}>
+                        <i>
+                            <BiPhoneCall />
+                        </i>
+                        <span>{user.phone}</span>
+                    </li>
+                )}
+                {user.website && (
+                    <li>
+                        <a
+                            href={user.website}
+                            target='blank'
+                            className={
+                                styles.metaItem +
+                                ' hover:text-secondaryColor transition-all'
+                            }
+                        >
+                            <i>
+                                <BiLink />
+                            </i>
+                            <span>Visit Site</span>
+                        </a>
+                    </li>
+                )}
+                {user.gender && (
+                    <li className={styles.metaItem}>
+                        <i>
+                            <BiHeart />
+                        </i>
+                        <span>{user.gender}</span>
+                    </li>
+                )}
+                {user.age && (
+                    <li className={styles.metaItem}>
+                        <i>
+                            <BiGlobe />
+                        </i>
+                        <span>{user.age} years old</span>
+                    </li>
+                )}
             </ul>
             <div className={styles.followWrapper}>
                 <div className={styles.followBox}>
@@ -173,7 +181,7 @@ About.getLayout = function getLayout(page) {
         <>
             <ProfileHero user={JSON.parse(page.props.data)} />
             <SidebarLayout>
-                <ProfileLayout user={JSON.parse(page.props.data)}  />
+                <ProfileLayout user={JSON.parse(page.props.data)} />
                 {page}
             </SidebarLayout>
         </>
@@ -181,15 +189,17 @@ About.getLayout = function getLayout(page) {
 };
 
 export async function getServerSideProps({ params }) {
-    const user = await User.findOne({ username: params?.username })
-        .populate('numOfQuestions')
-        .populate('numOfAnswers')
-        .populate('following', 'username avatar')
-        .populate('followers', 'username avatar')
-        .select(
-            'username following followers avatar badge isVerified numOfQuestions numOfAnswers'
-        )
-        .lean();
+    const user = await getUserWithInfo(params?.username);
+
+    if (!user) {
+        return {
+            redirect: {
+                permanent: false,
+                destination: '/404',
+            },
+        };
+    }
+
     return {
         props: { data: JSON.stringify(user) },
     };

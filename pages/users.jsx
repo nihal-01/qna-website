@@ -99,9 +99,14 @@ export async function getServerSideProps(context) {
     const parsedCookies = context.req.headers.cookie
         ? cookie.parse(context.req.headers.cookie)
         : '';
-    if (!parsedCookies['user-info'] || parsedCookies['user-info'] === '') {
+    if (
+        !parsedCookies['user-info'] ||
+        parsedCookies['user-info'] === '' ||
+        parsedCookies['user-info'] === '""'
+    ) {
         response = await getAllUsers();
     } else {
+        console.log(parsedCookies);
         const userInfo = await JSON.parse(parsedCookies['user-info']);
         const user = await getSingleUser(userInfo._id);
         response = await getMyUsers(user);

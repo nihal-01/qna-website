@@ -57,6 +57,8 @@ handler.post(async (req, res) => {
         _id: user._id,
         username: user.username,
         email: user.email,
+        avatar: user?.avatar,
+        coverPhoto: user?.coverPhoto,
         token,
     });
 });

@@ -33,11 +33,20 @@ const questionSchema = new Schema(
                     option: {
                         type: String,
                         required: true,
+                        lowercase: true,
                     },
                     votes: {
                         type: Number,
                         default: 0,
                     },
+                },
+            ],
+        },
+        polledUsers: {
+            type: [
+                {
+                    type: mongoose.Types.ObjectId,
+                    ref: 'User',
                 },
             ],
         },
