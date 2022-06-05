@@ -45,6 +45,7 @@ export default async function handler(req, res) {
                 _id: newUser._id,
                 username: newUser.username,
                 email: newUser.email,
+                badge: newUser?.badge,
                 token,
             });
         } catch (err) {

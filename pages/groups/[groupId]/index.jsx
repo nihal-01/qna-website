@@ -3,10 +3,11 @@ import Link from 'next/link';
 import React from 'react';
 import { useState } from 'react';
 import { BsFlagFill } from 'react-icons/bs';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
     Breadcrumbs,
+    BtnLoader,
     SidebarLayout,
     SingleGroupHero,
     SinglePost,
@@ -14,6 +15,12 @@ import {
 import { avatarImg } from '../../../public/images';
 import axios from '../../../axios';
 import { getGroupPosts, getSingleGroup } from '../../../helpers/groupHelpers';
+import { useEnhancedEffect } from '../../../utils';
+import {
+    addPost,
+    updatePosts,
+    updateSelectedGroup,
+} from '../../../redux/slices/groupSlice';
 
 const styles = {
     container: `h-[100%] w-[100%]`,
@@ -28,21 +35,28 @@ const styles = {
     label: `text-grayColor text-[14px] lg:text-[15px]`,
     textarea: `w-[100%] h-[200px] border border-borderColor resize-none mt-[5px] rounded-sm outline-none px-[20px] py-[15px]`,
     btnWrapper: `w-[100%] max-w-[300px]  ml-auto`,
-    submitBtn: `w-[100%] h-[40px] lg:h-[45px] bg-secondaryColor text-white font-semibold hover:bg-grayColor transition-all cursor-pointer rounded-sm mt-[20px]`,
+    submitBtn: `w-[100%] h-[40px] lg:h-[45px] bg-secondaryColor text-white font-semibold hover:bg-grayColor transition-all cursor-pointer rounded-sm mt-[20px] disabled:cursor-not-allowed`,
 };
 
 export default function SingleGroupPage({ groupRes, postsRes }) {
     const [description, setDescription] = useState('');
-
-    const group = JSON.parse(groupRes);
-    const posts = JSON.parse(postsRes);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
 
     const { user } = useSelector((state) => state.user);
+    const { group, posts } = useSelector((state) => state.group);
+    const dispatch = useDispatch();
 
     const handleSubmit = async (e) => {
         try {
             e.preventDefault();
 
+            if (!description) {
+                return setError('* Description not provided');
+            }
+
+            setError('');
+            setIsLoading(true);
             const response = await axios.post(
                 '/groups/posts',
                 {
@@ -51,10 +65,22 @@ export default function SingleGroupPage({ groupRes, postsRes }) {
                 },
                 { headers: { Authorization: `Bearer ${user?.token}` } }
             );
+            setIsLoading(false);
+            setDescription('');
+            response.data.authorId = user;
+            dispatch(addPost(response.data));
         } catch (err) {
-            console.log(err);
+            setError(
+                err?.response?.data?.error || 'Something went wrong, Try again'
+            );
+            setIsLoading(false);
         }
     };
+
+    useEnhancedEffect(() => {
+        dispatch(updateSelectedGroup(JSON.parse(groupRes)));
+        dispatch(updatePosts(JSON.parse(postsRes)));
+    }, [dispatch, groupRes, postsRes]);
 
     return (
         <div className={styles.container}>
@@ -66,51 +92,80 @@ export default function SingleGroupPage({ groupRes, postsRes }) {
                     ]}
                 />
             </div>
-            <div className={styles.section}>
-                <form action='' className={styles.form} onSubmit={handleSubmit}>
-                    <div className={styles.formHeader}>
-                        <Link href={'/profile/nihal'}>
-                            <a href={'/profile/nihal'}>
-                                <div className={styles.imageWrapper}>
-                                    <Image
-                                        src={avatarImg}
-                                        alt=''
-                                        objectFit='cover'
-                                        layout='fill'
-                                    />
-                                </div>
-                            </a>
-                        </Link>
-                        <h4 className={styles.formUsername}>
-                            <Link href={'/profile/nihal'}>{'nihaln'}</Link>
-                        </h4>
-                    </div>
 
-                    <label htmlFor='post-desc' className={styles.label}>
-                        Description / Content{' '}
-                        <span className='text-[#f00]'>*</span>
-                    </label>
-                    <textarea
-                        name=''
-                        id='post-desc'
-                        cols='30'
-                        rows='10'
-                        className={styles.textarea}
-                        value={description || ''}
-                        onChange={(e) => {
-                            setDescription(e.target.value);
-                        }}
-                    ></textarea>
+            {user && group.postPermission && group?.users?.includes(user._id) && (
+                <div className={styles.section}>
+                    <form
+                        action=''
+                        className={styles.form}
+                        onSubmit={handleSubmit}
+                    >
+                        <div className={styles.formHeader}>
+                            <Link href={`/profile/${group?.creator?.username}`}>
+                                <a
+                                    href={`/profile/${group?.creator?.username}`}
+                                >
+                                    <div className={styles.imageWrapper}>
+                                        <Image
+                                            src={avatarImg}
+                                            alt=''
+                                            objectFit='cover'
+                                            layout='fill'
+                                        />
+                                    </div>
+                                </a>
+                            </Link>
+                            <h4 className={styles.formUsername}>
+                                <Link
+                                    href={`/profile/${group?.creator?.username}`}
+                                >
+                                    <a
+                                        href={`/profile/${group?.creator?.username}`}
+                                    >
+                                        {group?.creator?.username}
+                                    </a>
+                                </Link>
+                            </h4>
+                        </div>
 
-                    <div className={styles.btnWrapper}>
-                        <input
-                            type='submit'
-                            value='Publish Your Post'
-                            className={styles.submitBtn}
-                        />
-                    </div>
-                </form>
-            </div>
+                        <label htmlFor='post-desc' className={styles.label}>
+                            Description / Content{' '}
+                            <span className='text-[#f00]'>*</span>
+                        </label>
+                        <textarea
+                            name=''
+                            id='post-desc'
+                            cols='30'
+                            rows='10'
+                            className={styles.textarea}
+                            value={description || ''}
+                            onChange={(e) => {
+                                setDescription(e.target.value);
+                            }}
+                        ></textarea>
+
+                        {error && (
+                            <p className='text-[red] text-[15px] lg:text-base mt-[10px]'>
+                                {error}
+                            </p>
+                        )}
+
+                        <div className={styles.btnWrapper}>
+                            <button
+                                type='submit'
+                                className={styles.submitBtn}
+                                disabled={isLoading}
+                            >
+                                {isLoading ? (
+                                    <BtnLoader />
+                                ) : (
+                                    'Publish Your Post'
+                                )}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            )}
 
             <div>
                 {posts?.length > 0 ? (
@@ -143,7 +198,7 @@ export default function SingleGroupPage({ groupRes, postsRes }) {
 SingleGroupPage.getLayout = function getLayout(page) {
     return (
         <>
-            <SingleGroupHero group={JSON.parse(page.props.groupRes)} />
+            <SingleGroupHero />
             <SidebarLayout>{page}</SidebarLayout>
         </>
     );
@@ -151,6 +206,16 @@ SingleGroupPage.getLayout = function getLayout(page) {
 
 export async function getServerSideProps(context) {
     const group = await getSingleGroup(context?.query.groupId);
+
+    if (!group) {
+        return {
+            redirect: {
+                permanent: false,
+                destination: '/404',
+            },
+        };
+    }
+    
     const posts = await getGroupPosts(context?.query.groupId);
 
     return {

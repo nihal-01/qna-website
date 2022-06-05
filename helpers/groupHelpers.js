@@ -38,6 +38,7 @@ export const getGroupPosts = async (groupId) => {
         const posts = await Post.find({ groupId })
             .populate('authorId', 'avatar username isVerified badge')
             .populate('numOfComments')
+            .sort({ createdAt: -1 })
             .lean();
 
         return posts;

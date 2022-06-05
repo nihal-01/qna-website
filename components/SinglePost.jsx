@@ -17,7 +17,8 @@ import { avatarImg } from '../public/images';
 import { useRouter } from 'next/router';
 import { SingleComment } from '.';
 import axios from '../axios';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { deletePost } from '../redux/slices/groupSlice';
 
 const styles = {
     container: `px-[15px] py-[30px] lg:p-[30px] border-b transition-all`,
@@ -58,6 +59,8 @@ export default function SinglePost({
     const [text, setText] = useState('');
 
     const router = useRouter();
+    const dispatch = useDispatch();
+
     const { user } = useSelector((state) => state.user);
 
     const handleSubmit = async (e) => {
@@ -70,6 +73,27 @@ export default function SinglePost({
                     headers: { Authorization: `Bearer ${user?.token}` },
                 }
             );
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    const handlePostDelete = async () => {
+        try {
+            const isConfirm = confirm('Are you sure to delete?');
+            if (isConfirm) {
+                await axios.delete(
+                    `/groups/posts/${post._id}`,
+                    {
+                        headers: { Authorization: `Bearer ${user?.token}` },
+                    }
+                );
+                if (single) {
+                    router.back();
+                } else {
+                    dispatch(deletePost(post._id));
+                }
+            }
         } catch (err) {
             console.log(err);
         }
@@ -90,8 +114,10 @@ export default function SinglePost({
                         </div>
                     </div>
                     <h2 className={styles.username}>
-                        <Link href={'/profile'}>
-                            {post?.authorId?.username}
+                        <Link href={`/profile/${post?.authorId?.username}`}>
+                            <a href={`/profile/${post?.authorId?.username}`}>
+                                {post?.authorId?.username || 'Anonymous'}
+                            </a>
                         </Link>
                     </h2>
 
@@ -116,9 +142,14 @@ export default function SinglePost({
                             .startOf('seconds')
                             .fromNow()}
                     </p>
-                    <button className={styles.deleteBtn}>
-                        <HiOutlineTrash /> Delete
-                    </button>
+                    {user?._id === post?.authorId?._id && (
+                        <button
+                            className={styles.deleteBtn}
+                            onClick={handlePostDelete}
+                        >
+                            <HiOutlineTrash /> Delete
+                        </button>
+                    )}
                 </div>
             </div>
             <div>
@@ -149,11 +180,11 @@ export default function SinglePost({
                             Comment
                         </button>
 
-                        <Link href={'/hi'}>
+                        {/* <Link href={'/hi'}>
                             <a href='' className={styles.editBtn}>
                                 <BsPencil />
                             </a>
-                        </Link>
+                        </Link> */}
                     </div>
                 </div>
             </div>
@@ -172,7 +203,7 @@ export default function SinglePost({
                         <i>
                             <BsPersonFill />
                         </i>
-                        <Link href={`/profile/nihal`}>nihaln</Link>
+                        {/* <Link href={`/profile/nihal`}>nihaln</Link> */}
                     </span>
                 </p>
 
