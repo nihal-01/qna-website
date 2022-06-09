@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import React from 'react';
 import { AiFillTag } from 'react-icons/ai';
 import { BsSearch } from 'react-icons/bs';
@@ -21,6 +22,9 @@ export default function Tags({ data }) {
 
     return (
         <div className={styles.container}>
+            <Head>
+                <title>Tags - QNA</title>
+            </Head>
             <div className={styles.header}>
                 <Breadcrumbs crumbs={[{ name: 'tags' }]} />
             </div>

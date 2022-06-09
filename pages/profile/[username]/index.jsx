@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import Image from 'next/image';
 import React from 'react';
 import {
@@ -31,6 +32,9 @@ export default function About({ data }) {
 
     return (
         <div className={styles.container}>
+            <Head>
+                <title>{user.username} - QNA</title>
+            </Head>
             {user.description && (
                 <p className={styles.desc}>{user.description}</p>
             )}

@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import React from 'react';
 
 import { Breadcrumbs, GroupCard, SidebarLayout } from '../../components';
@@ -14,6 +15,9 @@ export default function Groups({ data }) {
 
     return (
         <div className={styles.container}>
+            <Head>
+                <title>Groups - QNA</title>
+            </Head>
             <div className={styles.header}>
                 <Breadcrumbs crumbs={[{ name: 'groups' }]} />
             </div>

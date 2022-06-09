@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import Link from 'next/link';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -25,6 +26,9 @@ export default function QuestionAnswers({ data }) {
 
     return (
         <main>
+            <Head>
+                <title>Answers - QNA</title>
+            </Head>
             <PagesTopNavbar links={qstnPageLinks} />
             <div>
                 {answers.map((answer, index) => {

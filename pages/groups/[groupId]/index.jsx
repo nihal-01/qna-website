@@ -21,6 +21,7 @@ import {
     updatePosts,
     updateSelectedGroup,
 } from '../../../redux/slices/groupSlice';
+import Head from 'next/head';
 
 const styles = {
     container: `h-[100%] w-[100%]`,
@@ -88,6 +89,9 @@ export default function SingleGroupPage({ groupRes, postsRes }) {
 
     return (
         <div className={styles.container}>
+            <Head>
+                <title>{group?.title} - QNA</title>
+            </Head>
             <div className={styles.header}>
                 <Breadcrumbs
                     crumbs={[

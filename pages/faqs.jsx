@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import React from 'react';
 import { BsInfo } from 'react-icons/bs';
 
@@ -16,6 +17,9 @@ const styles = {
 export default function Faqs() {
     return (
         <div className={styles.container}>
+            <Head>
+                <title>FAQs - QNA</title>
+            </Head>
             <div className={styles.header}>
                 <Breadcrumbs crumbs={[{ name: 'FAQs' }]} />
             </div>
@@ -29,8 +33,10 @@ export default function Faqs() {
                 <p className={styles.paragraph}>
                     Find out everything you need to get started by taking the
                     tour. If you still have questions, come back and check out
-                    the pinned articles, if you still need help contact us:
-                    {" "}<span className='text-secondaryColor cursor-pointer transition-all hover:text-[#000]'>info@qna.com</span>
+                    the pinned articles, if you still need help contact us:{' '}
+                    <span className='text-secondaryColor cursor-pointer transition-all hover:text-[#000]'>
+                        info@qna.com
+                    </span>
                 </p>
                 <div>
                     {faqQuestions.map((question) => {

@@ -6,6 +6,7 @@ import { updateQuestions } from '../../redux/slices/questionSlice';
 import { useEnhancedEffect } from '../../utils';
 import { qstnPageLinks } from '../../utils/constants';
 import { getAllQuestions } from '../../helpers/questionsHelpers';
+import Head from 'next/head';
 
 export default function RecentQuestions({ questions }) {
     const dispatch = useDispatch();
@@ -16,6 +17,9 @@ export default function RecentQuestions({ questions }) {
 
     return (
         <main>
+            <Head>
+                <title>Recent questions - QNA</title>
+            </Head>
             <PagesTopNavbar links={qstnPageLinks} />
             <QuestionsList questions={questions} />
         </main>

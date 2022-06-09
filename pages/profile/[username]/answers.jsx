@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import Link from 'next/link';
 import React from 'react';
 import { BsFlagFill } from 'react-icons/bs';
@@ -22,8 +23,9 @@ const styles = {
     notFound: `flex items-center gap-[1em] bg-[#fffcdd] text-[#ebc035] font-bold text-[17px] p-[15px] rounded-sm`,
 };
 
-export default function SingleUserAnswers({ answersData }) {
+export default function SingleUserAnswers({ answersData, userData }) {
     const dispatch = useDispatch();
+    const user = JSON.parse(userData);
 
     const { answers } = useSelector((state) => state.question);
 
@@ -33,6 +35,9 @@ export default function SingleUserAnswers({ answersData }) {
 
     return (
         <div>
+            <Head>
+                <title>{user.username} - Answers - QNA</title>
+            </Head>
             {answers.length < 1 ? (
                 <div className={styles.notFoundWrapper}>
                     <div className={styles.notFound}>

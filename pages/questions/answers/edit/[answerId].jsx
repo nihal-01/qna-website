@@ -6,6 +6,7 @@ import { useState } from 'react';
 import axios from '../../../../axios';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 
 const styles = {
     container: `h-[100%] w-[100%]`,
@@ -52,6 +53,9 @@ export default function EditAnswer({ answerRes }) {
 
     return (
         <div className={styles.container}>
+            <Head>
+                <title>Edit Answer - QNA</title>
+            </Head>
             <div className={styles.header}>
                 <Breadcrumbs crumbs={[{ name: 'Edit Answer' }]} />
             </div>

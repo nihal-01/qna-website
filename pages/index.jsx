@@ -10,6 +10,7 @@ import { updateQuestions } from '../redux/slices/questionSlice';
 import { useEnhancedEffect } from '../utils';
 import { qstnPageLinks } from '../utils/constants';
 import { getAllQuestions } from '../helpers/questionsHelpers';
+import Head from 'next/head';
 
 export default function Home({ questions }) {
     const dispatch = useDispatch();
@@ -20,6 +21,9 @@ export default function Home({ questions }) {
 
     return (
         <div>
+            <Head>
+                <title>QNA - Questions And Answers</title>
+            </Head>
             <PagesTopNavbar links={qstnPageLinks} />
             <QuestionsList />
         </div>

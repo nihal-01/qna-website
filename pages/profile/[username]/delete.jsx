@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { HiOutlineTrash } from 'react-icons/hi';
@@ -59,6 +60,9 @@ export default function DeleteProfilePage() {
 
     return (
         <div className={styles.container}>
+            <Head>
+                <title>{user.username} - Delete Account - QNA</title>
+            </Head>
             <h2 className={styles.title}>
                 <i className={styles.titleIcon}>
                     <HiOutlineTrash />

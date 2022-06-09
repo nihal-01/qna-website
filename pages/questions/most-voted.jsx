@@ -6,6 +6,7 @@ import { updateQuestions } from '../../redux/slices/questionSlice';
 import { useEnhancedEffect } from '../../utils';
 import { qstnPageLinks } from '../../utils/constants';
 import { getAllQuestions } from '../../helpers/questionsHelpers';
+import Head from 'next/head';
 
 export default function MostVoted({ questions }) {
     const dispatch = useDispatch();
@@ -16,6 +17,9 @@ export default function MostVoted({ questions }) {
 
     return (
         <main>
+            <Head>
+                <title>Most Voted - QNA</title>
+            </Head>
             <PagesTopNavbar links={qstnPageLinks} />
             <QuestionsList />
         </main>

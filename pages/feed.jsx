@@ -7,6 +7,7 @@ import { useEnhancedEffect } from '../utils';
 import { useDispatch } from 'react-redux';
 import { updateQuestions } from '../redux/slices/questionSlice';
 import { BsFlagFill } from 'react-icons/bs';
+import Head from 'next/head';
 
 const styles = {
     container: `h-[100%] w-[100%]`,
@@ -24,6 +25,9 @@ export default function FeedPage({ questions }) {
 
     return (
         <div>
+            <Head>
+                <title>Feed - QNA</title>
+            </Head>
             <div className={styles.header}>
                 <Breadcrumbs crumbs={[{ name: 'My Feed' }]} />
             </div>

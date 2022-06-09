@@ -10,6 +10,7 @@ import { updateUsers } from '../redux/slices/userSlice';
 import { useRef } from 'react';
 import { useEnhancedEffect } from '../utils';
 import { getAllUsers, getMyUsers, getSingleUser } from '../helpers/userHelpers';
+import Head from 'next/head';
 
 const styles = {
     container: `h-[100%] w-[100%]`,
@@ -59,6 +60,9 @@ export default function Users({ data }) {
 
     return (
         <div className={styles.container}>
+            <Head>
+                <title>Users - QNA</title>
+            </Head>
             <div className={styles.header}>
                 <Breadcrumbs crumbs={[{ name: 'users' }]} />
 

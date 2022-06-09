@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import React from 'react';
 
 import { AddGroupForm, Breadcrumbs, SidebarLayout } from '../components';
@@ -11,6 +12,9 @@ const styles = {
 export default function AddGroup() {
     return (
         <div className={styles.container}>
+            <Head>
+                <title>Add Group - QNA</title>
+            </Head>
             <div className={styles.header}>
                 <Breadcrumbs crumbs={[{ name: 'Add Group' }]} />
             </div>

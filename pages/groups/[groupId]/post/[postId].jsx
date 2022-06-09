@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import React from 'react';
 import {
     Breadcrumbs,
@@ -23,6 +24,9 @@ export default function SinglePostPage({ groupRes, postRes, commentsRes }) {
 
     return (
         <div className={styles.container}>
+            <Head>
+                <title>{post.title} - QNA</title>
+            </Head>
             <div className={styles.header}>
                 <Breadcrumbs
                     crumbs={[

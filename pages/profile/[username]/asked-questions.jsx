@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import React from 'react';
 import { BsFlagFill } from 'react-icons/bs';
 import { useDispatch, useSelector } from 'react-redux';
@@ -21,6 +22,7 @@ const styles = {
 export default function SingleUserQuestions({ userData, questionData }) {
     const dispatch = useDispatch();
     const { questions } = useSelector((state) => state.question);
+    const user = JSON.parse(userData);
 
     useEnhancedEffect(() => {
         dispatch(updateQuestions(JSON.parse(questionData)));
@@ -28,6 +30,9 @@ export default function SingleUserQuestions({ userData, questionData }) {
 
     return (
         <div>
+            <Head>
+                <title>{user.username} - Asked Questions - QNA</title>
+            </Head>
             {questions.length < 1 ? (
                 <div className={styles.notFoundWrapper}>
                     <div className={styles.notFound}>

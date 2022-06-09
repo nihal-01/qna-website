@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import React from 'react';
 import { FaTelegramPlane, FaUser } from 'react-icons/fa';
 import { IoIosCall, IoMdChatbubbles } from 'react-icons/io';
@@ -24,6 +25,9 @@ const styles = {
 export default function Contact() {
     return (
         <div className={styles.container}>
+            <Head>
+                <title>Contact Us - QNA</title>
+            </Head>
             <div className={styles.header}>
                 <Breadcrumbs crumbs={[{ name: 'Contact Us' }]} />
             </div>

@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import React from 'react';
 import { BsFlagFill } from 'react-icons/bs';
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,6 +21,7 @@ const styles = {
 
 export default function SingleUserPolls({ userData, pollsData }) {
     const dispatch = useDispatch();
+    const user = JSON.parse(userData);
     const { questions } = useSelector((state) => state.question);
 
     useEnhancedEffect(() => {
@@ -28,6 +30,9 @@ export default function SingleUserPolls({ userData, pollsData }) {
 
     return (
         <div>
+            <Head>
+                <title>{user.username} - Polls - QNA</title>
+            </Head>
             {questions.length < 1 ? (
                 <div className={styles.notFoundWrapper}>
                     <div className={styles.notFound}>
@@ -61,7 +66,7 @@ SingleUserPolls.getLayout = function getLayout(page) {
 
 export async function getServerSideProps({ params }) {
     const user = await getUserWithInfo(params.username);
-    const polls = await getUserPolls(params.username);
+    const polls = await getUserPolls(user._id);
 
     if (!user || !polls) {
         return {

@@ -29,6 +29,7 @@ import {
 } from '../../redux/slices/questionSlice';
 import { logout } from '../../redux/slices/userSlice';
 import { useEnhancedEffect } from '../../utils';
+import Head from 'next/head';
 
 const styles = {
     header: `block p-[15px] lg:p-[30px] lg:flex items-center justify-between border-b-2 border-borderColor`,
@@ -108,9 +109,7 @@ export default function SingleQuestionPage({ question, numOfAnswers }) {
     const fetchAnswers = useCallback(async () => {
         try {
             setIsLoading(true);
-            const response = await axios.get(
-                `/answers/${id}?sortBy=${sort}`
-            );
+            const response = await axios.get(`/answers/${id}?sortBy=${sort}`);
             dispatch(updateAnswers(response.data));
             setIsLoading(false);
         } catch (err) {
@@ -142,6 +141,9 @@ export default function SingleQuestionPage({ question, numOfAnswers }) {
 
     return (
         <div>
+            <Head>
+                <title>{singleQuestion.title} - QNA</title>
+            </Head>
             <div className={styles.header}>
                 <Breadcrumbs
                     crumbs={[

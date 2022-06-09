@@ -15,6 +15,7 @@ import { Question, User, Group } from '../../../models';
 import { updateQuestions } from '../../../redux/slices/questionSlice';
 import { updateUsers } from '../../../redux/slices/userSlice';
 import { useEnhancedEffect } from '../../../utils';
+import Head from 'next/head';
 
 const styles = {
     container: `h-[100%] w-[100%]`,
@@ -64,6 +65,9 @@ export default function SearchPage({ query, data }) {
 
     return (
         <div>
+            <Head>
+                <title>Search - QNA</title>
+            </Head>
             <div className={styles.header}>
                 <Breadcrumbs
                     crumbs={[{ name: `search results for "${searchTxt}"` }]}

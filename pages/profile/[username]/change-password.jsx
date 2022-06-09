@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { useState } from 'react';
@@ -62,6 +63,9 @@ export default function ChangePasswordPage() {
 
     return (
         <div className={styles.container}>
+            <Head>
+                <title>{user.username} - Change Password - QNA</title>
+            </Head>
             <h2 className={styles.title}>
                 <i className={styles.titleIcon}>
                     <HiLockClosed />

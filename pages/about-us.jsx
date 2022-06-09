@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import React from 'react';
 
 const styles = {
@@ -7,12 +8,15 @@ const styles = {
     title: `text-primaryColor text-[20px] lg:text-[22px] font-semibold mb-[1em]`,
     paragrah: `text-[#707885] text-[15px] lg:text-[17px]`,
     iframe: `mx-auto w-[450px] max-w-[100%] aspect-video my-[2em]`,
-    subTitle: `text-primaryColor text-[16px] lg:text-[19px] font-semibold mb-[6px]`
+    subTitle: `text-primaryColor text-[16px] lg:text-[19px] font-semibold mb-[6px]`,
 };
 
 export default function About() {
     return (
         <div className={styles.container}>
+            <Head>
+                <title>About Us - QNA</title>
+            </Head>
             <div className={styles.wrapper}>
                 <div className={styles.contentWrapper}>
                     <h4 className={styles.title}>
@@ -49,7 +53,9 @@ export default function About() {
                         Our Values
                     </h4>
 
-                    <h6 className={styles.subTitle}>1. Maximize long-term value</h6>
+                    <h6 className={styles.subTitle}>
+                        1. Maximize long-term value
+                    </h6>
                     <p className={styles.paragrah}>
                         We are building a product that we hope lasts forever. We
                         want to be a strong and independent engine, this long
@@ -57,7 +63,9 @@ export default function About() {
                     </p>
                     <br />
 
-                    <h6 className={styles.subTitle}>2. Continuously learn and adapt </h6>
+                    <h6 className={styles.subTitle}>
+                        2. Continuously learn and adapt{' '}
+                    </h6>
                     <p className={styles.paragrah}>
                         We value experimentation, metrics-driven decisions, and
                         speed of iteration. We push to production with every
@@ -74,7 +82,9 @@ export default function About() {
                     </p>
                     <br />
 
-                    <h6 className={styles.subTitle}>4. Be direct and respectful</h6>
+                    <h6 className={styles.subTitle}>
+                        4. Be direct and respectful
+                    </h6>
                     <p className={styles.paragrah}>
                         We expect and welcome constant feedback. We trust each
                         other to be open and straightforward, so if you have
