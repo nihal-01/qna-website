@@ -80,7 +80,7 @@ export default function SingleQuestionPage({ question, numOfAnswers }) {
             });
 
             await axios.post(
-                `http://localhost:3000/api/answers/`,
+                `/answers/`,
                 { answer: answerTxt, questionId: singleQuestion?._id },
                 {
                     headers: { Authorization: `Bearer ${user?.token}` },
@@ -109,7 +109,7 @@ export default function SingleQuestionPage({ question, numOfAnswers }) {
         try {
             setIsLoading(true);
             const response = await axios.get(
-                `http://localhost:3000/api/answers/${id}?sortBy=${sort}`
+                `/answers/${id}?sortBy=${sort}`
             );
             dispatch(updateAnswers(response.data));
             setIsLoading(false);
