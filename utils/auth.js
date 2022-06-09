@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-export const signToken = (user) => {
+const signToken = (user) => {
     return jwt.sign(
         {
             _id: user._id,
@@ -11,3 +11,5 @@ export const signToken = (user) => {
         { expiresIn: '30d' }
     );
 };
+
+export default signToken;

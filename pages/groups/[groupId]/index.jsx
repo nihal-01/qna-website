@@ -33,6 +33,7 @@ const styles = {
     imageWrapper: `relative w-[60px] h-[60px] rounded-full overflow-hidden`,
     formUsername: `text-[17px] font-bold text-primaryColor transition-all hover:text-secondaryColor`,
     label: `text-grayColor text-[14px] lg:text-[15px]`,
+    input: `w-[100%] h-[45px] outline-none border border-borderColor rounded-sm px-[10px] mb-[1.5em]`,
     textarea: `w-[100%] h-[200px] border border-borderColor resize-none mt-[5px] rounded-sm outline-none px-[20px] py-[15px]`,
     btnWrapper: `w-[100%] max-w-[300px]  ml-auto`,
     submitBtn: `w-[100%] h-[40px] lg:h-[45px] bg-secondaryColor text-white font-semibold hover:bg-grayColor transition-all cursor-pointer rounded-sm mt-[20px] disabled:cursor-not-allowed`,
@@ -40,6 +41,7 @@ const styles = {
 
 export default function SingleGroupPage({ groupRes, postsRes }) {
     const [description, setDescription] = useState('');
+    const [title, setTitle] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -51,8 +53,8 @@ export default function SingleGroupPage({ groupRes, postsRes }) {
         try {
             e.preventDefault();
 
-            if (!description) {
-                return setError('* Description not provided');
+            if (!description || !title) {
+                return setError('* Fill required fields');
             }
 
             setError('');
@@ -61,12 +63,14 @@ export default function SingleGroupPage({ groupRes, postsRes }) {
                 '/groups/posts',
                 {
                     description: description,
+                    title,
                     groupId: group._id,
                 },
                 { headers: { Authorization: `Bearer ${user?.token}` } }
             );
             setIsLoading(false);
             setDescription('');
+            setTitle('');
             response.data.authorId = user;
             dispatch(addPost(response.data));
         } catch (err) {
@@ -101,13 +105,11 @@ export default function SingleGroupPage({ groupRes, postsRes }) {
                         onSubmit={handleSubmit}
                     >
                         <div className={styles.formHeader}>
-                            <Link href={`/profile/${group?.creator?.username}`}>
-                                <a
-                                    href={`/profile/${group?.creator?.username}`}
-                                >
+                            <Link href={`/profile/${user?.username}`}>
+                                <a href={`/profile/${user?.username}`}>
                                     <div className={styles.imageWrapper}>
                                         <Image
-                                            src={avatarImg}
+                                            src={user?.avatar || avatarImg}
                                             alt=''
                                             objectFit='cover'
                                             layout='fill'
@@ -116,17 +118,27 @@ export default function SingleGroupPage({ groupRes, postsRes }) {
                                 </a>
                             </Link>
                             <h4 className={styles.formUsername}>
-                                <Link
-                                    href={`/profile/${group?.creator?.username}`}
-                                >
-                                    <a
-                                        href={`/profile/${group?.creator?.username}`}
-                                    >
-                                        {group?.creator?.username}
+                                <Link href={`/profile/${user?.username}`}>
+                                    <a href={`/profile/${user?.username}`}>
+                                        {user?.username}
                                     </a>
                                 </Link>
                             </h4>
                         </div>
+
+                        <label htmlFor='post-title' className={styles.label}>
+                            Title <span className='text-[#f00]'>*</span>
+                        </label>
+
+                        <input
+                            type='text'
+                            className={styles.input}
+                            name='title'
+                            value={title || ''}
+                            onChange={(e) => {
+                                setTitle(e.target.value);
+                            }}
+                        />
 
                         <label htmlFor='post-desc' className={styles.label}>
                             Description / Content{' '}
@@ -215,7 +227,7 @@ export async function getServerSideProps(context) {
             },
         };
     }
-    
+
     const posts = await getGroupPosts(context?.query.groupId);
 
     return {

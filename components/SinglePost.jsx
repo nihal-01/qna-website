@@ -47,6 +47,7 @@ const styles = {
     submitBtn: `w-[100%] h-[40px] lg:h-[45px] bg-secondaryColor text-white font-semibold hover:bg-grayColor transition-all cursor-pointer rounded-sm mt-[20px]`,
     notFoundWrapper: `py-[30px] lg:py-[30px] mt-[1.5em] transition-all`,
     notFound: `flex items-center gap-[1em] bg-[#fffcdd] text-[#ebc035] font-bold text-[17px] p-[15px] rounded-sm`,
+    postTitle: `text-primaryColor hover:text-secondaryColor text-lg font-bold mb-[10px]`,
 };
 
 export default function SinglePost({
@@ -82,12 +83,9 @@ export default function SinglePost({
         try {
             const isConfirm = confirm('Are you sure to delete?');
             if (isConfirm) {
-                await axios.delete(
-                    `/groups/posts/${post._id}`,
-                    {
-                        headers: { Authorization: `Bearer ${user?.token}` },
-                    }
-                );
+                await axios.delete(`/groups/posts/${post._id}`, {
+                    headers: { Authorization: `Bearer ${user?.token}` },
+                });
                 if (single) {
                     router.back();
                 } else {
@@ -153,6 +151,17 @@ export default function SinglePost({
                 </div>
             </div>
             <div>
+                <h1 className={styles.postTitle}>
+                    {single ? (
+                        post?.title
+                    ) : (
+                        <Link href={`/groups/${groupId}/post/${post._id}`}>
+                            <a href={`/groups/${groupId}/post/${post._id}`}>
+                                {post?.title}
+                            </a>
+                        </Link>
+                    )}
+                </h1>
                 <p className={styles.desc}>{post.description}</p>
                 <div className={styles.footer}>
                     <ul className={styles.footerLeft}>

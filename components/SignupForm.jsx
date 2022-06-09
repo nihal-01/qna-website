@@ -71,6 +71,13 @@ export default function SignupForm() {
             });
 
             setLoading(false);
+            setUser({
+                ...user,
+                username: '',
+                email: '',
+                password: '',
+                cPassword: '',
+            });
 
             dispacth(updateUser(response.data));
             dispacth(updateSignupBox(false));

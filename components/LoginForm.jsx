@@ -55,6 +55,7 @@ export default function LoginForm() {
             });
 
             setLoading(false);
+            setUser({ ...user, info: '', password: '' });
 
             dispacth(updateUser(response.data));
             dispacth(updateSigninBox(false));
@@ -68,7 +69,7 @@ export default function LoginForm() {
 
     return (
         <form onSubmit={handleSubmit} className={styles.form}>
-            <label htmlFor='info' className={styles.label}>
+            <label htmlFor='login-info' className={styles.label}>
                 Username or email <span className='text-[#f00]'>*</span>
             </label>
             <div className={styles.inputWrapper}>
@@ -77,7 +78,7 @@ export default function LoginForm() {
                 </i>
                 <input
                     type='text'
-                    id='info'
+                    id='login-info'
                     className={styles.input}
                     name='info'
                     value={user.info || ''}
@@ -108,12 +109,12 @@ export default function LoginForm() {
                     <input
                         type='checkbox'
                         name=''
-                        id='checkbox'
+                        id='login-checkbox'
                         // checked
                         className={styles.checkbox}
                     />
                     <label
-                        htmlFor='checkbox'
+                        htmlFor='login-checkbox'
                         className='text-grayColor text-[15px] lg:text-base'
                     >
                         Remember Me!

@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 
 // import { db } from '../../../utils';
 import { User } from '../../../models';
-import { signToken } from '../../../utils/auth';
+import { signToken } from '../../../utils';
 
 export default async function handler(req, res) {
     // await db.connect();
