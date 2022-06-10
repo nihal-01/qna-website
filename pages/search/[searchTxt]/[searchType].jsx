@@ -11,11 +11,11 @@ import {
     SidebarLayout,
     UserCard,
 } from '../../../components';
-import { Question, User, Group } from '../../../models';
+import { Question } from '../../../models';
 import { updateQuestions } from '../../../redux/slices/questionSlice';
-import { updateUsers } from '../../../redux/slices/userSlice';
 import { useEnhancedEffect } from '../../../utils';
 import Head from 'next/head';
+import { BsFlagFill } from 'react-icons/bs';
 
 const styles = {
     container: `h-[100%] w-[100%]`,
@@ -25,6 +25,8 @@ const styles = {
     input: `border border-borderColor rounded-sm h-[40px] lg:h-[45px] outline-none p-[10px]`,
     select: `border border-borderColor bg-transparent rounded-sm p-[10px] outline-none h-[40px] lg:h-[45px]`,
     searchBtn: `w-[100%] h-[40px] lg:h-[45px] bg-secondaryColor text-white font-semibold hover:bg-grayColor transition-all cursor-pointer rounded-sm mt-[1.5em] disabled:cursor-not-allowed`,
+    notFoundWrapper: `px-[15px] py-[30px] lg:p-[30px] transition-all`,
+    notFound: `flex items-center gap-[1em] bg-[#fffcdd] text-[#ebc035] font-bold text-[17px] p-[15px] rounded-sm`,
 };
 
 export default function SearchPage({ query, data }) {
@@ -37,6 +39,7 @@ export default function SearchPage({ query, data }) {
     });
 
     const { users } = useSelector((state) => state.user);
+    const { questions } = useSelector((state) => state.question);
 
     const dispatch = useDispatch();
     const router = useRouter();
@@ -47,7 +50,9 @@ export default function SearchPage({ query, data }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        router.push(`/search/${searchData.text}/${searchData.type}`);
+        if (searchData.text) {
+            router.push(`/search/${searchData.text}/${searchData.type}`);
+        }
     };
 
     useEnhancedEffect(() => {
@@ -56,11 +61,12 @@ export default function SearchPage({ query, data }) {
             searchType.toLowerCase() === 'tags'
         ) {
             dispatch(updateQuestions(JSON.parse(data)));
-        } else if (searchType.toLowerCase() === 'users') {
-            dispatch(updateUsers(JSON.parse(data)));
-        } else if (searchType.toLowerCase() === 'groups') {
-            setGroups(JSON.parse(data));
         }
+        // else if (searchType.toLowerCase() === 'users') {
+        //     dispatch(updateUsers(JSON.parse(data)));
+        // } else if (searchType.toLowerCase() === 'groups') {
+        //     setGroups(JSON.parse(data));
+        // }
     }, [dispatch, searchTxt, searchData]);
 
     return (
@@ -87,6 +93,7 @@ export default function SearchPage({ query, data }) {
                         name='text'
                         className={styles.input}
                         placeholder='Enter your search'
+                        required
                     />
                     <select
                         name='type'
@@ -97,8 +104,8 @@ export default function SearchPage({ query, data }) {
                     >
                         <option value='questions'>Questions</option>
                         <option value='tags'>Tags</option>
-                        <option value='groups'>Groups</option>
-                        <option value='users'>Users</option>
+                        {/* <option value='groups'>Groups</option>
+                        <option value='users'>Users</option> */}
                     </select>
                 </div>
                 <button className={styles.searchBtn}>Search</button>
@@ -107,7 +114,20 @@ export default function SearchPage({ query, data }) {
             <div>
                 {searchType.toLowerCase() === 'questions' ||
                 searchType.toLowerCase() === 'tags' ? (
-                    <QuestionsList />
+                    <div>
+                        {questions.length < 1 ? (
+                            <div className={styles.notFoundWrapper}>
+                                <div className={styles.notFound}>
+                                    <i>
+                                        <BsFlagFill />
+                                    </i>
+                                    There are no questions found
+                                </div>
+                            </div>
+                        ) : (
+                            <QuestionsList />
+                        )}
+                    </div>
                 ) : searchType.toLowerCase() === 'users' ? (
                     <div>
                         {users.map((user) => {
@@ -146,41 +166,46 @@ export async function getServerSideProps({ query, req }) {
             .populate('author', 'username avatar isVerified badge')
             .populate('numOfAnswers')
             .lean();
-    } else if (searchType.toLowerCase() === 'users') {
-        const parsedCookies = cookie.parse(req.headers.cookie);
-        if (!parsedCookies['user-info'] || parsedCookies['user-info'] === '') {
-            data = await User.find({
-                username: { $regex: searchTxt, $options: 'i' },
-            })
-                .populate('numOfQuestions')
-                .populate('numOfAnswers')
-                .lean();
+    }
+    // else if (searchType.toLowerCase() === 'users') {
+    //     const parsedCookies = cookie.parse(req.headers.cookie);
+    //     if (!parsedCookies['user-info'] || parsedCookies['user-info'] === '') {
+    //         data = await User.find({
+    //             username: { $regex: searchTxt, $options: 'i' },
+    //         })
+    //             .populate('numOfQuestions')
+    //             .populate('numOfAnswers')
+    //             .lean();
 
-            data.forEach((user) => {
-                user.followers = user?.followers?.length || 0;
-                user.following = user?.following?.length || 0;
-            });
-        } else {
-            const userInfo = JSON.parse(parsedCookies['user-info']);
-            const myUser = await User.findOne({ _id: userInfo._id });
+    //         data.forEach((user) => {
+    //             user.followers = user?.followers?.length || 0;
+    //             user.following = user?.following?.length || 0;
+    //         });
+    //     }
+    // }
 
-            data = await User.find({
-                username: { $regex: searchTxt, $options: 'i' },
-                _id: { $ne: userInfo._id },
-            })
-                .populate('numOfQuestions')
-                .populate('numOfAnswers')
-                .select(
-                    'username avatar followers following numOfQuestions numOfAnswers'
-                )
-                .lean();
-            data.forEach((user) => {
-                user.followers = user?.followers?.length || 0;
-                user.following = user?.following?.length || 0;
-                user.isFollowing = myUser?.following?.includes(user._id);
-            });
-        }
-    } else if (searchType.toLowerCase() === 'tags') {
+    //     else {
+    //         const userInfo = JSON.parse(parsedCookies['user-info']);
+    //         const myUser = await User.findOne({ _id: userInfo._id });
+
+    //         data = await User.find({
+    //             username: { $regex: searchTxt, $options: 'i' },
+    //             _id: { $ne: userInfo._id },
+    //         })
+    //             .populate('numOfQuestions')
+    //             .populate('numOfAnswers')
+    //             .select(
+    //                 'username avatar followers following numOfQuestions numOfAnswers'
+    //             )
+    //             .lean();
+    //         data.forEach((user) => {
+    //             user.followers = user?.followers?.length || 0;
+    //             user.following = user?.following?.length || 0;
+    //             user.isFollowing = myUser?.following?.includes(user._id);
+    //         });
+    //     }
+    // }
+    else if (searchType.toLowerCase() === 'tags') {
         data = await Question.find({
             tags: searchTxt,
         })
@@ -188,11 +213,20 @@ export async function getServerSideProps({ query, req }) {
             .populate('author', 'username avatar isVerified badge')
             .populate('numOfAnswers')
             .lean();
-    } else if (searchType.toLowerCase() === 'groups') {
-        data = await Group.find({ title: { $regex: searchTxt, $options: 'i' } })
-            .populate('numOfPosts')
-            .sort({ createdAt: -1 })
-            .lean();
+    }
+    // else if (searchType.toLowerCase() === 'groups') {
+    //     data = await Group.find({ title: { $regex: searchTxt, $options: 'i' } })
+    //         .populate('numOfPosts')
+    //         .sort({ createdAt: -1 })
+    //         .lean();
+    // }
+    else {
+        return {
+            redirect: {
+                permanent: false,
+                destination: '/404',
+            },
+        };
     }
 
     return {
